@@ -159,7 +159,7 @@ void send_debug_info(byte id, int value) {
 
 // command functions
 void serial_loopback() {
-    Serial.write(SERIAL_LOOP_BACK);
+    Serial.write((byte)SERIAL_LOOP_BACK);
     Serial.write(command_buffer[0]);
 }
 
