@@ -35,7 +35,7 @@ The code outside of the phase directories is likely to be highly volatile and sh
 be used with caution.
 
 The project will be documented on my [Bots In Pieces blog](https://mryslab.github.io/bots-in-pieces/index.html)
-when I get time to do some writing. It is my intent to provide commentary for each phase.
+when I get time to do so. It is my intent to provide commentary for each phase.
 
 If you find bugs or would like to comment on the features, please enter an issue
  [here.](https://github.com/MrYsLab/telemetrix/issues)
