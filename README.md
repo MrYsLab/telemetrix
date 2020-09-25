@@ -34,8 +34,8 @@ Arduino-telemetrix is the Arduino server sketch, and telemetrix is the python cl
 The code outside of the phase directories is likely to be highly volatile and should
 be used with caution.
 
-The project will be documented on my [Bots In Pieces blog](https://mryslab.github.io/bots-in-pieces/index.html)
-when I get time to do so. It is my intent to provide commentary for each phase.
+The project will be documented on my [Bots In Pieces blog.](https://mryslab.github.io/bots-in-pieces/index.html)
+Here is a link to the [first installment.](https://mryslab.github.io/bots-in-pieces/arduino,stm32,firmata/2020/09/20/telemetrix-phase-1.html)
 
 If you find bugs or would like to comment on the features, please enter an issue
  [here.](https://github.com/MrYsLab/telemetrix/issues)
