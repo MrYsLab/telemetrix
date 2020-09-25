@@ -5,7 +5,7 @@ automatic transmission to receiving equipment (telecommunication) for monitoring
 
 The Telemetrix Project is a telemetry package for Arduino core devices with a serial interface.
 
-It is intended to become a user extensible replacement for StandardFirmata, without
+It is intended to become a user-extensible replacement for StandardFirmata, without
 the complexity of Firmata.
 
 Feature Punch List
@@ -35,4 +35,5 @@ be used with caution.
 The project will be documented on my [Bots In Pieces blog](https://mryslab.github.io/bots-in-pieces/index.html)
 when I get time to do some writing. It is my intent to provide commentary for each phase.
 
-If you find bugs or would like to comment on the features, please enter an issue here.
+If you find bugs or would like to comment on the features, please enter an issue
+ [here.](https://github.com/MrYsLab/telemetrix/issues)
