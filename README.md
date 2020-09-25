@@ -29,6 +29,8 @@ contain the latest code, examples and arduino sketch. As the phases progress thr
 development each phase will contain the contents of the previous phase as well as the
 additions for the phase itself.
 
+Arduino-telemetrix is the Arduino server sketch, and telemetrix is the python client.
+
 The code outside of the phase directories is likely to be highly volatile and should
 be used with caution.
 
