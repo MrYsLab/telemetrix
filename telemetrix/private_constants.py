@@ -29,7 +29,10 @@ class PrivateConstants:
     ANALOG_WRITE = 3
     MODIFY_REPORTING = 4
     GET_FIRMWARE_VERSION = 5
-    ARE_U_THERE = 6  # Arduino ID query
+    ARE_U_THERE = 6  # Arduino ID query for auto-detect of telemetrix connected boards
+    SERVO_ATTACH = 7
+    SERVO_WRITE = 8
+    SERVO_DETACH = 9
 
     # reports
     # debug data from Arduino
@@ -37,6 +40,7 @@ class PrivateConstants:
     ANALOG_REPORT = ANALOG_WRITE
     FIRMWARE_REPORT = GET_FIRMWARE_VERSION
     I_AM_HERE_REPORT = ARE_U_THERE
+    SERVO_UNAVAILABLE = SERVO_ATTACH
     DEBUG_PRINT = 99
 
     TELEMETRIX_VERSION = "0.01"

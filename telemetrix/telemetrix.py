@@ -114,6 +114,7 @@ class Telemetrix(threading.Thread):
         self.report_dispatch.update({PrivateConstants.ANALOG_REPORT: [self._analog_message, 3]})
         self.report_dispatch.update({PrivateConstants.FIRMWARE_REPORT: [self._firmware_message, 2]})
         self.report_dispatch.update({PrivateConstants.I_AM_HERE_REPORT: [self._i_am_here, 1]})
+        self.report_dispatch.update({PrivateConstants.SERVO_UNAVAILABLE: [self._servo_unavailable, 1]})
 
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
@@ -132,7 +133,7 @@ class Telemetrix(threading.Thread):
         # flag to indicate the start of a new report
         self.new_report_start = True
 
-        # firmware version
+        # firmware version to be stored here
         self.firmware_version = []
 
         # reported arduino instance id
@@ -177,14 +178,14 @@ class Telemetrix(threading.Thread):
         print(f'Reset Complete')
 
         print('Retrieving Arduino ID...')
-        self.get_arduino_id()
+        self._get_arduino_id()
 
         if self.reported_arduino_id != self.arduino_instance_id:
             raise RuntimeError(f'Incorrect Arduino ID: {self.reported_arduino_id}')
         print('Valid Arduino ID Found.')
         # get arduino firmware version and print it
         print('\nRetrieving arduino-telemetrix firmware ID...')
-        self.get_firmware_version()
+        self._get_firmware_version()
 
         if not self.firmware_version:
             if self.shutdown_on_exception:
@@ -249,14 +250,14 @@ class Telemetrix(threading.Thread):
                   'reset...')
             time.sleep(self.arduino_wait)
 
-            self.get_arduino_id()
+            self._get_arduino_id()
 
             if self.reported_arduino_id != self.arduino_instance_id:
                 raise RuntimeError(f'Incorrect Arduino ID: {self.reported_arduino_id}')
             print('Valid Arduino ID Found.')
             # get arduino firmware version and print it
             print('\nRetrieving arduino-telemetrix firmware ID...')
-            self.get_firmware_version()
+            self._get_firmware_version()
 
             if not self.firmware_version:
                 if self.shutdown_on_exception:
@@ -329,6 +330,9 @@ class Telemetrix(threading.Thread):
         self._send_command(command)
 
     def disable_all_reporting(self):
+        """
+        Disable reporting for all digital and analog input pins
+        """
         command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DISABLE_ALL, 0)
         self._send_command(command)
 
@@ -378,7 +382,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_ENABLE, pin]
         self._send_command(command)
 
-    def get_arduino_id(self):
+    def _get_arduino_id(self):
         """
         Retrieve arduino-telemetrix arduino id
         :return:
@@ -388,7 +392,7 @@ class Telemetrix(threading.Thread):
         # provide time for the reply
         time.sleep(.1)
 
-    def get_firmware_version(self):
+    def _get_firmware_version(self):
         """
         This method retrieves the
         arduino-telemetrix firmware version
@@ -399,48 +403,6 @@ class Telemetrix(threading.Thread):
         self._send_command(command)
         # provide time for the reply
         time.sleep(.1)
-
-    def get_pin_state(self, pin):
-        """
-        This method retrieves a pin state report for the specified pin.
-        Pin modes reported:
-
-        INPUT   = 0x00  # digital input mode
-
-        OUTPUT  = 0x01  # digital output mode
-
-        ANALOG  = 0x02  # analog input mode
-
-        PWM     = 0x03  # digital pin in PWM output mode
-
-        SERVO   = 0x04  # digital pin in Servo output mode
-
-        I2C     = 0x06  # pin included in I2C setup
-
-        STEPPER = 0x08  # digital pin in stepper mode
-
-        PULLUP  = 0x0b  # digital pin in input pullup mode
-
-        SONAR   = 0x0c  # digital pin in SONAR mode
-
-        TONE    = 0x0d  # digital pin in tone mode
-
-        :param pin: Pin of interest
-
-        :returns: pin state report
-
-        """
-        # place pin in a list to keep _send_sysex happy
-        raise NotImplementedError
-
-    # noinspection PyMethodMayBeStatic
-    def get_telemetrix_version(self):
-        """
-        This method retrieves the telemetrix version number
-
-        :returns: telemetrix version number.
-        """
-        return PrivateConstants.TELEMETRIX_VERSION
 
     def loop_back(self, start_character, callback=None):
         """
@@ -527,6 +489,33 @@ class Telemetrix(threading.Thread):
 
         self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)
 
+    def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
+        """
+        Attach a pin to a servo motor
+        :param pin_number: pin
+        :param min_pulse: minimum pulse width
+        :param max_pulse: maximum pulse width
+        """
+        minv = (min_pulse).to_bytes(2, byteorder="big")
+        maxv = (max_pulse).to_bytes(2, byteorder="big")
+
+        command = [PrivateConstants.SERVO_ATTACH, pin_number,
+                   minv[0], minv[1], maxv[0], maxv[1]]
+        self._send_command(command)
+
+    def servo_write(self, pin_number, angle):
+        """
+        Set a servo attached to a pin to a given angle
+        :param pin_number: pin
+        :param angle: angle (0-180)
+        """
+        command = [PrivateConstants.SERVO_WRITE, pin_number, angle]
+        self._send_command(command)
+
+    def servo_detach(self, pin_number):
+        command = [PrivateConstants.SERVO_DETACH, pin_number]
+        self._send_command(command)
+
     def _set_pin_mode(self, pin_number, pin_state, callback=None):
 
         """
@@ -575,9 +564,7 @@ class Telemetrix(threading.Thread):
         """
         This method attempts an orderly shutdown
         If any exceptions are thrown, they are ignored.
-
         """
-
         self.shutdown_flag = True
 
         self._stop_threads()
@@ -604,7 +591,6 @@ class Telemetrix(threading.Thread):
         :param data: message data
 
         """
-
         pin = data[0]
         value = (data[1] << 8) + data[2]
         # set the current value in the pin structure
@@ -622,33 +608,28 @@ class Telemetrix(threading.Thread):
         :param data: digital message
 
         """
-        # print(data)
         pin = data[0]
         value = data[1]
 
         time_stamp = time.time()
-        # try:
         if self.digital_callbacks[pin]:
             message = [PrivateConstants.DIGITAL_REPORT, pin, value, time_stamp]
             self.digital_callbacks[pin](message)
-        # except KeyError:
-        #     pass
 
     def _firmware_message(self, data):
+        """
+        Telemetrix4Arduino firmware version message
+        :param data: data[0] = major number, data[1] = minor number
+        """
+
         self.firmware_version = [data[0], data[1]]
 
     def _i_am_here(self, data):
+        """
+        Reply to are_u_there message
+        :param data: arduino id
+        """
         self.reported_arduino_id = data[0]
-
-    def _pin_state_response(self, data):
-        """
-        This is a private message handler method.
-        It handles pin state query response messages.
-
-        :param data: Pin state message
-
-        """
-        raise NotImplementedError
 
     def _report_debug_data(self, data):
         """
@@ -688,6 +669,13 @@ class Telemetrix(threading.Thread):
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('write fail in _send_command')
+
+    def _servo_unavailable(self, report):
+        """
+        Message if no servos are available for use.
+        :param report: pin number
+        """
+        raise RuntimeError(f'Servo Attach For Pin {report[0]} Failed: No Available Servos')
 
     def _run_threads(self):
         self.run_event.set()
