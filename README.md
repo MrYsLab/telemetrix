@@ -18,7 +18,7 @@ Feature Punch List
 | Digital Input Pullup       	| digital_input_pullup.py 	| Complete 	| Phase 1   |
 | Digital Output             	| blink.py                	| Complete 	| Phase 1   |
 | PWM Output (analog output) 	| fade.py                 	| Complete 	| Phase 1   |
-| Servo                      	|                         	| TBD      	|
+| Servo                      	| servo.py               	| Complete 	| Phase 2   |
 | i2c                        	|                         	| TBD      	|
 | HC-SR04                    	|                         	| TBD      	|
 | DHT                        	|                         	| TBD      	|
