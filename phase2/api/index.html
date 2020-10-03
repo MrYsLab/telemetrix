@@ -1,0 +1,2111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>telemetrix.telemetrix API documentation</title>
+<meta name="description" content="Copyright (c) 2020 Alan Yorinks All rights reserved …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>telemetrix.telemetrix</code></h1>
+</header>
+<section id="section-intro">
+<p>Copyright (c) 2020 Alan Yorinks All rights reserved.</p>
+<p>This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
+Version 3 as published by the Free Software Foundation; either
+or (at your option) any later version.
+This library is distributed in the hope that it will be useful,f
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU
+General Public License for more details.</p>
+<p>You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+02110-1301
+USA</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+ Copyright (c) 2020 Alan Yorinks All rights reserved.
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
+ Version 3 as published by the Free Software Foundation; either
+ or (at your option) any later version.
+ This library is distributed in the hope that it will be useful,f
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+
+ You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+ along with this library; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+&#34;&#34;&#34;
+
+import sys
+import threading
+import time
+from collections import deque
+
+import serial
+# noinspection PyPackageRequirementscd
+from serial.serialutil import SerialException
+# noinspection PyPackageRequirements
+from serial.tools import list_ports
+
+from telemetrix.private_constants import PrivateConstants
+
+
+# noinspection PyPep8,PyMethodMayBeStatic
+class Telemetrix(threading.Thread):
+    &#34;&#34;&#34;
+    This class exposes and implements the telemetrix API.
+    It uses threading to accommodate concurrency.
+    It includes the public API methods as well as
+    a set of private methods.
+
+    &#34;&#34;&#34;
+
+    # noinspection PyPep8,PyPep8,PyPep8
+    def __init__(self, com_port=None, arduino_instance_id=1,
+                 arduino_wait=4, sleep_tune=0.000001,
+                 shutdown_on_exception=True):
+
+        &#34;&#34;&#34;
+
+        :param com_port: e.g. COM3 or /dev/ttyACM0.
+                         Only use if you wish to bypass auto com port
+                         detection.
+
+        :param arduino_instance_id: Match with the value installed on the
+                                    arduino-telemetrix sketch.
+
+        :param arduino_wait: Amount of time to wait for an Arduino to
+                             fully reset itself.
+
+        :param sleep_tune: A tuning parameter (typically not changed by user)
+
+        :param shutdown_on_exception: call shutdown before raising
+                                      a RunTimeError exception, or
+                                      receiving a KeyboardInterrupt exception
+        &#34;&#34;&#34;
+
+        # initialize threading parent
+        threading.Thread.__init__(self)
+
+        # create the threads and set them as daemons so
+        # that they stop when the program is closed
+
+        # create a thread to interpret received serial data
+        self.the_reporter_thread = threading.Thread(target=self._reporter)
+        self.the_reporter_thread.daemon = True
+
+        self.the_data_receive_thread = threading.Thread(target=self._serial_receiver)
+
+        self.the_data_receive_thread.daemon = True
+
+        # flag to allow the reporter and receive threads to run.
+        self.run_event = threading.Event()
+
+        # check to make sure that Python interpreter is version 3.7 or greater
+        python_version = sys.version_info
+        if python_version[0] &gt;= 3:
+            if python_version[1] &gt;= 7:
+                pass
+            else:
+                raise RuntimeError(&#34;ERROR: Python 3.7 or greater is &#34;
+                                   &#34;required for use of this program.&#34;)
+
+        # save input parameters as instance variables
+        self.com_port = com_port
+        self.arduino_instance_id = arduino_instance_id
+        self.arduino_wait = arduino_wait
+        self.sleep_tune = sleep_tune
+        self.shutdown_on_exception = shutdown_on_exception
+
+        # create a deque to receive and process data from the arduino
+        self.the_deque = deque()
+
+        # The report_dispatch dictionary is used to process
+        # incoming report messages by looking up the report message
+        # and executing its associated processing method.
+        # The value following the method is the number of bytes to
+        # retrieve from the deque to process the report (not including report id).
+        self.report_dispatch = {}
+
+        # To add a command to the command dispatch table, append here.
+        self.report_dispatch.update({PrivateConstants.LOOP_COMMAND: [self._report_loop_data, 1]})
+        self.report_dispatch.update({PrivateConstants.DEBUG_PRINT: [self._report_debug_data, 3]})
+        self.report_dispatch.update({PrivateConstants.DIGITAL_REPORT: [self._digital_message, 2]})
+        self.report_dispatch.update({PrivateConstants.ANALOG_REPORT: [self._analog_message, 3]})
+        self.report_dispatch.update({PrivateConstants.FIRMWARE_REPORT: [self._firmware_message, 2]})
+        self.report_dispatch.update({PrivateConstants.I_AM_HERE_REPORT: [self._i_am_here, 1]})
+        self.report_dispatch.update({PrivateConstants.SERVO_UNAVAILABLE: [self._servo_unavailable, 1]})
+
+        # dictionaries to store the callbacks for each pin
+        self.analog_callbacks = {}
+
+        self.digital_callbacks = {}
+
+        # serial port in use
+        self.serial_port = None
+
+        # flag to indicate we are in shutdown mode
+        self.shutdown_flag = False
+
+        # debug loopback callback method
+        self.loop_back_callback = None
+
+        # flag to indicate the start of a new report
+        self.new_report_start = True
+
+        # firmware version to be stored here
+        self.firmware_version = []
+
+        # reported arduino instance id
+        self.reported_arduino_id = []
+
+        self.the_reporter_thread.start()
+        self.the_data_receive_thread.start()
+
+        print(f&#34;Telemetrix:  Version {PrivateConstants.TELEMETRIX_VERSION}\n\n&#34;
+              f&#34;Copyright (c) 2020 Alan Yorinks All Rights Reserved.\n&#34;)
+
+        if not self.com_port:
+            # user did not specify a com_port
+            try:
+                self._find_arduino()
+            except KeyboardInterrupt:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+        else:
+            # com_port specified - set com_port and baud rate
+            try:
+                self._manual_open()
+            except KeyboardInterrupt:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+
+        if self.serial_port:
+            print(f&#34;Arduino compatible device found and connected to {self.serial_port.port}&#34;)
+
+            self.serial_port.reset_input_buffer()
+            self.serial_port.reset_output_buffer()
+
+        # no com_port found - raise a runtime exception
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;No Arduino Found or User Aborted Program&#39;)
+
+        # allow the threads to run
+        self._run_threads()
+        print(f&#39;Waiting for Arduino to reset&#39;)
+        print(f&#39;Reset Complete&#39;)
+
+        print(&#39;Retrieving Arduino ID...&#39;)
+        self._get_arduino_id()
+
+        if self.reported_arduino_id != self.arduino_instance_id:
+            raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
+        print(&#39;Valid Arduino ID Found.&#39;)
+        # get arduino firmware version and print it
+        print(&#39;\nRetrieving arduino-telemetrix firmware ID...&#39;)
+        self._get_firmware_version()
+
+        if not self.firmware_version:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f&#39;Firmata Sketch Firmware Version Not Found&#39;)
+
+        else:
+            print(f&#39;arduino-telemetrix firmware version: {self.firmware_version[0]}.&#39;
+                  f&#39;{self.firmware_version[1]}&#39;)
+
+    def _find_arduino(self):
+        &#34;&#34;&#34;
+        This method will search all potential serial ports for an Arduino
+        containing a sketch that has a matching arduino_instance_id as
+        specified in the input parameters of this class.
+
+        This is used explicitly with the FirmataExpress sketch.
+        &#34;&#34;&#34;
+
+        # a list of serial ports to be checked
+        serial_ports = []
+
+        print(&#39;Opening all potential serial ports...&#39;)
+        the_ports_list = list_ports.comports()
+        for port in the_ports_list:
+            if port.pid is None:
+                continue
+            try:
+                self.serial_port = serial.Serial(port.device, 115200,
+                                                 timeout=1, writeTimeout=0)
+            except SerialException:
+                continue
+            # create a list of serial ports that we opened
+            serial_ports.append(self.serial_port)
+
+            # display to the user
+            print(&#39;\t&#39; + port.device)
+
+            # clear out any possible data in the input buffer
+        # wait for arduino to reset
+        print(f&#39;\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to &#39;
+              &#39;reset...&#39;)
+        # temporary for testing
+        time.sleep(self.arduino_wait)
+
+        # check for correct arduino device
+        self.serial_port.reset_input_buffer()
+        self.serial_port.reset_output_buffer()
+
+    def _manual_open(self):
+        &#34;&#34;&#34;
+        Com port was specified by the user - try to open up that port
+
+        &#34;&#34;&#34;
+        # if port is not found, a serial exception will be thrown
+        try:
+            print(f&#39;Opening {self.com_port}...&#39;)
+            self.serial_port = serial.Serial(self.com_port, 115200,
+                                             timeout=1, writeTimeout=0)
+
+            print(f&#39;\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to &#39;
+                  &#39;reset...&#39;)
+            time.sleep(self.arduino_wait)
+
+            self._get_arduino_id()
+
+            if self.reported_arduino_id != self.arduino_instance_id:
+                raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
+            print(&#39;Valid Arduino ID Found.&#39;)
+            # get arduino firmware version and print it
+            print(&#39;\nRetrieving arduino-telemetrix firmware ID...&#39;)
+            self._get_firmware_version()
+
+            if not self.firmware_version:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(f&#39;Firmata Sketch Firmware Version Not Found&#39;)
+
+            else:
+                print(f&#39;arduino-telemetrix firmware version: {self.firmware_version[0]}.&#39;
+                      f&#39;{self.firmware_version[1]}&#39;)
+        except KeyboardInterrupt:
+            raise RuntimeError(&#39;User Hit Control-C&#39;)
+
+    def analog_read(self, pin):
+        &#34;&#34;&#34;
+        Retrieve the last data update for the specified analog pin.
+
+        :param pin: Analog pin number (ex. A2 is specified as 2)
+
+        :returns: A list = [last value change,  time_stamp]
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def analog_write(self, pin, value):
+        &#34;&#34;&#34;
+        Set the specified pin to the specified value.
+
+        :param pin: arduino pin number
+
+        :param value: pin value (1 or 0)
+
+        &#34;&#34;&#34;
+        command = (PrivateConstants.ANALOG_WRITE, pin, value)
+        self._send_command(command)
+
+    def digital_read(self, pin):
+        &#34;&#34;&#34;
+        Retrieve the last data update for the specified digital pin.
+
+        :param pin: Digital pin number
+
+        :returns: A list = [last value change,  time_stamp]
+
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def digital_write(self, pin, value):
+        &#34;&#34;&#34;
+        Set the specified pin to the specified value.
+
+        :param pin: arduino pin number
+
+        :param value: pin value (1 or 0)
+
+        &#34;&#34;&#34;
+
+        command = (PrivateConstants.DIGITAL_WRITE, pin, value)
+        self._send_command(command)
+
+    def disable_all_reporting(self):
+        &#34;&#34;&#34;
+        Disable reporting for all digital and analog input pins
+        &#34;&#34;&#34;
+        command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DISABLE_ALL, 0)
+        self._send_command(command)
+
+    def disable_analog_reporting(self, pin):
+        &#34;&#34;&#34;
+        Disables analog reporting for a single analog pin.
+
+        :param pin: Analog pin number. For example for A0, the number is 0.
+
+        &#34;&#34;&#34;
+        command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_ANALOG_DISABLE, pin)
+        self._send_command(command)
+
+    def disable_digital_reporting(self, pin):
+        &#34;&#34;&#34;
+        Disables digital reporting. By turning reporting off for this pin,
+        Reporting is disabled for all 8 bits in the &#34;port&#34;
+
+        :param pin: Pin and all pins for this port
+
+        &#34;&#34;&#34;
+        command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_DISABLE, pin)
+        self._send_command(command)
+
+    def enable_analog_reporting(self, pin):
+        &#34;&#34;&#34;
+        Enables analog reporting. This is an alias for set_pin_mode_analog_input.
+        Disabling analog reporting sets the pin to a digital input pin,
+        so we need to provide the callback and differential if we wish
+        to specify it.
+
+        :param pin: Analog pin number. For example for A0, the number is 0.
+
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_ANALOG_ENABLE, pin]
+        self._send_command(command)
+
+    def enable_digital_reporting(self, pin):
+        &#34;&#34;&#34;
+        Enables digital reporting. By turning reporting on for all 8 bits
+        in the &#34;port&#34; - this is part of Firmata&#39;s protocol specification.
+
+        :param pin: Pin and all pins for this port
+        &#34;&#34;&#34;
+
+        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_ENABLE, pin]
+        self._send_command(command)
+
+    def _get_arduino_id(self):
+        &#34;&#34;&#34;
+        Retrieve arduino-telemetrix arduino id
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.ARE_U_THERE]
+        self._send_command(command)
+        # provide time for the reply
+        time.sleep(.1)
+
+    def _get_firmware_version(self):
+        &#34;&#34;&#34;
+        This method retrieves the
+        arduino-telemetrix firmware version
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.GET_FIRMWARE_VERSION]
+        self._send_command(command)
+        # provide time for the reply
+        time.sleep(.1)
+
+    def loop_back(self, start_character, callback=None):
+        &#34;&#34;&#34;
+        This is a debugging method to send a character to the
+        Arduino device, and have the device loop it back.
+
+        :param start_character: The character to loop back. It should be
+                                an integer.
+
+        :param callback: Looped back character will appear in the callback method
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.LOOP_COMMAND, ord(start_character)]
+        self.loop_back_callback = callback
+        self._send_command(command)
+
+    def set_pin_mode_analog_output(self, pin_number):
+        &#34;&#34;&#34;
+        Set a pin as a pwm (analog output) pin.
+
+        :param pin_number:arduino pin number
+
+        &#34;&#34;&#34;
+        self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)
+
+    def set_pin_mode_analog_input(self, pin_number, callback=None):
+        &#34;&#34;&#34;
+        Set a pin as an analog input.
+
+        :param pin_number: arduino pin number
+
+        :param callback: callback function
+
+
+        callback returns a data list:
+
+        [pin_type, pin_number, pin_value, raw_time_stamp]
+
+        The pin_type for analog input pins = 2
+
+        &#34;&#34;&#34;
+        self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG,
+                           callback=callback)
+
+    def set_pin_mode_digital_input(self, pin_number, callback=None):
+        &#34;&#34;&#34;
+        Set a pin as a digital input.
+
+        :param pin_number: arduino pin number
+
+        :param callback: callback function
+
+
+        callback returns a data list:
+
+        [pin_type, pin_number, pin_value, raw_time_stamp]
+
+        The pin_type for digital input pins = 0
+
+        &#34;&#34;&#34;
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback)
+
+    def set_pin_mode_digital_input_pullup(self, pin_number, callback=None):
+        &#34;&#34;&#34;
+        Set a pin as a digital input with pullup enabled.
+
+        :param pin_number: arduino pin number
+
+        :param callback: callback function
+
+
+        callback returns a data list:
+
+        [pin_type, pin_number, pin_value, raw_time_stamp]
+
+        The pin_type for digital input pins with pullups enabled = 11
+
+        &#34;&#34;&#34;
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback)
+
+    def set_pin_mode_digital_output(self, pin_number):
+        &#34;&#34;&#34;
+        Set a pin as a digital output pin.
+
+        :param pin_number: arduino pin number
+        &#34;&#34;&#34;
+
+        self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)
+
+    def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
+        &#34;&#34;&#34;
+
+        Attach a pin to a servo motor
+
+        :param pin_number: pin
+
+        :param min_pulse: minimum pulse width
+
+        :param max_pulse: maximum pulse width
+
+        &#34;&#34;&#34;
+        minv = (min_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+        maxv = (max_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+
+        command = [PrivateConstants.SERVO_ATTACH, pin_number,
+                   minv[0], minv[1], maxv[0], maxv[1]]
+        self._send_command(command)
+
+    def servo_write(self, pin_number, angle):
+        &#34;&#34;&#34;
+
+        Set a servo attached to a pin to a given angle.
+
+        :param pin_number: pin
+
+        :param angle: angle (0-180)
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.SERVO_WRITE, pin_number, angle]
+        self._send_command(command)
+
+    def servo_detach(self, pin_number):
+        &#34;&#34;&#34;
+        Detach a servo for reuse
+
+        :param pin_number: attached pin
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.SERVO_DETACH, pin_number]
+        self._send_command(command)
+
+    def _set_pin_mode(self, pin_number, pin_state, callback=None):
+
+        &#34;&#34;&#34;
+        A private method to set the various pin modes.
+
+        :param pin_number: arduino pin number
+
+        :param pin_state: INPUT/OUTPUT/ANALOG/PWM/PULLUP
+                         For SERVO use: set_pin_mode_servo
+                         For DHT   use: set_pin_mode_dht
+
+        :param callback: A reference to a call back function to be
+                         called when pin data value changes
+
+        &#34;&#34;&#34;
+        # command = []
+        if callback:
+            if pin_state == PrivateConstants.AT_INPUT:
+                self.digital_callbacks[pin_number] = callback
+            elif pin_state == PrivateConstants.AT_INPUT_PULLUP:
+                self.digital_callbacks[pin_number] = callback
+            elif pin_state == PrivateConstants.AT_ANALOG:
+                self.analog_callbacks[pin_number] = callback
+            else:
+                print(&#39;{} {}&#39;.format(&#39;set_pin_mode: callback ignored for &#39;
+                                     &#39;pin state:&#39;, pin_state))
+
+        if pin_state == PrivateConstants.AT_INPUT:
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_INPUT, 1]
+
+        elif pin_state == PrivateConstants.AT_INPUT_PULLUP:
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_INPUT_PULLUP, 1]
+
+        elif pin_state == PrivateConstants.AT_OUTPUT:
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_OUTPUT, 0, 0]
+
+        elif pin_state == PrivateConstants.AT_ANALOG:
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_ANALOG, 1]
+        else:
+            raise RuntimeError(&#39;Unknown pin state&#39;)
+
+        if command:
+            self._send_command(command)
+
+    def shutdown(self):
+        &#34;&#34;&#34;
+        This method attempts an orderly shutdown
+        If any exceptions are thrown, they are ignored.
+        &#34;&#34;&#34;
+        self.shutdown_flag = True
+
+        self._stop_threads()
+
+        try:
+            self.disable_all_reporting()
+
+            self.serial_port.reset_input_buffer()
+            self.serial_port.close()
+
+        except (RuntimeError, SerialException, OSError):
+            # ignore error on shutdown
+            pass
+
+    &#39;&#39;&#39;
+    report message handlers
+    &#39;&#39;&#39;
+
+    def _analog_message(self, data):
+        &#34;&#34;&#34;
+        This is a private message handler method.
+        It is a message handler for analog messages.
+
+        :param data: message data
+
+        &#34;&#34;&#34;
+        pin = data[0]
+        value = (data[1] &lt;&lt; 8) + data[2]
+        # set the current value in the pin structure
+        time_stamp = time.time()
+        # self.digital_pins[pin].event_time = time_stamp
+        if self.analog_callbacks[pin]:
+            message = [PrivateConstants.ANALOG_REPORT, pin, value, time_stamp]
+            self.analog_callbacks[pin](message)
+
+    def _digital_message(self, data):
+        &#34;&#34;&#34;
+        This is a private message handler method.
+        It is a message handler for Digital Messages.
+
+        :param data: digital message
+
+        &#34;&#34;&#34;
+        pin = data[0]
+        value = data[1]
+
+        time_stamp = time.time()
+        if self.digital_callbacks[pin]:
+            message = [PrivateConstants.DIGITAL_REPORT, pin, value, time_stamp]
+            self.digital_callbacks[pin](message)
+
+    def _firmware_message(self, data):
+        &#34;&#34;&#34;
+        Telemetrix4Arduino firmware version message
+        :param data: data[0] = major number, data[1] = minor number
+        &#34;&#34;&#34;
+
+        self.firmware_version = [data[0], data[1]]
+
+    def _i_am_here(self, data):
+        &#34;&#34;&#34;
+        Reply to are_u_there message
+        :param data: arduino id
+        &#34;&#34;&#34;
+        self.reported_arduino_id = data[0]
+
+    def _report_debug_data(self, data):
+        &#34;&#34;&#34;
+        Print debug data sent from Arduino
+        :param data: data[0] is a byte followed by 2
+                     bytes that comprise an integer
+        :return:
+        &#34;&#34;&#34;
+        value = (data[1] &lt;&lt; 8) + data[2]
+        print(f&#39;DEBUG ID: {data[0]} Value: {value}&#39;)
+
+    def _report_loop_data(self, data):
+        &#34;&#34;&#34;
+        Print data that was looped back
+        :param data: byte of loop back data
+        :return:
+        &#34;&#34;&#34;
+        if self.loop_back_callback:
+            self.loop_back_callback(data)
+
+    def _send_command(self, command):
+        &#34;&#34;&#34;
+        This is a private utility method.
+        The method sends a non-sysex command to Firmata.
+
+        :param command:  command data
+
+        :returns: number of bytes sent
+        &#34;&#34;&#34;
+        # send_message = &#34;&#34;
+        # print(&#39;command: &#39;, command)
+        send_message = bytes(command)
+        try:
+            self.serial_port.write(send_message)
+            # print(send_message)
+        except SerialException:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;write fail in _send_command&#39;)
+
+    def _servo_unavailable(self, report):
+        &#34;&#34;&#34;
+        Message if no servos are available for use.
+        :param report: pin number
+        &#34;&#34;&#34;
+        raise RuntimeError(f&#39;Servo Attach For Pin {report[0]} Failed: No Available Servos&#39;)
+
+    def _run_threads(self):
+        self.run_event.set()
+
+    def _is_running(self):
+        return self.run_event.is_set()
+
+    def _stop_threads(self):
+        self.run_event.clear()
+
+    def _reporter(self):
+        &#34;&#34;&#34;
+        This is the reporter thread. It continuously pulls data from
+        the deque. When a full message is detected, that message is
+        processed.
+        &#34;&#34;&#34;
+        self.run_event.wait()
+        num_args = 0
+        method = None
+
+        while self._is_running() and not self.shutdown_flag:
+            if len(self.the_deque):
+
+                # get next byte from the deque and process it
+                data = self.the_deque.popleft()
+                # print(&#39;data &#39;, data)
+
+                # this list will be populated with the received data for the report
+                response_data = []
+
+                # if self.new_report_start:
+                dispatch_entry = self.report_dispatch.get(data)
+
+                # this calls the method retrieved from the dispatch table
+                try:
+                    method = dispatch_entry[0]
+                except TypeError:
+                    pass
+
+                # get the number of parameters that this command provides
+                try:
+                    num_args = dispatch_entry[1]
+                except TypeError:
+                    pass
+
+                # look at the number of args that the selected method requires
+                # now get that number of bytes to pass to the called method
+
+                for i in range(num_args):
+                    while len(self.the_deque) == 0:
+                        pass
+                    data = self.the_deque.popleft()
+                    response_data.append(data)
+                    # go execute the command with the argument list
+                method(response_data)
+                continue
+            else:
+                time.sleep(self.sleep_tune)
+
+    def _serial_receiver(self):
+        &#34;&#34;&#34;
+        Thread to continuously check for incoming data.
+        When a byte comes in, place it onto the deque.
+        &#34;&#34;&#34;
+        self.run_event.wait()
+
+        while self._is_running() and not self.shutdown_flag:
+            # we can get an OSError: [Errno9] Bad file descriptor when shutting down
+            # just ignore it
+            try:
+                if self.serial_port.inWaiting():
+                    c = self.serial_port.read()
+                    self.the_deque.append(ord(c))
+                    # print(ord(c))
+                else:
+                    time.sleep(self.sleep_tune)
+                    # continue
+            except OSError:
+                pass</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="telemetrix.telemetrix.Telemetrix"><code class="flex name class">
+<span>class <span class="ident">Telemetrix</span></span>
+<span>(</span><span>com_port=None, arduino_instance_id=1, arduino_wait=4, sleep_tune=1e-06, shutdown_on_exception=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This class exposes and implements the telemetrix API.
+It uses threading to accommodate concurrency.
+It includes the public API methods as well as
+a set of private methods.</p>
+<p>:param com_port: e.g. COM3 or /dev/ttyACM0.
+Only use if you wish to bypass auto com port
+detection.</p>
+<p>:param arduino_instance_id: Match with the value installed on the
+arduino-telemetrix sketch.</p>
+<p>:param arduino_wait: Amount of time to wait for an Arduino to
+fully reset itself.</p>
+<p>:param sleep_tune: A tuning parameter (typically not changed by user)</p>
+<p>:param shutdown_on_exception: call shutdown before raising
+a RunTimeError exception, or
+receiving a KeyboardInterrupt exception</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Telemetrix(threading.Thread):
+    &#34;&#34;&#34;
+    This class exposes and implements the telemetrix API.
+    It uses threading to accommodate concurrency.
+    It includes the public API methods as well as
+    a set of private methods.
+
+    &#34;&#34;&#34;
+
+    # noinspection PyPep8,PyPep8,PyPep8
+    def __init__(self, com_port=None, arduino_instance_id=1,
+                 arduino_wait=4, sleep_tune=0.000001,
+                 shutdown_on_exception=True):
+
+        &#34;&#34;&#34;
+
+        :param com_port: e.g. COM3 or /dev/ttyACM0.
+                         Only use if you wish to bypass auto com port
+                         detection.
+
+        :param arduino_instance_id: Match with the value installed on the
+                                    arduino-telemetrix sketch.
+
+        :param arduino_wait: Amount of time to wait for an Arduino to
+                             fully reset itself.
+
+        :param sleep_tune: A tuning parameter (typically not changed by user)
+
+        :param shutdown_on_exception: call shutdown before raising
+                                      a RunTimeError exception, or
+                                      receiving a KeyboardInterrupt exception
+        &#34;&#34;&#34;
+
+        # initialize threading parent
+        threading.Thread.__init__(self)
+
+        # create the threads and set them as daemons so
+        # that they stop when the program is closed
+
+        # create a thread to interpret received serial data
+        self.the_reporter_thread = threading.Thread(target=self._reporter)
+        self.the_reporter_thread.daemon = True
+
+        self.the_data_receive_thread = threading.Thread(target=self._serial_receiver)
+
+        self.the_data_receive_thread.daemon = True
+
+        # flag to allow the reporter and receive threads to run.
+        self.run_event = threading.Event()
+
+        # check to make sure that Python interpreter is version 3.7 or greater
+        python_version = sys.version_info
+        if python_version[0] &gt;= 3:
+            if python_version[1] &gt;= 7:
+                pass
+            else:
+                raise RuntimeError(&#34;ERROR: Python 3.7 or greater is &#34;
+                                   &#34;required for use of this program.&#34;)
+
+        # save input parameters as instance variables
+        self.com_port = com_port
+        self.arduino_instance_id = arduino_instance_id
+        self.arduino_wait = arduino_wait
+        self.sleep_tune = sleep_tune
+        self.shutdown_on_exception = shutdown_on_exception
+
+        # create a deque to receive and process data from the arduino
+        self.the_deque = deque()
+
+        # The report_dispatch dictionary is used to process
+        # incoming report messages by looking up the report message
+        # and executing its associated processing method.
+        # The value following the method is the number of bytes to
+        # retrieve from the deque to process the report (not including report id).
+        self.report_dispatch = {}
+
+        # To add a command to the command dispatch table, append here.
+        self.report_dispatch.update({PrivateConstants.LOOP_COMMAND: [self._report_loop_data, 1]})
+        self.report_dispatch.update({PrivateConstants.DEBUG_PRINT: [self._report_debug_data, 3]})
+        self.report_dispatch.update({PrivateConstants.DIGITAL_REPORT: [self._digital_message, 2]})
+        self.report_dispatch.update({PrivateConstants.ANALOG_REPORT: [self._analog_message, 3]})
+        self.report_dispatch.update({PrivateConstants.FIRMWARE_REPORT: [self._firmware_message, 2]})
+        self.report_dispatch.update({PrivateConstants.I_AM_HERE_REPORT: [self._i_am_here, 1]})
+        self.report_dispatch.update({PrivateConstants.SERVO_UNAVAILABLE: [self._servo_unavailable, 1]})
+
+        # dictionaries to store the callbacks for each pin
+        self.analog_callbacks = {}
+
+        self.digital_callbacks = {}
+
+        # serial port in use
+        self.serial_port = None
+
+        # flag to indicate we are in shutdown mode
+        self.shutdown_flag = False
+
+        # debug loopback callback method
+        self.loop_back_callback = None
+
+        # flag to indicate the start of a new report
+        self.new_report_start = True
+
+        # firmware version to be stored here
+        self.firmware_version = []
+
+        # reported arduino instance id
+        self.reported_arduino_id = []
+
+        self.the_reporter_thread.start()
+        self.the_data_receive_thread.start()
+
+        print(f&#34;Telemetrix:  Version {PrivateConstants.TELEMETRIX_VERSION}\n\n&#34;
+              f&#34;Copyright (c) 2020 Alan Yorinks All Rights Reserved.\n&#34;)
+
+        if not self.com_port:
+            # user did not specify a com_port
+            try:
+                self._find_arduino()
+            except KeyboardInterrupt:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+        else:
+            # com_port specified - set com_port and baud rate
+            try:
+                self._manual_open()
+            except KeyboardInterrupt:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+
+        if self.serial_port:
+            print(f&#34;Arduino compatible device found and connected to {self.serial_port.port}&#34;)
+
+            self.serial_port.reset_input_buffer()
+            self.serial_port.reset_output_buffer()
+
+        # no com_port found - raise a runtime exception
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;No Arduino Found or User Aborted Program&#39;)
+
+        # allow the threads to run
+        self._run_threads()
+        print(f&#39;Waiting for Arduino to reset&#39;)
+        print(f&#39;Reset Complete&#39;)
+
+        print(&#39;Retrieving Arduino ID...&#39;)
+        self._get_arduino_id()
+
+        if self.reported_arduino_id != self.arduino_instance_id:
+            raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
+        print(&#39;Valid Arduino ID Found.&#39;)
+        # get arduino firmware version and print it
+        print(&#39;\nRetrieving arduino-telemetrix firmware ID...&#39;)
+        self._get_firmware_version()
+
+        if not self.firmware_version:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f&#39;Firmata Sketch Firmware Version Not Found&#39;)
+
+        else:
+            print(f&#39;arduino-telemetrix firmware version: {self.firmware_version[0]}.&#39;
+                  f&#39;{self.firmware_version[1]}&#39;)
+
+    def _find_arduino(self):
+        &#34;&#34;&#34;
+        This method will search all potential serial ports for an Arduino
+        containing a sketch that has a matching arduino_instance_id as
+        specified in the input parameters of this class.
+
+        This is used explicitly with the FirmataExpress sketch.
+        &#34;&#34;&#34;
+
+        # a list of serial ports to be checked
+        serial_ports = []
+
+        print(&#39;Opening all potential serial ports...&#39;)
+        the_ports_list = list_ports.comports()
+        for port in the_ports_list:
+            if port.pid is None:
+                continue
+            try:
+                self.serial_port = serial.Serial(port.device, 115200,
+                                                 timeout=1, writeTimeout=0)
+            except SerialException:
+                continue
+            # create a list of serial ports that we opened
+            serial_ports.append(self.serial_port)
+
+            # display to the user
+            print(&#39;\t&#39; + port.device)
+
+            # clear out any possible data in the input buffer
+        # wait for arduino to reset
+        print(f&#39;\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to &#39;
+              &#39;reset...&#39;)
+        # temporary for testing
+        time.sleep(self.arduino_wait)
+
+        # check for correct arduino device
+        self.serial_port.reset_input_buffer()
+        self.serial_port.reset_output_buffer()
+
+    def _manual_open(self):
+        &#34;&#34;&#34;
+        Com port was specified by the user - try to open up that port
+
+        &#34;&#34;&#34;
+        # if port is not found, a serial exception will be thrown
+        try:
+            print(f&#39;Opening {self.com_port}...&#39;)
+            self.serial_port = serial.Serial(self.com_port, 115200,
+                                             timeout=1, writeTimeout=0)
+
+            print(f&#39;\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to &#39;
+                  &#39;reset...&#39;)
+            time.sleep(self.arduino_wait)
+
+            self._get_arduino_id()
+
+            if self.reported_arduino_id != self.arduino_instance_id:
+                raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
+            print(&#39;Valid Arduino ID Found.&#39;)
+            # get arduino firmware version and print it
+            print(&#39;\nRetrieving arduino-telemetrix firmware ID...&#39;)
+            self._get_firmware_version()
+
+            if not self.firmware_version:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(f&#39;Firmata Sketch Firmware Version Not Found&#39;)
+
+            else:
+                print(f&#39;arduino-telemetrix firmware version: {self.firmware_version[0]}.&#39;
+                      f&#39;{self.firmware_version[1]}&#39;)
+        except KeyboardInterrupt:
+            raise RuntimeError(&#39;User Hit Control-C&#39;)
+
+    def analog_read(self, pin):
+        &#34;&#34;&#34;
+        Retrieve the last data update for the specified analog pin.
+
+        :param pin: Analog pin number (ex. A2 is specified as 2)
+
+        :returns: A list = [last value change,  time_stamp]
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def analog_write(self, pin, value):
+        &#34;&#34;&#34;
+        Set the specified pin to the specified value.
+
+        :param pin: arduino pin number
+
+        :param value: pin value (1 or 0)
+
+        &#34;&#34;&#34;
+        command = (PrivateConstants.ANALOG_WRITE, pin, value)
+        self._send_command(command)
+
+    def digital_read(self, pin):
+        &#34;&#34;&#34;
+        Retrieve the last data update for the specified digital pin.
+
+        :param pin: Digital pin number
+
+        :returns: A list = [last value change,  time_stamp]
+
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def digital_write(self, pin, value):
+        &#34;&#34;&#34;
+        Set the specified pin to the specified value.
+
+        :param pin: arduino pin number
+
+        :param value: pin value (1 or 0)
+
+        &#34;&#34;&#34;
+
+        command = (PrivateConstants.DIGITAL_WRITE, pin, value)
+        self._send_command(command)
+
+    def disable_all_reporting(self):
+        &#34;&#34;&#34;
+        Disable reporting for all digital and analog input pins
+        &#34;&#34;&#34;
+        command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DISABLE_ALL, 0)
+        self._send_command(command)
+
+    def disable_analog_reporting(self, pin):
+        &#34;&#34;&#34;
+        Disables analog reporting for a single analog pin.
+
+        :param pin: Analog pin number. For example for A0, the number is 0.
+
+        &#34;&#34;&#34;
+        command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_ANALOG_DISABLE, pin)
+        self._send_command(command)
+
+    def disable_digital_reporting(self, pin):
+        &#34;&#34;&#34;
+        Disables digital reporting. By turning reporting off for this pin,
+        Reporting is disabled for all 8 bits in the &#34;port&#34;
+
+        :param pin: Pin and all pins for this port
+
+        &#34;&#34;&#34;
+        command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_DISABLE, pin)
+        self._send_command(command)
+
+    def enable_analog_reporting(self, pin):
+        &#34;&#34;&#34;
+        Enables analog reporting. This is an alias for set_pin_mode_analog_input.
+        Disabling analog reporting sets the pin to a digital input pin,
+        so we need to provide the callback and differential if we wish
+        to specify it.
+
+        :param pin: Analog pin number. For example for A0, the number is 0.
+
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_ANALOG_ENABLE, pin]
+        self._send_command(command)
+
+    def enable_digital_reporting(self, pin):
+        &#34;&#34;&#34;
+        Enables digital reporting. By turning reporting on for all 8 bits
+        in the &#34;port&#34; - this is part of Firmata&#39;s protocol specification.
+
+        :param pin: Pin and all pins for this port
+        &#34;&#34;&#34;
+
+        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_ENABLE, pin]
+        self._send_command(command)
+
+    def _get_arduino_id(self):
+        &#34;&#34;&#34;
+        Retrieve arduino-telemetrix arduino id
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.ARE_U_THERE]
+        self._send_command(command)
+        # provide time for the reply
+        time.sleep(.1)
+
+    def _get_firmware_version(self):
+        &#34;&#34;&#34;
+        This method retrieves the
+        arduino-telemetrix firmware version
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.GET_FIRMWARE_VERSION]
+        self._send_command(command)
+        # provide time for the reply
+        time.sleep(.1)
+
+    def loop_back(self, start_character, callback=None):
+        &#34;&#34;&#34;
+        This is a debugging method to send a character to the
+        Arduino device, and have the device loop it back.
+
+        :param start_character: The character to loop back. It should be
+                                an integer.
+
+        :param callback: Looped back character will appear in the callback method
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.LOOP_COMMAND, ord(start_character)]
+        self.loop_back_callback = callback
+        self._send_command(command)
+
+    def set_pin_mode_analog_output(self, pin_number):
+        &#34;&#34;&#34;
+        Set a pin as a pwm (analog output) pin.
+
+        :param pin_number:arduino pin number
+
+        &#34;&#34;&#34;
+        self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)
+
+    def set_pin_mode_analog_input(self, pin_number, callback=None):
+        &#34;&#34;&#34;
+        Set a pin as an analog input.
+
+        :param pin_number: arduino pin number
+
+        :param callback: callback function
+
+
+        callback returns a data list:
+
+        [pin_type, pin_number, pin_value, raw_time_stamp]
+
+        The pin_type for analog input pins = 2
+
+        &#34;&#34;&#34;
+        self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG,
+                           callback=callback)
+
+    def set_pin_mode_digital_input(self, pin_number, callback=None):
+        &#34;&#34;&#34;
+        Set a pin as a digital input.
+
+        :param pin_number: arduino pin number
+
+        :param callback: callback function
+
+
+        callback returns a data list:
+
+        [pin_type, pin_number, pin_value, raw_time_stamp]
+
+        The pin_type for digital input pins = 0
+
+        &#34;&#34;&#34;
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback)
+
+    def set_pin_mode_digital_input_pullup(self, pin_number, callback=None):
+        &#34;&#34;&#34;
+        Set a pin as a digital input with pullup enabled.
+
+        :param pin_number: arduino pin number
+
+        :param callback: callback function
+
+
+        callback returns a data list:
+
+        [pin_type, pin_number, pin_value, raw_time_stamp]
+
+        The pin_type for digital input pins with pullups enabled = 11
+
+        &#34;&#34;&#34;
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback)
+
+    def set_pin_mode_digital_output(self, pin_number):
+        &#34;&#34;&#34;
+        Set a pin as a digital output pin.
+
+        :param pin_number: arduino pin number
+        &#34;&#34;&#34;
+
+        self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)
+
+    def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
+        &#34;&#34;&#34;
+
+        Attach a pin to a servo motor
+
+        :param pin_number: pin
+
+        :param min_pulse: minimum pulse width
+
+        :param max_pulse: maximum pulse width
+
+        &#34;&#34;&#34;
+        minv = (min_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+        maxv = (max_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+
+        command = [PrivateConstants.SERVO_ATTACH, pin_number,
+                   minv[0], minv[1], maxv[0], maxv[1]]
+        self._send_command(command)
+
+    def servo_write(self, pin_number, angle):
+        &#34;&#34;&#34;
+
+        Set a servo attached to a pin to a given angle.
+
+        :param pin_number: pin
+
+        :param angle: angle (0-180)
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.SERVO_WRITE, pin_number, angle]
+        self._send_command(command)
+
+    def servo_detach(self, pin_number):
+        &#34;&#34;&#34;
+        Detach a servo for reuse
+
+        :param pin_number: attached pin
+
+        &#34;&#34;&#34;
+        command = [PrivateConstants.SERVO_DETACH, pin_number]
+        self._send_command(command)
+
+    def _set_pin_mode(self, pin_number, pin_state, callback=None):
+
+        &#34;&#34;&#34;
+        A private method to set the various pin modes.
+
+        :param pin_number: arduino pin number
+
+        :param pin_state: INPUT/OUTPUT/ANALOG/PWM/PULLUP
+                         For SERVO use: set_pin_mode_servo
+                         For DHT   use: set_pin_mode_dht
+
+        :param callback: A reference to a call back function to be
+                         called when pin data value changes
+
+        &#34;&#34;&#34;
+        # command = []
+        if callback:
+            if pin_state == PrivateConstants.AT_INPUT:
+                self.digital_callbacks[pin_number] = callback
+            elif pin_state == PrivateConstants.AT_INPUT_PULLUP:
+                self.digital_callbacks[pin_number] = callback
+            elif pin_state == PrivateConstants.AT_ANALOG:
+                self.analog_callbacks[pin_number] = callback
+            else:
+                print(&#39;{} {}&#39;.format(&#39;set_pin_mode: callback ignored for &#39;
+                                     &#39;pin state:&#39;, pin_state))
+
+        if pin_state == PrivateConstants.AT_INPUT:
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_INPUT, 1]
+
+        elif pin_state == PrivateConstants.AT_INPUT_PULLUP:
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_INPUT_PULLUP, 1]
+
+        elif pin_state == PrivateConstants.AT_OUTPUT:
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_OUTPUT, 0, 0]
+
+        elif pin_state == PrivateConstants.AT_ANALOG:
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_ANALOG, 1]
+        else:
+            raise RuntimeError(&#39;Unknown pin state&#39;)
+
+        if command:
+            self._send_command(command)
+
+    def shutdown(self):
+        &#34;&#34;&#34;
+        This method attempts an orderly shutdown
+        If any exceptions are thrown, they are ignored.
+        &#34;&#34;&#34;
+        self.shutdown_flag = True
+
+        self._stop_threads()
+
+        try:
+            self.disable_all_reporting()
+
+            self.serial_port.reset_input_buffer()
+            self.serial_port.close()
+
+        except (RuntimeError, SerialException, OSError):
+            # ignore error on shutdown
+            pass
+
+    &#39;&#39;&#39;
+    report message handlers
+    &#39;&#39;&#39;
+
+    def _analog_message(self, data):
+        &#34;&#34;&#34;
+        This is a private message handler method.
+        It is a message handler for analog messages.
+
+        :param data: message data
+
+        &#34;&#34;&#34;
+        pin = data[0]
+        value = (data[1] &lt;&lt; 8) + data[2]
+        # set the current value in the pin structure
+        time_stamp = time.time()
+        # self.digital_pins[pin].event_time = time_stamp
+        if self.analog_callbacks[pin]:
+            message = [PrivateConstants.ANALOG_REPORT, pin, value, time_stamp]
+            self.analog_callbacks[pin](message)
+
+    def _digital_message(self, data):
+        &#34;&#34;&#34;
+        This is a private message handler method.
+        It is a message handler for Digital Messages.
+
+        :param data: digital message
+
+        &#34;&#34;&#34;
+        pin = data[0]
+        value = data[1]
+
+        time_stamp = time.time()
+        if self.digital_callbacks[pin]:
+            message = [PrivateConstants.DIGITAL_REPORT, pin, value, time_stamp]
+            self.digital_callbacks[pin](message)
+
+    def _firmware_message(self, data):
+        &#34;&#34;&#34;
+        Telemetrix4Arduino firmware version message
+        :param data: data[0] = major number, data[1] = minor number
+        &#34;&#34;&#34;
+
+        self.firmware_version = [data[0], data[1]]
+
+    def _i_am_here(self, data):
+        &#34;&#34;&#34;
+        Reply to are_u_there message
+        :param data: arduino id
+        &#34;&#34;&#34;
+        self.reported_arduino_id = data[0]
+
+    def _report_debug_data(self, data):
+        &#34;&#34;&#34;
+        Print debug data sent from Arduino
+        :param data: data[0] is a byte followed by 2
+                     bytes that comprise an integer
+        :return:
+        &#34;&#34;&#34;
+        value = (data[1] &lt;&lt; 8) + data[2]
+        print(f&#39;DEBUG ID: {data[0]} Value: {value}&#39;)
+
+    def _report_loop_data(self, data):
+        &#34;&#34;&#34;
+        Print data that was looped back
+        :param data: byte of loop back data
+        :return:
+        &#34;&#34;&#34;
+        if self.loop_back_callback:
+            self.loop_back_callback(data)
+
+    def _send_command(self, command):
+        &#34;&#34;&#34;
+        This is a private utility method.
+        The method sends a non-sysex command to Firmata.
+
+        :param command:  command data
+
+        :returns: number of bytes sent
+        &#34;&#34;&#34;
+        # send_message = &#34;&#34;
+        # print(&#39;command: &#39;, command)
+        send_message = bytes(command)
+        try:
+            self.serial_port.write(send_message)
+            # print(send_message)
+        except SerialException:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;write fail in _send_command&#39;)
+
+    def _servo_unavailable(self, report):
+        &#34;&#34;&#34;
+        Message if no servos are available for use.
+        :param report: pin number
+        &#34;&#34;&#34;
+        raise RuntimeError(f&#39;Servo Attach For Pin {report[0]} Failed: No Available Servos&#39;)
+
+    def _run_threads(self):
+        self.run_event.set()
+
+    def _is_running(self):
+        return self.run_event.is_set()
+
+    def _stop_threads(self):
+        self.run_event.clear()
+
+    def _reporter(self):
+        &#34;&#34;&#34;
+        This is the reporter thread. It continuously pulls data from
+        the deque. When a full message is detected, that message is
+        processed.
+        &#34;&#34;&#34;
+        self.run_event.wait()
+        num_args = 0
+        method = None
+
+        while self._is_running() and not self.shutdown_flag:
+            if len(self.the_deque):
+
+                # get next byte from the deque and process it
+                data = self.the_deque.popleft()
+                # print(&#39;data &#39;, data)
+
+                # this list will be populated with the received data for the report
+                response_data = []
+
+                # if self.new_report_start:
+                dispatch_entry = self.report_dispatch.get(data)
+
+                # this calls the method retrieved from the dispatch table
+                try:
+                    method = dispatch_entry[0]
+                except TypeError:
+                    pass
+
+                # get the number of parameters that this command provides
+                try:
+                    num_args = dispatch_entry[1]
+                except TypeError:
+                    pass
+
+                # look at the number of args that the selected method requires
+                # now get that number of bytes to pass to the called method
+
+                for i in range(num_args):
+                    while len(self.the_deque) == 0:
+                        pass
+                    data = self.the_deque.popleft()
+                    response_data.append(data)
+                    # go execute the command with the argument list
+                method(response_data)
+                continue
+            else:
+                time.sleep(self.sleep_tune)
+
+    def _serial_receiver(self):
+        &#34;&#34;&#34;
+        Thread to continuously check for incoming data.
+        When a byte comes in, place it onto the deque.
+        &#34;&#34;&#34;
+        self.run_event.wait()
+
+        while self._is_running() and not self.shutdown_flag:
+            # we can get an OSError: [Errno9] Bad file descriptor when shutting down
+            # just ignore it
+            try:
+                if self.serial_port.inWaiting():
+                    c = self.serial_port.read()
+                    self.the_deque.append(ord(c))
+                    # print(ord(c))
+                else:
+                    time.sleep(self.sleep_tune)
+                    # continue
+            except OSError:
+                pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>threading.Thread</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="telemetrix.telemetrix.Telemetrix.analog_read"><code class="name flex">
+<span>def <span class="ident">analog_read</span></span>(<span>self, pin)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieve the last data update for the specified analog pin.</p>
+<p>:param pin: Analog pin number (ex. A2 is specified as 2)</p>
+<p>:returns: A list = [last value change,
+time_stamp]</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analog_read(self, pin):
+    &#34;&#34;&#34;
+    Retrieve the last data update for the specified analog pin.
+
+    :param pin: Analog pin number (ex. A2 is specified as 2)
+
+    :returns: A list = [last value change,  time_stamp]
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.analog_write"><code class="name flex">
+<span>def <span class="ident">analog_write</span></span>(<span>self, pin, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the specified pin to the specified value.</p>
+<p>:param pin: arduino pin number</p>
+<p>:param value: pin value (1 or 0)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analog_write(self, pin, value):
+    &#34;&#34;&#34;
+    Set the specified pin to the specified value.
+
+    :param pin: arduino pin number
+
+    :param value: pin value (1 or 0)
+
+    &#34;&#34;&#34;
+    command = (PrivateConstants.ANALOG_WRITE, pin, value)
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.digital_read"><code class="name flex">
+<span>def <span class="ident">digital_read</span></span>(<span>self, pin)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieve the last data update for the specified digital pin.</p>
+<p>:param pin: Digital pin number</p>
+<p>:returns: A list = [last value change,
+time_stamp]</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def digital_read(self, pin):
+    &#34;&#34;&#34;
+    Retrieve the last data update for the specified digital pin.
+
+    :param pin: Digital pin number
+
+    :returns: A list = [last value change,  time_stamp]
+
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.digital_write"><code class="name flex">
+<span>def <span class="ident">digital_write</span></span>(<span>self, pin, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the specified pin to the specified value.</p>
+<p>:param pin: arduino pin number</p>
+<p>:param value: pin value (1 or 0)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def digital_write(self, pin, value):
+    &#34;&#34;&#34;
+    Set the specified pin to the specified value.
+
+    :param pin: arduino pin number
+
+    :param value: pin value (1 or 0)
+
+    &#34;&#34;&#34;
+
+    command = (PrivateConstants.DIGITAL_WRITE, pin, value)
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.disable_all_reporting"><code class="name flex">
+<span>def <span class="ident">disable_all_reporting</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Disable reporting for all digital and analog input pins</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def disable_all_reporting(self):
+    &#34;&#34;&#34;
+    Disable reporting for all digital and analog input pins
+    &#34;&#34;&#34;
+    command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DISABLE_ALL, 0)
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.disable_analog_reporting"><code class="name flex">
+<span>def <span class="ident">disable_analog_reporting</span></span>(<span>self, pin)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Disables analog reporting for a single analog pin.</p>
+<p>:param pin: Analog pin number. For example for A0, the number is 0.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def disable_analog_reporting(self, pin):
+    &#34;&#34;&#34;
+    Disables analog reporting for a single analog pin.
+
+    :param pin: Analog pin number. For example for A0, the number is 0.
+
+    &#34;&#34;&#34;
+    command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_ANALOG_DISABLE, pin)
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.disable_digital_reporting"><code class="name flex">
+<span>def <span class="ident">disable_digital_reporting</span></span>(<span>self, pin)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Disables digital reporting. By turning reporting off for this pin,
+Reporting is disabled for all 8 bits in the "port"</p>
+<p>:param pin: Pin and all pins for this port</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def disable_digital_reporting(self, pin):
+    &#34;&#34;&#34;
+    Disables digital reporting. By turning reporting off for this pin,
+    Reporting is disabled for all 8 bits in the &#34;port&#34;
+
+    :param pin: Pin and all pins for this port
+
+    &#34;&#34;&#34;
+    command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_DISABLE, pin)
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.enable_analog_reporting"><code class="name flex">
+<span>def <span class="ident">enable_analog_reporting</span></span>(<span>self, pin)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enables analog reporting. This is an alias for set_pin_mode_analog_input.
+Disabling analog reporting sets the pin to a digital input pin,
+so we need to provide the callback and differential if we wish
+to specify it.</p>
+<p>:param pin: Analog pin number. For example for A0, the number is 0.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def enable_analog_reporting(self, pin):
+    &#34;&#34;&#34;
+    Enables analog reporting. This is an alias for set_pin_mode_analog_input.
+    Disabling analog reporting sets the pin to a digital input pin,
+    so we need to provide the callback and differential if we wish
+    to specify it.
+
+    :param pin: Analog pin number. For example for A0, the number is 0.
+
+
+    &#34;&#34;&#34;
+    command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_ANALOG_ENABLE, pin]
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.enable_digital_reporting"><code class="name flex">
+<span>def <span class="ident">enable_digital_reporting</span></span>(<span>self, pin)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enables digital reporting. By turning reporting on for all 8 bits
+in the "port" - this is part of Firmata's protocol specification.</p>
+<p>:param pin: Pin and all pins for this port</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def enable_digital_reporting(self, pin):
+    &#34;&#34;&#34;
+    Enables digital reporting. By turning reporting on for all 8 bits
+    in the &#34;port&#34; - this is part of Firmata&#39;s protocol specification.
+
+    :param pin: Pin and all pins for this port
+    &#34;&#34;&#34;
+
+    command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_ENABLE, pin]
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.loop_back"><code class="name flex">
+<span>def <span class="ident">loop_back</span></span>(<span>self, start_character, callback=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is a debugging method to send a character to the
+Arduino device, and have the device loop it back.</p>
+<p>:param start_character: The character to loop back. It should be
+an integer.</p>
+<p>:param callback: Looped back character will appear in the callback method</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def loop_back(self, start_character, callback=None):
+    &#34;&#34;&#34;
+    This is a debugging method to send a character to the
+    Arduino device, and have the device loop it back.
+
+    :param start_character: The character to loop back. It should be
+                            an integer.
+
+    :param callback: Looped back character will appear in the callback method
+
+    &#34;&#34;&#34;
+    command = [PrivateConstants.LOOP_COMMAND, ord(start_character)]
+    self.loop_back_callback = callback
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.servo_detach"><code class="name flex">
+<span>def <span class="ident">servo_detach</span></span>(<span>self, pin_number)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Detach a servo for reuse</p>
+<p>:param pin_number: attached pin</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def servo_detach(self, pin_number):
+    &#34;&#34;&#34;
+    Detach a servo for reuse
+
+    :param pin_number: attached pin
+
+    &#34;&#34;&#34;
+    command = [PrivateConstants.SERVO_DETACH, pin_number]
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.servo_write"><code class="name flex">
+<span>def <span class="ident">servo_write</span></span>(<span>self, pin_number, angle)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a servo attached to a pin to a given angle.</p>
+<p>:param pin_number: pin</p>
+<p>:param angle: angle (0-180)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def servo_write(self, pin_number, angle):
+    &#34;&#34;&#34;
+
+    Set a servo attached to a pin to a given angle.
+
+    :param pin_number: pin
+
+    :param angle: angle (0-180)
+
+    &#34;&#34;&#34;
+    command = [PrivateConstants.SERVO_WRITE, pin_number, angle]
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_input"><code class="name flex">
+<span>def <span class="ident">set_pin_mode_analog_input</span></span>(<span>self, pin_number, callback=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a pin as an analog input.</p>
+<p>:param pin_number: arduino pin number</p>
+<p>:param callback: callback function</p>
+<p>callback returns a data list:</p>
+<p>[pin_type, pin_number, pin_value, raw_time_stamp]</p>
+<p>The pin_type for analog input pins = 2</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_pin_mode_analog_input(self, pin_number, callback=None):
+    &#34;&#34;&#34;
+    Set a pin as an analog input.
+
+    :param pin_number: arduino pin number
+
+    :param callback: callback function
+
+
+    callback returns a data list:
+
+    [pin_type, pin_number, pin_value, raw_time_stamp]
+
+    The pin_type for analog input pins = 2
+
+    &#34;&#34;&#34;
+    self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG,
+                       callback=callback)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_output"><code class="name flex">
+<span>def <span class="ident">set_pin_mode_analog_output</span></span>(<span>self, pin_number)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a pin as a pwm (analog output) pin.</p>
+<p>:param pin_number:arduino pin number</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_pin_mode_analog_output(self, pin_number):
+    &#34;&#34;&#34;
+    Set a pin as a pwm (analog output) pin.
+
+    :param pin_number:arduino pin number
+
+    &#34;&#34;&#34;
+    self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input"><code class="name flex">
+<span>def <span class="ident">set_pin_mode_digital_input</span></span>(<span>self, pin_number, callback=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a pin as a digital input.</p>
+<p>:param pin_number: arduino pin number</p>
+<p>:param callback: callback function</p>
+<p>callback returns a data list:</p>
+<p>[pin_type, pin_number, pin_value, raw_time_stamp]</p>
+<p>The pin_type for digital input pins = 0</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_pin_mode_digital_input(self, pin_number, callback=None):
+    &#34;&#34;&#34;
+    Set a pin as a digital input.
+
+    :param pin_number: arduino pin number
+
+    :param callback: callback function
+
+
+    callback returns a data list:
+
+    [pin_type, pin_number, pin_value, raw_time_stamp]
+
+    The pin_type for digital input pins = 0
+
+    &#34;&#34;&#34;
+    self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input_pullup"><code class="name flex">
+<span>def <span class="ident">set_pin_mode_digital_input_pullup</span></span>(<span>self, pin_number, callback=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a pin as a digital input with pullup enabled.</p>
+<p>:param pin_number: arduino pin number</p>
+<p>:param callback: callback function</p>
+<p>callback returns a data list:</p>
+<p>[pin_type, pin_number, pin_value, raw_time_stamp]</p>
+<p>The pin_type for digital input pins with pullups enabled = 11</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_pin_mode_digital_input_pullup(self, pin_number, callback=None):
+    &#34;&#34;&#34;
+    Set a pin as a digital input with pullup enabled.
+
+    :param pin_number: arduino pin number
+
+    :param callback: callback function
+
+
+    callback returns a data list:
+
+    [pin_type, pin_number, pin_value, raw_time_stamp]
+
+    The pin_type for digital input pins with pullups enabled = 11
+
+    &#34;&#34;&#34;
+    self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_output"><code class="name flex">
+<span>def <span class="ident">set_pin_mode_digital_output</span></span>(<span>self, pin_number)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a pin as a digital output pin.</p>
+<p>:param pin_number: arduino pin number</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_pin_mode_digital_output(self, pin_number):
+    &#34;&#34;&#34;
+    Set a pin as a digital output pin.
+
+    :param pin_number: arduino pin number
+    &#34;&#34;&#34;
+
+    self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_servo"><code class="name flex">
+<span>def <span class="ident">set_pin_mode_servo</span></span>(<span>self, pin_number, min_pulse=544, max_pulse=2400)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Attach a pin to a servo motor</p>
+<p>:param pin_number: pin</p>
+<p>:param min_pulse: minimum pulse width</p>
+<p>:param max_pulse: maximum pulse width</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
+    &#34;&#34;&#34;
+
+    Attach a pin to a servo motor
+
+    :param pin_number: pin
+
+    :param min_pulse: minimum pulse width
+
+    :param max_pulse: maximum pulse width
+
+    &#34;&#34;&#34;
+    minv = (min_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+    maxv = (max_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+
+    command = [PrivateConstants.SERVO_ATTACH, pin_number,
+               minv[0], minv[1], maxv[0], maxv[1]]
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.shutdown"><code class="name flex">
+<span>def <span class="ident">shutdown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This method attempts an orderly shutdown
+If any exceptions are thrown, they are ignored.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def shutdown(self):
+    &#34;&#34;&#34;
+    This method attempts an orderly shutdown
+    If any exceptions are thrown, they are ignored.
+    &#34;&#34;&#34;
+    self.shutdown_flag = True
+
+    self._stop_threads()
+
+    try:
+        self.disable_all_reporting()
+
+        self.serial_port.reset_input_buffer()
+        self.serial_port.close()
+
+    except (RuntimeError, SerialException, OSError):
+        # ignore error on shutdown
+        pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="telemetrix" href="index.html">telemetrix</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="telemetrix.telemetrix.Telemetrix" href="#telemetrix.telemetrix.Telemetrix">Telemetrix</a></code></h4>
+<ul class="">
+<li><code><a title="telemetrix.telemetrix.Telemetrix.analog_read" href="#telemetrix.telemetrix.Telemetrix.analog_read">analog_read</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.analog_write" href="#telemetrix.telemetrix.Telemetrix.analog_write">analog_write</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.digital_read" href="#telemetrix.telemetrix.Telemetrix.digital_read">digital_read</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.digital_write" href="#telemetrix.telemetrix.Telemetrix.digital_write">digital_write</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.disable_all_reporting" href="#telemetrix.telemetrix.Telemetrix.disable_all_reporting">disable_all_reporting</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.disable_analog_reporting" href="#telemetrix.telemetrix.Telemetrix.disable_analog_reporting">disable_analog_reporting</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.disable_digital_reporting" href="#telemetrix.telemetrix.Telemetrix.disable_digital_reporting">disable_digital_reporting</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.enable_analog_reporting" href="#telemetrix.telemetrix.Telemetrix.enable_analog_reporting">enable_analog_reporting</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.enable_digital_reporting" href="#telemetrix.telemetrix.Telemetrix.enable_digital_reporting">enable_digital_reporting</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.loop_back" href="#telemetrix.telemetrix.Telemetrix.loop_back">loop_back</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.servo_detach" href="#telemetrix.telemetrix.Telemetrix.servo_detach">servo_detach</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.servo_write" href="#telemetrix.telemetrix.Telemetrix.servo_write">servo_write</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_input" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_input">set_pin_mode_analog_input</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_output" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_output">set_pin_mode_analog_output</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input">set_pin_mode_digital_input</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input_pullup" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input_pullup">set_pin_mode_digital_input_pullup</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_output" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_output">set_pin_mode_digital_output</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_servo" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_servo">set_pin_mode_servo</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.shutdown" href="#telemetrix.telemetrix.Telemetrix.shutdown">shutdown</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
