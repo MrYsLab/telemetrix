@@ -31,7 +31,7 @@ additions for the phase itself.
 
 Arduino-telemetrix is the Arduino server sketch, and telemetrix is the python client.
 
-Python API for phase 3 may be found [here]((https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix/blob/master/phase3/api/index.html)) 
+Python API for phase 3 may be found [here](https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix/blob/master/phase3/api/index.html)) 
 
 The code outside of the phase directories is likely to be highly volatile and should
 be used with caution.
