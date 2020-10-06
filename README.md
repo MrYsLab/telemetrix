@@ -19,7 +19,7 @@ Feature Punch List
 | Digital Output             	| blink.py                	| Complete 	| Phase 1   |
 | PWM Output (analog output) 	| fade.py                 	| Complete 	| Phase 1   |
 | Servo                      	| servo.py               	| Complete 	| Phase 2   |
-| i2c                        	|                         	| TBD      	|
+| i2c                        	| i2c_adxl345_accelerometer.py | Complete  | Phase 3 |
 | HC-SR04                    	|                         	| TBD      	|
 | DHT                        	|                         	| TBD      	|
 
@@ -30,6 +30,8 @@ development each phase will contain the contents of the previous phase as well a
 additions for the phase itself.
 
 Arduino-telemetrix is the Arduino server sketch, and telemetrix is the python client.
+
+Python API for phase 3 may be found [here]((https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix/blob/master/phase3/api/index.html)) 
 
 The code outside of the phase directories is likely to be highly volatile and should
 be used with caution.
