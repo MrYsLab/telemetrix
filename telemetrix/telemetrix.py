@@ -501,7 +501,7 @@ class Telemetrix(threading.Thread):
                      passed in as a list
 
         """
-        command = [PrivateConstants.I2C_WRITE, address, address]
+        command = [PrivateConstants.I2C_WRITE, len(args), address ]
 
         for item in args:
             command.append(item)
@@ -601,7 +601,6 @@ class Telemetrix(threading.Thread):
         Establish the standard Arduino i2c pins for i2c utilization.
 
         NOTES: 1. THIS METHOD MUST BE CALLED BEFORE ANY I2C REQUEST IS MADE
-
                2. Callbacks are set within the individual i2c read methods of this
               API.
 
