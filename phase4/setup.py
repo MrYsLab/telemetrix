@@ -8,7 +8,7 @@ setup(
     packages=['telemetrix'],
     install_requires=['pyserial'],
 
-    version='0.1.5',
+    version='0.1.6',
     description="telemetrix phase1 client and server",
 
     author='Alan Yorinks',
