@@ -20,7 +20,7 @@ Feature Punch List
 | PWM Output (analog output) 	| fade.py                 	| Complete 	| Phase 1   |
 | Servo                      	| servo.py               	| Complete 	| Phase 2   |
 | i2c                        	| i2c_adxl345_accelerometer.py | Complete  | Phase 3 |
-| HC-SR04                    	|                         	| TBD      	|
+| HC-SR04                    	| hc-sr04_distance_sensor.py | Complete | Phase 4 |
 | DHT                        	|                         	| TBD      	|
 
 It is early stages of this project, so there are may be some bugs lurking.
