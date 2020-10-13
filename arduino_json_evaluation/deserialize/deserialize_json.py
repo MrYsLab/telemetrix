@@ -28,7 +28,6 @@ class JsonDeserialize:
             try:
                 if self.serial_port.inWaiting():
                     c = self.serial_port.read_until(b'}')
-
                     try:
                         b = json.loads(c)
                     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
