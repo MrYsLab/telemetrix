@@ -118,7 +118,6 @@ class Telemetrix(threading.Thread):
         self.report_dispatch.update({PrivateConstants.I2C_READ_REPORT: [self._i2c_read_report, 1]})
         self.report_dispatch.update({PrivateConstants.I2C_TOO_FEW_BYTES_RCVD: [self._i2c_too_few, 1]})
         self.report_dispatch.update({PrivateConstants.I2C_TOO_MANY_BYTES_RCVD: [self._i2c_too_many, 1]})
-        self.report_dispatch.update({PrivateConstants.SONAR_MAX_EXCEEDED: [self._sonar_max_exceeded, 0]})
         self.report_dispatch.update({PrivateConstants.SONAR_DISTANCE: [self._sonar_distance_report, 3]})
 
         # dictionaries to store the callbacks for each pin
@@ -128,7 +127,11 @@ class Telemetrix(threading.Thread):
 
         self.i2c_callback = None
 
-        self.sonar_callback = None
+        # the trigger pin will be the key to retrieve
+        # the callback for a specific HC-SR04
+        self.sonar_callbacks = {}
+
+        self.sonar_count = 0
 
         # serial port in use
         self.serial_port = None
@@ -191,21 +194,21 @@ class Telemetrix(threading.Thread):
 
         print('Retrieving Arduino ID...')
         self._get_arduino_id()
-
         if self.reported_arduino_id != self.arduino_instance_id:
+            if self.shutdown_on_exception:
+                self.shutdown()
             raise RuntimeError(f'Incorrect Arduino ID: {self.reported_arduino_id}')
         print('Valid Arduino ID Found.')
         # get arduino firmware version and print it
-        print('\nRetrieving arduino-telemetrix firmware ID...')
+        print('\nRetrieving Telemetrix4Arduino firmware ID...')
         self._get_firmware_version()
-
         if not self.firmware_version:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(f'Firmata Sketch Firmware Version Not Found')
+            raise RuntimeError(f'Telemetrix4Arduino firmware version')
 
         else:
-            print(f'arduino-telemetrix firmware version: {self.firmware_version[0]}.'
+            print(f'Telemetrix4Arduino firmware version: {self.firmware_version[0]}.'
                   f'{self.firmware_version[1]}')
 
     def _find_arduino(self):
@@ -214,7 +217,7 @@ class Telemetrix(threading.Thread):
         containing a sketch that has a matching arduino_instance_id as
         specified in the input parameters of this class.
 
-        This is used explicitly with the FirmataExpress sketch.
+        This is used explicitly with the Telemetrix4Arduino sketch.
         """
 
         # a list of serial ports to be checked
@@ -265,21 +268,25 @@ class Telemetrix(threading.Thread):
             self._get_arduino_id()
 
             if self.reported_arduino_id != self.arduino_instance_id:
+                if self.shutdown_on_exception:
+                    self.shutdown()
                 raise RuntimeError(f'Incorrect Arduino ID: {self.reported_arduino_id}')
             print('Valid Arduino ID Found.')
             # get arduino firmware version and print it
-            print('\nRetrieving arduino-telemetrix firmware ID...')
+            print('\nRetrieving Telemetrix4Arduino firmware ID...')
             self._get_firmware_version()
 
             if not self.firmware_version:
                 if self.shutdown_on_exception:
                     self.shutdown()
-                raise RuntimeError(f'Firmata Sketch Firmware Version Not Found')
+                raise RuntimeError(f'Telemetrix4Arduino Sketch Firmware Version Not Found')
 
             else:
-                print(f'arduino-telemetrix firmware version: {self.firmware_version[0]}.'
+                print(f'Telemetrix4Arduino firmware version: {self.firmware_version[0]}.'
                       f'{self.firmware_version[1]}')
         except KeyboardInterrupt:
+            if self.shutdown_on_exception:
+                self.shutdown()
             raise RuntimeError('User Hit Control-C')
 
     def analog_write(self, pin, value):
@@ -351,10 +358,9 @@ class Telemetrix(threading.Thread):
 
     def enable_digital_reporting(self, pin):
         """
-        Enables digital reporting. By turning reporting on for all 8 bits
-        in the "port" - this is part of Firmata's protocol specification.
+        Enable reporting on the digital pin.
 
-        :param pin: Pin and all pins for this port
+        :param pin: Pin number.
         """
 
         command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_ENABLE, pin]
@@ -454,6 +460,8 @@ class Telemetrix(threading.Thread):
 
         """
         if not callback:
+            if self.shutdown_on_exception:
+                self.shutdown()
             raise RuntimeError('I2C Read: A callback function must be specified.')
 
         self.i2c_callback = callback
@@ -463,11 +471,9 @@ class Telemetrix(threading.Thread):
 
         # message contains:
         # 1. address
-        # 2. register high byte
-        # 3. register low byte
-        # 4. number of bytes high byte
-        # 5. number of bytes low byte
-        # 6. restart_transmission - True or False
+        # 2. register
+        # 3. number of bytes
+        # 4. restart_transmission - True or False
 
         command = [PrivateConstants.I2C_READ, address, register, number_of_bytes,
                    stop_transmission]
@@ -625,16 +631,20 @@ class Telemetrix(threading.Thread):
         """
 
         if not callback:
+            if self.shutdown_on_exception:
+                self.shutdown()
             raise RuntimeError('set_pin_mode_sonar: A Callback must be specified')
 
-        if self.sonar_callback:
-            pass
+        if self.sonar_count < PrivateConstants.MAX_SONARS-1:
+            self.sonar_callbacks[trigger_pin] = callback
+            self.sonar_count += 1
 
-        self.sonar_callback = callback
-
-        command = [PrivateConstants.SONAR_NEW, trigger_pin,
-                   echo_pin]
-        self._send_command(command)
+            command = [PrivateConstants.SONAR_NEW, trigger_pin, echo_pin]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f'Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}')
 
     def servo_write(self, pin_number, angle):
         """
@@ -698,6 +708,8 @@ class Telemetrix(threading.Thread):
         elif pin_state == PrivateConstants.AT_ANALOG:
             command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_ANALOG, 1]
         else:
+            if self.shutdown_on_exception:
+                self.shutdown()
             raise RuntimeError('Unknown pin state')
 
         if command:
@@ -846,7 +858,7 @@ class Telemetrix(threading.Thread):
     def _send_command(self, command):
         """
         This is a private utility method.
-        The method sends a non-sysex command to Firmata.
+
 
         :param command:  command data
 
@@ -868,10 +880,9 @@ class Telemetrix(threading.Thread):
         Message if no servos are available for use.
         :param report: pin number
         """
+        if self.shutdown_on_exception:
+            self.shutdown()
         raise RuntimeError(f'Servo Attach For Pin {report[0]} Failed: No Available Servos')
-
-    def _sonar_max_exceeded(self, report):
-        raise RuntimeError(f'Maximum number of sonar devices exceeded')
 
     def _sonar_distance_report(self, report):
         """
@@ -881,10 +892,14 @@ class Telemetrix(threading.Thread):
         callback report format: [PrivateConstants.SONAR_DISTANCE, trigger_pin, distance_value, time_stamp]
         """
 
+        # get callback from pin number
+        cb = self.sonar_callbacks[report[0]]
+
+        # build report data
         cb_list = [PrivateConstants.SONAR_DISTANCE, report[0],
                    ((report[1] << 8) + report[2]), time.time()]
 
-        self.sonar_callback(cb_list)
+        cb(cb_list)
 
     def _run_threads(self):
         self.run_event.set()

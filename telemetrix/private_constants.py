@@ -48,8 +48,7 @@ class PrivateConstants:
     I2C_TOO_FEW_BYTES_RCVD = 8
     I2C_TOO_MANY_BYTES_RCVD = 9
     I2C_READ_REPORT = 10
-    SONAR_MAX_EXCEEDED = 11
-    SONAR_DISTANCE = 12
+    SONAR_DISTANCE = 11
     DEBUG_PRINT = 99
 
     TELEMETRIX_VERSION = "0.01"
@@ -76,3 +75,6 @@ class PrivateConstants:
 
     # maximum number of analog pins supported
     NUMBER_OF_ANALOG_PINS = 20
+
+    # maximum number of sonars allowed
+    MAX_SONARS = 6
