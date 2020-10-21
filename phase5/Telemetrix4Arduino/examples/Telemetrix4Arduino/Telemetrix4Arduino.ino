@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Telemetrix4Arduino.h"
 #include <Servo.h>
+#include <Ultrasonic.h>
 #include <Wire.h>
 /*
  Copyright (c) 2020 Alan Yorinks All rights reserved.
@@ -14,7 +15,7 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  General Public License for more details.
 
- You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+ You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSEf
  along with this library; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
@@ -53,6 +54,20 @@ extern void i2c_read();
 
 extern void i2c_write();
 
+extern void sonar_new();
+
+
+// uncomment out the next line to create a 2nd i2c port
+//#define SECOND_I2C_PORT
+
+#ifdef SECOND_I2C_PORT
+// Change the pins to match SDA and SCL for your board
+#define SECOND_I2C_PORT_SDA PB3
+#define SECOND_I2C_PORT_SCL PB10
+
+TwoWire Wire2(SECOND_I2C_PORT_SDA, SECOND_I2C_PORT_SCL);
+
+#endif
 
 // This value must be the same as specified when instantiating the
 // telemetrix client. The client defaults to a value of 1.
@@ -77,6 +92,7 @@ extern void i2c_write();
 #define I2C_BEGIN 10
 #define I2C_READ 11
 #define I2C_WRITE 12
+#define SONAR_NEW 13
 
 // When adding a new command update the command_table.
 // The command length is the number of bytes that follow
@@ -84,27 +100,27 @@ extern void i2c_write();
 // byte in its length.
 // The command_func is a pointer the command's function.
 typedef struct command_descriptor {
-    //byte command;
-    byte command_length;
-
+    // a pointer to the command processing function
     void (*command_func)(void);
 };
-command_descriptor command_table[13] =
 
+// An array of pointers to the command functions
+command_descriptor command_table[15] =
         {
-                {1, &serial_loopback},
-                {4, &set_pin_mode},
-                {2, &digital_write},
-                {2, &analog_write},
-                {1, &modify_reporting},
-                {0, &get_firmware_version},
-                {0, &are_you_there},
-                {5, &servo_attach},
-                {2, &servo_write},
-                {1, &servo_detach},
-                {0, &i2c_begin},
-                {6, &i2c_read},
-                {2, &i2c_write}
+                {&serial_loopback},
+                {&set_pin_mode},
+                {&digital_write},
+                {&analog_write},
+                {&modify_reporting},
+                {&get_firmware_version},
+                {&are_you_there},
+                {&servo_attach},
+                {&servo_write},
+                {&servo_detach},
+                {&i2c_begin},
+                {&i2c_read},
+                {&i2c_write},
+                {&sonar_new},
         };
 
 // Input pin reporting control sub commands (modify_reporting)
@@ -132,6 +148,7 @@ command_descriptor command_table[13] =
 #define I2C_TOO_FEW_BYTES_RCVD 8
 #define I2C_TOO_MANY_BYTES_RCVD 9
 #define I2C_READ_REPORT 10
+#define SONAR_DISTANCE 11
 #define DEBUG_PRINT 99
 
 // maximum length of a command in bytes
@@ -147,7 +164,6 @@ command_descriptor command_table[13] =
 
 // A buffer to hold i2c report data
 byte i2c_report_message[64];
-
 
 // Analog input pin numbers are defined from
 // A0 - A7. Since we do not know if the board
@@ -197,18 +213,9 @@ int analog_read_pins[20] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A1
 typedef struct pin_descriptor {
     byte pin_number;
     byte pin_mode;
-    bool reporting_enabled;         // If true, then send reports if an input pin
+    bool reporting_enabled; // If true, then send reports if an input pin
     int last_value;        // Last value read for input mode
-    void *sensor_ptr;      // a pointer to be used to store items such as
-    // a servo object returned by the library.
-
 };
-
-// servo management
-Servo servos[MAX_SERVOS];
-
-//
-byte pin_to_servo_index_map[MAX_SERVOS];
 
 // an array of digital_pin_descriptors
 pin_descriptor the_digital_pins[MAX_DIGITAL_PINS_SUPPORTED];
@@ -216,32 +223,55 @@ pin_descriptor the_digital_pins[MAX_DIGITAL_PINS_SUPPORTED];
 // an array of analog_pin_descriptors
 pin_descriptor the_analog_pins[MAX_ANALOG_PINS_SUPPORTED];
 
-
-// buffer to hold incoming command data
-byte command_buffer[MAX_COMMAND_LENGTH];
-
 unsigned long current_millis;        // for analog input loop
 unsigned long previous_millis;       // for analog input loop
 unsigned int analog_sampling_interval = 19;
 
-// An array of pointers to the command functions
-// Not sure why this needs to be one greater than the actual
-// number of commands, but if not this size, the last command fails.
-// Will investigate at some later time.
+// servo management
+Servo servos[MAX_SERVOS];
+
+// this array allows us to retrieve the servo object
+// associated with a specific pin number
+byte pin_to_servo_index_map[MAX_SERVOS];
+
+// HC-SR04 Sonar Management
+#define MAX_SONARS 6
+
+typedef struct Sonar {
+    uint8_t trigger_pin;
+    int last_value;
+    Ultrasonic *usonic;
+};
+
+// an array of sonar objects
+Sonar sonars[MAX_SONARS];
+
+byte sonars_index = 0; // index into sonars struct
+
+// used for scanning the sonar devices.
+byte last_sonar_visited = 0;
+
+unsigned long sonar_current_millis;        // for analog input loop
+unsigned long sonar_previous_millis;       // for analog input loop
+uint8_t sonar_scan_interval = 33;          // Milliseconds between sensor pings
+// (29ms is about the min to avoid = 19;
+// buffer to hold incoming command data
+byte command_buffer[MAX_COMMAND_LENGTH];
 
 // A method to send debug data across the serial link
 void send_debug_info(byte id, int value) {
-    byte debug_buffer[4] = {DEBUG_PRINT, 0, 0, 0};
-    debug_buffer[1] = id;
-    debug_buffer[2] = highByte(value);
-    debug_buffer[3] = lowByte(value);
-    Serial.write(debug_buffer, 4);
+    byte debug_buffer[5] = {(byte) 4, (byte) DEBUG_PRINT, 0, 0, 0};
+    debug_buffer[2] = id;
+    debug_buffer[3] = highByte(value);
+    debug_buffer[4] = lowByte(value);
+    Serial.write(debug_buffer, 5);
 }
 
 // command functions
 void serial_loopback() {
-    Serial.write((byte) SERIAL_LOOP_BACK);
-    Serial.write(command_buffer[0]);
+    byte loop_back_buffer[3] = {2, (byte) SERIAL_LOOP_BACK, command_buffer[0]};
+    Serial.write(loop_back_buffer, 3);
+
 }
 
 void set_pin_mode() {
@@ -329,15 +359,14 @@ void modify_reporting() {
 }
 
 void get_firmware_version() {
-    // (33, 44);
-    byte report_message[3] = {FIRMWARE_REPORT, FIRMWARE_MAJOR, FIRMWARE_MINOR};
-    Serial.write(report_message, 3);
+    byte report_message[4] = {3, FIRMWARE_REPORT, FIRMWARE_MAJOR, FIRMWARE_MINOR};
+    Serial.write(report_message, 4);
 
 }
 
 void are_you_there() {
-    byte report_message[2] = {I_AM_HERE, ARDUINO_ID};
-    Serial.write(report_message, 2);
+    byte report_message[3] = {2, I_AM_HERE, ARDUINO_ID};
+    Serial.write(report_message, 3);
 }
 
 
@@ -410,106 +439,225 @@ void servo_detach() {
  * i2c functions
  **********************************/
 
+/***********************************
+ * i2c functions
+ **********************************/
+
 void i2c_begin() {
-    Wire.begin();
+    byte i2c_port = command_buffer[0];
+    if (not i2c_port) {
+        Wire.begin();
+    }
+
+#ifdef SECOND_I2C_PORT
+    else{
+        Wire2.begin();
+    }
+#endif
 }
 
 void i2c_read() {
-    // data in the incoming message: address,
-    // register,,
-    // number of bytes,
-    // stop transmitting flag
+    // data in the incoming message:
+    // address, [0]
+    // register, [1]
+    // number of bytes, [2]
+    // stop transmitting flag [3]
+    // i2c port [4]
 
     int message_size = 0;
     byte address = command_buffer[0];
     byte the_register = command_buffer[1];
 
-    Wire.beginTransmission(address);
-    Wire.write((byte) the_register);
-    Wire.endTransmission(command_buffer[4]); // default = true
-    Wire.requestFrom(address, command_buffer[2]);  // all bytes are returned in requestFrom
+#ifdef SECOND_I2C_PORT
+    // this is for port 2
+    if(command_buffer[4]){
+        Wire2.beginTransmission(address);
+        Wire2.write((byte) the_register);
+        Wire2.endTransmission(command_buffer[3]); // default = true
+        Wire2.requestFrom(address, command_buffer[2]);  // all bytes are returned in requestFrom
 
 
-    // check to be sure correct number of bytes were returned by slave
-    if (command_buffer[2] < Wire.available()) {
-        byte report_message[2] = {I2C_TOO_FEW_BYTES_RCVD, address};
-        Serial.write(report_message, 2);
-        return;
+        // check to be sure correct number of bytes were returned by slave
+        if (command_buffer[2] < Wire2.available()) {
+            byte report_message[4] = {3,I2C_TOO_FEW_BYTES_RCVD, 1, address};
+            Serial.write(report_message, 4);
+            return;
 
-    } else if (command_buffer[2] > Wire.available()) {
-        byte report_message[2] = {I2C_TOO_MANY_BYTES_RCVD, address};
-        Serial.write(report_message, 2);
-        return;
+        } else if (command_buffer[2] > Wire2.available()) {
+            byte report_message[4] = {3, I2C_TOO_MANY_BYTES_RCVD, 1, address};
+            Serial.write(report_message, 4);
+            return;
+        }
+        Wire2.beginTransmission(address);
+        Wire2.write((byte) the_register);
+        Wire2.endTransmission(command_buffer[3]); // default = true
+        Wire2.requestFrom(address, command_buffer[2]);  // all bytes are returned in requestFrom
+
+        // packet length
+        i2c_report_message[0] = command_buffer[2] + 5;
+
+        // report type
+        i2c_report_message[1] = I2C_READ_REPORT;
+
+        // i2c_port 1 = port 2
+        i2c_report_message[2] = 1;
+
+        // number of bytes read
+        i2c_report_message[3] = command_buffer[2]; // number of bytes
+
+        // device address
+        i2c_report_message[4] = address;
+
+        // device register
+        i2c_report_message[5] = the_register;
+
+        // append the data that was read
+        for (message_size = 0; message_size < command_buffer[2] && Wire2.available(); message_size++) {
+            i2c_report_message[6 + message_size] = Wire2.read();
+        }
+        // send slave address, register and received bytes
+        for (int i = 0; i < message_size + 6; i++) {
+            Serial.write(i2c_report_message[i]);
+        }
     }
+#endif
+    // is this for i2c port 0 - default port
+    if (not command_buffer[4]) {
+        Wire.beginTransmission(address);
+        Wire.write((byte) the_register);
+        Wire.endTransmission(command_buffer[3]); // default = true
+        Wire.requestFrom(address, command_buffer[2]);  // all bytes are returned in requestFrom
 
-    i2c_report_message[0] = I2C_READ_REPORT;
-    i2c_report_message[1] = command_buffer[2]; // number of bytes
-    i2c_report_message[2] = address;
-    i2c_report_message[3] = the_register;
+        // check to be sure correct number of bytes were returned by slave
+        if (command_buffer[2] < Wire.available()) {
+            byte report_message[4] = {3,I2C_TOO_FEW_BYTES_RCVD, 0, address};
+            Serial.write(report_message, 4);
+            return;
 
+        } else if (command_buffer[2] > Wire.available()) {
+            byte report_message[4] = {3, I2C_TOO_MANY_BYTES_RCVD, 0, address};
+            Serial.write(report_message, 4);
+            return;
+        }
+        Wire.beginTransmission(address);
+        Wire.write((byte) the_register);
+        Wire.endTransmission(command_buffer[3]); // default = true
+        Wire.requestFrom(address, command_buffer[2]);  // all bytes are returned in requestFrom
 
+        // packet length
+        i2c_report_message[0] = command_buffer[2] + 5;
 
-    for (message_size = 0; message_size < command_buffer[2] && Wire.available(); message_size++) {
-        i2c_report_message[4 + message_size] = Wire.read();
-    }
+        // report type
+        i2c_report_message[1] = I2C_READ_REPORT;
 
-    // send slave address, register and received bytes
-    for (int i = 0; i < message_size + 4; i++) {
-        Serial.write(i2c_report_message[i]);
+        // i2c_port 0 = default
+        i2c_report_message[2] = 0;
+
+        // number of bytes read
+        i2c_report_message[3] = command_buffer[2]; // number of bytes
+
+        // device address
+        i2c_report_message[4] = address;
+
+        // device register
+        i2c_report_message[5] = the_register;
+
+        // append the data that was read
+        for (message_size = 0; message_size < command_buffer[2] && Wire.available(); message_size++) {
+            i2c_report_message[6 + message_size] = Wire.read();
+        }
+        // send slave address, register and received bytes
+        for (int i = 0; i < message_size + 6; i++) {
+            Serial.write(i2c_report_message[i]);
+        }
+
     }
 }
 
 void i2c_write() {
     // command_buffer[0] is the number of bytes to send
     // command_buffer[1] is the device address
-    int additional_bytes = command_buffer[0];
+    // command_buffer[2] is the i2c port
+    // additional bytes to write= command_buffer[3..];
 
-    Wire.beginTransmission(command_buffer[1]);
+#ifdef SECOND_I2C_PORT
+    // i2c port 2
+    if(command_buffer[2]){
+        Wire2.beginTransmission(command_buffer[1]);
 
-    // read in the rest of the bytes
-    for (int i = 0; i < additional_bytes; i++) {
-        Wire.write((byte) Serial.read());
-    }
-    Wire.endTransmission();
+        // write the data to the device
+        for (int i = 0; i < command_buffer[0]; i++) {
+            Wire2.write(command_buffer[i + 3]);
+        }
+    Wire2.endTransmission();
     delayMicroseconds(70);
+    }
+#endif
+    if (not command_buffer[2]) {
+        Wire.beginTransmission(command_buffer[1]);
+
+        // write the data to the device
+        for (int i = 0; i < command_buffer[0]; i++) {
+            Wire.write(command_buffer[i + 3]);
+        }
+        Wire.endTransmission();
+        delayMicroseconds(70);
+    }
+}
+
+
+void sonar_new() {
+    sonars[sonars_index].usonic = new Ultrasonic((uint8_t) command_buffer[0], (uint8_t) command_buffer[1],
+                                                 80000UL);
+    sonars[sonars_index].trigger_pin = command_buffer[0];
+    sonars_index++;
 }
 
 
 void get_next_command() {
     byte command;
-    int command_buffer_index = 0;
+    byte packet_length;
+    // int command_buffer_index = 0;
     command_descriptor command_entry;
 
-    for (int i = 0; i < MAX_COMMAND_LENGTH; i++) {
-        command_buffer[i] = 0;
+    memset(command_buffer, 0, sizeof(command_buffer));
+    // if there is no command waiting, then return
+    if (not Serial.available()) {
+        return;
     }
-    if (Serial.available()) {
-        // get the command byte
-        command = (byte) Serial.read();
-        // uncomment the next line to see the command byte value
-        // send_debug_info(75, command);
-        command_entry = command_table[command];
-        // send_debug_info(command, command_entry.command_length);
-        // get the data for that command
-        if (command_entry.command_length > 0) {
-            for (int i = 0; i < command_entry.command_length; i++) {
-                // need this delay or data read is not correct
-                delay(1);
-                if (Serial.available()) {
-                    command_buffer[command_buffer_index++] = (byte) Serial.read();
-                    // uncomment out to see each of the bytes following the command
-                    // send_debug_info(3, (int) command_buffer[command_buffer_index - 1]);
-                }
-            }
-        }
-        (command_entry.command_func());
+    // get the packet length
+    packet_length = (byte) Serial.read();
+
+    while (not Serial.available()) {
+        delay(1);
     }
 
+    // get the command byte
+    command = (byte) Serial.read();
+
+    // uncomment the next line to see the packet length and command
+    //send_debug_info(packet_length, command);
+    command_entry = command_table[command];
+
+    if (packet_length > 1) {
+        // get the data for that command
+        for (int i = 0; i < packet_length - 1; i++) {
+            // need this delay or data read is not correct
+            while (not Serial.available()) {
+                delay(1);
+            }
+            command_buffer[i] = (byte) Serial.read();
+            // uncomment out to see each of the bytes following the command
+            //send_debug_info(i, command_buffer[i]);
+        }
+    }
+    command_entry.command_func();
 }
+
 
 void scan_digital_inputs() {
     byte value;
-    byte input_message[3] = {DIGITAL_REPORT, 0, 0};
+    byte report_message[4] = {3, DIGITAL_REPORT, 0, 0};
 
     for (int i = 0; i < MAX_DIGITAL_PINS_SUPPORTED; i++) {
         if (the_digital_pins[i].pin_mode == INPUT ||
@@ -519,9 +667,9 @@ void scan_digital_inputs() {
                 value = (byte) digitalRead(the_digital_pins[i].pin_number);
                 if (value != the_digital_pins[i].last_value) {
                     the_digital_pins[i].last_value = value;
-                    input_message[1] = (byte) i;
-                    input_message[2] = value;
-                    Serial.write(input_message, 3);
+                    report_message[2] = (byte) i;
+                    report_message[3] = value;
+                    Serial.write(report_message, 4);
                 }
             }
         }
@@ -530,7 +678,7 @@ void scan_digital_inputs() {
 
 void scan_analog_inputs() {
     int value;
-    byte input_message[4] = {ANALOG_REPORT, 0, 0, 0};
+    byte report_message[5] = {4, ANALOG_REPORT, 0, 0, 0};
     uint8_t adjusted_pin_number;
 
     current_millis = millis();
@@ -553,13 +701,36 @@ void scan_analog_inputs() {
                         // trigger value achieved, send out the report
                         the_analog_pins[i].last_value = value;
                         // input_message[1] = the_analog_pins[i].pin_number;
-                        input_message[1] = (byte) i;
-                        input_message[2] = highByte(value); // get high order byte
-                        input_message[3] = lowByte(value);
-                        Serial.write(input_message, 4);
+                        report_message[2] = (byte) i;
+                        report_message[3] = highByte(value); // get high order byte
+                        report_message[4] = lowByte(value);
+                        Serial.write(report_message, 5);
                         delay(1);
                     }
                 }
+            }
+        }
+    }
+}
+
+void scan_sonars() {
+    unsigned int distance;
+
+    if (sonars_index) {
+        sonar_current_millis = millis();
+        if (sonar_current_millis - sonar_previous_millis > sonar_scan_interval) {
+            sonar_previous_millis += sonar_scan_interval;
+            distance = sonars[last_sonar_visited].usonic->read();
+            if (distance != sonars[last_sonar_visited].last_value) {
+                sonars[last_sonar_visited].last_value = distance;
+
+                byte report_message[5] = {4, SONAR_DISTANCE, sonars[last_sonar_visited].trigger_pin,
+                                          (byte) (distance >> 8), (byte) (distance & 0xff)};
+                Serial.write(report_message, 5);
+            }
+            last_sonar_visited++;
+            if (last_sonar_visited == sonars_index) {
+                last_sonar_visited = 0;
             }
         }
     }
@@ -593,5 +764,6 @@ void loop() {
     get_next_command();
     scan_digital_inputs();
     scan_analog_inputs();
+    scan_sonars();
 
 }

@@ -103,21 +103,22 @@ class Telemetrix(threading.Thread):
         # The report_dispatch dictionary is used to process
         # incoming report messages by looking up the report message
         # and executing its associated processing method.
-
+        # The value following the method is the number of bytes to
+        # retrieve from the deque to process the report (not including report id).
         self.report_dispatch = {}
 
         # To add a command to the command dispatch table, append here.
-        self.report_dispatch.update({PrivateConstants.LOOP_COMMAND: self._report_loop_data})
-        self.report_dispatch.update({PrivateConstants.DEBUG_PRINT: self._report_debug_data})
-        self.report_dispatch.update({PrivateConstants.DIGITAL_REPORT: self._digital_message})
-        self.report_dispatch.update({PrivateConstants.ANALOG_REPORT: self._analog_message})
-        self.report_dispatch.update({PrivateConstants.FIRMWARE_REPORT: self._firmware_message})
-        self.report_dispatch.update({PrivateConstants.I_AM_HERE_REPORT: self._i_am_here})
-        self.report_dispatch.update({PrivateConstants.SERVO_UNAVAILABLE: self._servo_unavailable})
-        self.report_dispatch.update({PrivateConstants.I2C_READ_REPORT: self._i2c_read_report})
-        self.report_dispatch.update({PrivateConstants.I2C_TOO_FEW_BYTES_RCVD: self._i2c_too_few})
-        self.report_dispatch.update({PrivateConstants.I2C_TOO_MANY_BYTES_RCVD: self._i2c_too_many})
-        self.report_dispatch.update({PrivateConstants.SONAR_DISTANCE: self._sonar_distance_report})
+        self.report_dispatch.update({PrivateConstants.LOOP_COMMAND: [self._report_loop_data, 1]})
+        self.report_dispatch.update({PrivateConstants.DEBUG_PRINT: [self._report_debug_data, 3]})
+        self.report_dispatch.update({PrivateConstants.DIGITAL_REPORT: [self._digital_message, 2]})
+        self.report_dispatch.update({PrivateConstants.ANALOG_REPORT: [self._analog_message, 3]})
+        self.report_dispatch.update({PrivateConstants.FIRMWARE_REPORT: [self._firmware_message, 2]})
+        self.report_dispatch.update({PrivateConstants.I_AM_HERE_REPORT: [self._i_am_here, 1]})
+        self.report_dispatch.update({PrivateConstants.SERVO_UNAVAILABLE: [self._servo_unavailable, 1]})
+        self.report_dispatch.update({PrivateConstants.I2C_READ_REPORT: [self._i2c_read_report, 1]})
+        self.report_dispatch.update({PrivateConstants.I2C_TOO_FEW_BYTES_RCVD: [self._i2c_too_few, 1]})
+        self.report_dispatch.update({PrivateConstants.I2C_TOO_MANY_BYTES_RCVD: [self._i2c_too_many, 1]})
+        self.report_dispatch.update({PrivateConstants.SONAR_DISTANCE: [self._sonar_distance_report, 3]})
 
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
@@ -125,10 +126,6 @@ class Telemetrix(threading.Thread):
         self.digital_callbacks = {}
 
         self.i2c_callback = None
-        self.i2c_callback2 = None
-
-        self.i2c_1_active = False
-        self.i2c_2_active = False
 
         # the trigger pin will be the key to retrieve
         # the callback for a specific HC-SR04
@@ -146,7 +143,7 @@ class Telemetrix(threading.Thread):
         self.loop_back_callback = None
 
         # flag to indicate the start of a new report
-        # self.new_report_start = True
+        self.new_report_start = True
 
         # firmware version to be stored here
         self.firmware_version = []
@@ -301,7 +298,7 @@ class Telemetrix(threading.Thread):
         :param value: pin value (1 or 0)
 
         """
-        command = [PrivateConstants.ANALOG_WRITE, pin, value]
+        command = (PrivateConstants.ANALOG_WRITE, pin, value)
         self._send_command(command)
 
     def digital_write(self, pin, value):
@@ -314,14 +311,14 @@ class Telemetrix(threading.Thread):
 
         """
 
-        command = [PrivateConstants.DIGITAL_WRITE, pin, value]
+        command = (PrivateConstants.DIGITAL_WRITE, pin, value)
         self._send_command(command)
 
     def disable_all_reporting(self):
         """
         Disable reporting for all digital and analog input pins
         """
-        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DISABLE_ALL, 0]
+        command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DISABLE_ALL, 0)
         self._send_command(command)
 
     def disable_analog_reporting(self, pin):
@@ -331,7 +328,7 @@ class Telemetrix(threading.Thread):
         :param pin: Analog pin number. For example for A0, the number is 0.
 
         """
-        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_ANALOG_DISABLE, pin]
+        command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_ANALOG_DISABLE, pin)
         self._send_command(command)
 
     def disable_digital_reporting(self, pin):
@@ -342,7 +339,7 @@ class Telemetrix(threading.Thread):
         :param pin: Pin and all pins for this port
 
         """
-        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_DISABLE, pin]
+        command = (PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_DISABLE, pin)
         self._send_command(command)
 
     def enable_analog_reporting(self, pin):
@@ -391,7 +388,7 @@ class Telemetrix(threading.Thread):
         time.sleep(.1)
 
     def i2c_read(self, address, register, number_of_bytes,
-                 callback=None, i2c_port=0):
+                 callback=None):
         """
         Read the specified number of bytes from the specified register for
         the i2c device.
@@ -413,11 +410,11 @@ class Telemetrix(threading.Thread):
         """
 
         self._i2c_read_request(address, register, number_of_bytes,
-                               callback=callback, i2c_port=i2c_port)
+                               callback=callback)
 
     def i2c_read_restart_transmission(self, address, register,
                                       number_of_bytes,
-                                      callback=None, i2c_port=0):
+                                      callback=None):
         """
         Read the specified number of bytes from the specified register for
         the i2c device. This restarts the transmission after the read. It is
@@ -442,10 +439,10 @@ class Telemetrix(threading.Thread):
         """
 
         self._i2c_read_request(address, register, number_of_bytes, stop_transmission=False,
-                               callback=callback, i2c_port=i2c_port)
+                               callback=callback)
 
     def _i2c_read_request(self, address, register, number_of_bytes,
-                          stop_transmission=True, callback=None, i2c_port=0):
+                          stop_transmission=True, callback=None):
         """
         This method requests the read of an i2c device. Results are retrieved
         via callback.
@@ -462,27 +459,12 @@ class Telemetrix(threading.Thread):
                    result of read command.
 
         """
-        if not i2c_port:
-            if not self.i2c_1_active:
-                if self.shutdown_on_exception:
-                    self.shutdown()
-                raise RuntimeError('I2C Read: set_pin_mode i2c never called for i2c port 1.')
-
-        if i2c_port:
-            if not self.i2c_2_active:
-                if self.shutdown_on_exception:
-                    self.shutdown()
-                raise RuntimeError('I2C Read: set_pin_mode i2c never called for i2c port 2.')
-
         if not callback:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('I2C Read: A callback function must be specified.')
 
-        if not i2c_port:
-            self.i2c_callback = callback
-        else:
-            self.i2c_callback2 = callback
+        self.i2c_callback = callback
 
         if not register:
             register = 0
@@ -492,37 +474,22 @@ class Telemetrix(threading.Thread):
         # 2. register
         # 3. number of bytes
         # 4. restart_transmission - True or False
-        # 5. i2c port
 
         command = [PrivateConstants.I2C_READ, address, register, number_of_bytes,
-                   stop_transmission, i2c_port]
+                   stop_transmission]
         self._send_command(command)
 
-    def i2c_write(self, address, args, i2c_port=0):
+    def i2c_write(self, address, args):
         """
         Write data to an i2c device.
 
         :param address: i2c device address
 
-        :param i2c_port: 0= port 1, 1 = port 2
-
         :param args: A variable number of bytes to be sent to the device
                      passed in as a list
 
         """
-        if not i2c_port:
-            if not self.i2c_1_active:
-                if self.shutdown_on_exception:
-                    self.shutdown()
-                raise RuntimeError('I2C Write: set_pin_mode i2c never called for i2c port 1.')
-
-        if i2c_port:
-            if not self.i2c_2_active:
-                if self.shutdown_on_exception:
-                    self.shutdown()
-                raise RuntimeError('I2C Write: set_pin_mode i2c never called for i2c port 2.')
-
-        command = [PrivateConstants.I2C_WRITE, len(args), address, i2c_port]
+        command = [PrivateConstants.I2C_WRITE, len(args), address]
 
         for item in args:
             command.append(item)
@@ -617,11 +584,9 @@ class Telemetrix(threading.Thread):
 
         self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)
 
-    def set_pin_mode_i2c(self, i2c_port=0):
+    def set_pin_mode_i2c(self):
         """
         Establish the standard Arduino i2c pins for i2c utilization.
-
-        :param i2c_port: 0 = i2c1, 1 = i2c2
 
         NOTES: 1. THIS METHOD MUST BE CALLED BEFORE ANY I2C REQUEST IS MADE
                2. Callbacks are set within the individual i2c read methods of this
@@ -630,23 +595,9 @@ class Telemetrix(threading.Thread):
               See i2c_read, or i2c_read_restart_transmission.
 
         """
-        # test for i2c port 2
-        if i2c_port:
-            # if not previously activated set it to activated
-            # and the send a begin message for this port
-            if not self.i2c_2_active:
-                self.i2c_2_active = True
-            else:
-                return
-        # port 1
-        else:
-            if not self.i2c_1_active:
-                self.i2c_1_active = True
-            else:
-                return
-
-        command = [PrivateConstants.I2C_BEGIN, i2c_port]
-        self._send_command(command)
+        if not self.i2c_enabled:
+            command = [PrivateConstants.I2C_BEGIN]
+            self._send_command(command)
 
     def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
         """
@@ -684,7 +635,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError('set_pin_mode_sonar: A Callback must be specified')
 
-        if self.sonar_count < PrivateConstants.MAX_SONARS - 1:
+        if self.sonar_count < PrivateConstants.MAX_SONARS-1:
             self.sonar_callbacks[trigger_pin] = callback
             self.sonar_count += 1
 
@@ -733,6 +684,7 @@ class Telemetrix(threading.Thread):
                          called when pin data value changes
 
         """
+        # command = []
         if callback:
             if pin_state == PrivateConstants.AT_INPUT:
                 self.digital_callbacks[pin_number] = callback
@@ -751,7 +703,7 @@ class Telemetrix(threading.Thread):
             command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_INPUT_PULLUP, 1]
 
         elif pin_state == PrivateConstants.AT_OUTPUT:
-            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_OUTPUT]
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_OUTPUT, 0, 0]
 
         elif pin_state == PrivateConstants.AT_ANALOG:
             command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_ANALOG, 1]
@@ -831,26 +783,31 @@ class Telemetrix(threading.Thread):
         """
         Execute callback for i2c reads.
 
-        :param data: [I2C_READ_REPORT, i2c_port, number of bytes read, address, register, bytes read..., time-stamp]
+        :param data: [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
         """
 
         # we receive [# data bytes, address, register, data bytes]
         # number of bytes of data returned
 
         # data[0] = number of bytes
-        # data[1] = i2c_port
-        # data[2] = number of bytes returned
-        # data[3] = address
-        # data[4] = register
-        # data[5] ... all the data bytes
+        # data[1] = address
+        # data[2] = register
+        # data[3] ... all the data bytes
 
-        cb_list = [PrivateConstants.I2C_READ_REPORT, data[0], data[1]] + data[2:]
+        number_of_data_bytes = data[0]
+        count = data[0] + 2  # add in the address and register bytes
+        for i in range(count):
+            while len(self.the_deque) == 0:
+                pass
+            x = self.the_deque.popleft()
+            data.append(x)
+        cb_list = [PrivateConstants.I2C_READ_REPORT, data[1], data[2], data[0]]
+        for i in range(number_of_data_bytes):
+            cb_list.append(data[i + 3])
+
+        # add the time_stamp
         cb_list.append(time.time())
-
-        if cb_list[1]:
-            self.i2c_callback2(cb_list)
-        else:
-            self.i2c_callback(cb_list)
+        self.i2c_callback(cb_list)
 
     def _i2c_too_few(self, data):
         """
@@ -860,7 +817,7 @@ class Telemetrix(threading.Thread):
         """
         if self.shutdown_on_exception:
             self.shutdown()
-        raise RuntimeError(f'i2c too few bytes received from i2c port {data[0]} i2c address {data[1]}')
+        raise RuntimeError(f'i2c too few bytes received from {data[0]}')
 
     def _i2c_too_many(self, data):
         """
@@ -870,7 +827,7 @@ class Telemetrix(threading.Thread):
         """
         if self.shutdown_on_exception:
             self.shutdown()
-        raise RuntimeError(f'i2c too many bytes received from i2c port {data[0]} i2c address {data[1]}')
+        raise RuntimeError(f'i2c too many bytes received from {data[0]}')
 
     def _i_am_here(self, data):
         """
@@ -903,13 +860,12 @@ class Telemetrix(threading.Thread):
         This is a private utility method.
 
 
-        :param command:  command data in the form of a list
+        :param command:  command data
 
         :returns: number of bytes sent
         """
-        # the length of the list is added at the head
-        command.insert(0, len(command))
-        # print(command)
+        # send_message = ""
+        # print('command: ', command)
         send_message = bytes(command)
         try:
             self.serial_port.write(send_message)
@@ -966,34 +922,40 @@ class Telemetrix(threading.Thread):
 
         while self._is_running() and not self.shutdown_flag:
             if len(self.the_deque):
-                # response_data will be populated with the received data for the report
+
+                # get next byte from the deque and process it
+                data = self.the_deque.popleft()
+                # print('data ', data)
+
+                # this list will be populated with the received data for the report
                 response_data = []
-                packet_length = self.the_deque.popleft()
-                if packet_length:
-                    # get all the data for the report and place it into response_data
-                    for i in range(packet_length):
-                        while not len(self.the_deque):
-                        # while len(self.the_deque) < packet_length:
-                           time.sleep(self.sleep_tune)
-                        data = self.the_deque.popleft()
-                        response_data.append(data)
 
-                    # get the report type and look up its dispatch method
-                    # here we pop the report type off of response_data
-                    report_type = response_data.pop(0)
+                # if self.new_report_start:
+                dispatch_entry = self.report_dispatch.get(data)
 
-                    # retrieve the report handler from the dispatch table
-                    dispatch_entry = self.report_dispatch.get(report_type)
+                # this calls the method retrieved from the dispatch table
+                try:
+                    method = dispatch_entry[0]
+                except TypeError:
+                    pass
 
-                    # if there is additional data for the report,
-                    # it will be contained in response_data
-                    dispatch_entry(response_data)
-                    continue
+                # get the number of parameters that this command provides
+                try:
+                    num_args = dispatch_entry[1]
+                except TypeError:
+                    pass
 
-                else:
-                    if self.shutdown_on_exception:
-                        self.shutdown()
-                    raise RuntimeError('A report with a packet length of zero was received.')
+                # look at the number of args that the selected method requires
+                # now get that number of bytes to pass to the called method
+
+                for i in range(num_args):
+                    while len(self.the_deque) == 0:
+                        pass
+                    data = self.the_deque.popleft()
+                    response_data.append(data)
+                    # go execute the command with the argument list
+                method(response_data)
+                continue
             else:
                 time.sleep(self.sleep_tune)
 
