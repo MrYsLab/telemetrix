@@ -1,0 +1,27 @@
+site_name: Telemetrix and Telemtrix-AIO
+nav:
+    - What Are Telemetrix and Telemetrix-AIO?: index.md
+    - The Pymata4 API:
+        - Understanding Input Data Collection: polling.md
+        - The __init__ Method: init.md
+        - Setting Pin Modes: pin_modes.md
+        - Enabling/Disabling Analog And Digital Reporting: enable_disable.md
+        - Reading Input Data Via Polling: pin_changes.md
+        - Writing Values To Pins And Selected Devices:  device_writes.md
+        - I2C Reads And Writes: i2c.md
+        - Report Requests: report_requests.md
+        - Management Requests: management.md
+        - Exceptions: exceptions.md
+    - The Pymata4 Concurrency Model: concurrency.md
+    - System and Installation Requirements:
+        - Verifying Python 3 Version: python_3_verify.md
+        - Python 3 Installation: python_install.md
+        - Installing pymata4: install_pymata4.md
+        - Installing FirmataExpress: firmata_express.md
+        - Upgrading pymata4 To The Latest Version: upgrade.md
+    - About: about.md
+    - License: license.md
+# theme: windmill
+
+theme:
+  name: 'material'
