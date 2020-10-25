@@ -1,7 +1,14 @@
-site_name: Telemetrix and Telemtrix-AIO
+site_name: Telemetrix and Telemtrix-AIO User's Guide
 nav:
     - What Are Telemetrix and Telemetrix-AIO?: index.md
-    - The Pymata4 API:
+    - System and Installation Requirements:
+          - Verifying Python 3 Version: python_3_verify.md
+          - Python 3 Installation: python_install.md
+          - Installing Telemetrix: install_telemetrix.md
+          - Installing Telemetrix-AIO: install_telemetrix-aio.md
+          - Installing Telemetrix4Arduino: telemetrix4arduino.md
+          - Upgrading To The Latest Version Python Clients: upgrade.md
+    - The Python APIs:
         - Understanding Input Data Collection: polling.md
         - The __init__ Method: init.md
         - Setting Pin Modes: pin_modes.md
@@ -12,13 +19,7 @@ nav:
         - Report Requests: report_requests.md
         - Management Requests: management.md
         - Exceptions: exceptions.md
-    - The Pymata4 Concurrency Model: concurrency.md
-    - System and Installation Requirements:
-        - Verifying Python 3 Version: python_3_verify.md
-        - Python 3 Installation: python_install.md
-        - Installing pymata4: install_pymata4.md
-        - Installing FirmataExpress: firmata_express.md
-        - Upgrading pymata4 To The Latest Version: upgrade.md
+
     - About: about.md
     - License: license.md
 # theme: windmill
