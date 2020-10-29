@@ -64,7 +64,7 @@ def digital_in(my_board, pin):
      """
 
     # set the pin mode
-    my_board.set_pin_mode_digital_input(pin, callback=the_callback)
+    my_board.set_pin_mode_digital_input(pin, the_callback)
     # time.sleep(1)
     # my_board.disable_all_reporting()
     # time.sleep(4)

@@ -32,7 +32,7 @@ Setup a pin for analog input and monitor its changes
 """
 
 # Setup a pin for analog input and monitor its changes
-ANALOG_PIN = 2 # arduino pin number (A2)
+ANALOG_PIN = 2  # arduino pin number (A2)
 
 # Callback data indices
 CB_PIN_MODE = 0
@@ -59,12 +59,16 @@ def analog_in(my_board, pin):
      analog input. Any changes on this pin will
      be reported through the call back function.
 
+     It sets a differential value of 5 and also
+     sets the scan interval to 30.
+
      :param my_board: a pymata4 instance
      :param pin: Arduino pin number
      """
 
     # set the pin mode
-    my_board.set_pin_mode_analog_input(pin, callback=the_callback)
+    my_board.set_pin_mode_analog_input(pin, 5, the_callback)
+    my_board.set_analog_scan_interval(0)
 
     print('Enter Control-C to quit.')
     try:

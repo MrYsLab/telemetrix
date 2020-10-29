@@ -21,7 +21,7 @@ Feature Punch List
 | Servo                      	| servo.py               	| Complete 	| Phase 2   |
 | i2c                        	| i2c_adxl345_accelerometer.py | Complete  | Phase 3 |
 | HC-SR04                    	| hc-sr04_distance_sensor.py | Complete | Phase 4 |
-| DHT                        	|                         	| TBD      	|
+| DHT                        	| dht.py (note this is for DHT22 Only) | Complete   | Phase 6      	|
 
 It is early stages of this project, so there are may be some bugs lurking.
 A word about the current directory structure. The code in the "phase" directories
