@@ -56,7 +56,7 @@ USA</p>
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 &#34;&#34;&#34;
-
+import struct
 import sys
 import threading
 import time
@@ -159,6 +159,7 @@ class Telemetrix(threading.Thread):
         self.report_dispatch.update({PrivateConstants.I2C_TOO_FEW_BYTES_RCVD: self._i2c_too_few})
         self.report_dispatch.update({PrivateConstants.I2C_TOO_MANY_BYTES_RCVD: self._i2c_too_many})
         self.report_dispatch.update({PrivateConstants.SONAR_DISTANCE: self._sonar_distance_report})
+        self.report_dispatch.update({PrivateConstants.DHT_REPORT: self._dht_report})
 
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
@@ -176,6 +177,10 @@ class Telemetrix(threading.Thread):
         self.sonar_callbacks = {}
 
         self.sonar_count = 0
+
+        self.dht_callbacks = {}
+
+        self.dht_count = 0
 
         # serial port in use
         self.serial_port = None
@@ -447,6 +452,8 @@ class Telemetrix(threading.Thread):
         :param callback: Required callback function to report i2c data as a
                    result of read command
 
+       :param i2c_port: 0 = default, 1 = secondary
+
 
         callback returns a data list:
         [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
@@ -474,6 +481,8 @@ class Telemetrix(threading.Thread):
 
         :param callback: Required callback function to report i2c data as a
                    result of read command
+
+       :param i2c_port: 0 = default 1 = secondary
 
 
         callback returns a data list:
@@ -585,6 +594,21 @@ class Telemetrix(threading.Thread):
         self.loop_back_callback = callback
         self._send_command(command)
 
+    def set_analog_scan_interval(self, interval):
+        &#34;&#34;&#34;
+        Set the analog scanning interval.
+
+        :param interval: value of 0 - 255 - milliseconds
+        &#34;&#34;&#34;
+
+        if 0 &lt;= interval &lt;= 255:
+            command = [PrivateConstants.SET_ANALOG_SCANNING_INTERVAL, interval]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;Analog interval must be between 0 and 255&#39;)
+
     def set_pin_mode_analog_output(self, pin_number):
         &#34;&#34;&#34;
         Set a pin as a pwm (analog output) pin.
@@ -594,11 +618,14 @@ class Telemetrix(threading.Thread):
         &#34;&#34;&#34;
         self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)
 
-    def set_pin_mode_analog_input(self, pin_number, callback=None):
+    def set_pin_mode_analog_input(self, pin_number, differential=0, callback=None):
         &#34;&#34;&#34;
         Set a pin as an analog input.
 
         :param pin_number: arduino pin number
+
+        :param differential: difference in previous to current value before
+                             report will be generated
 
         :param callback: callback function
 
@@ -610,8 +637,8 @@ class Telemetrix(threading.Thread):
         The pin_type for analog input pins = 2
 
         &#34;&#34;&#34;
-        self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG,
-                           callback=callback)
+        self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG, differential,
+                           callback)
 
     def set_pin_mode_digital_input(self, pin_number, callback=None):
         &#34;&#34;&#34;
@@ -629,7 +656,7 @@ class Telemetrix(threading.Thread):
         The pin_type for digital input pins = 0
 
         &#34;&#34;&#34;
-        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback)
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback=callback)
 
     def set_pin_mode_digital_input_pullup(self, pin_number, callback=None):
         &#34;&#34;&#34;
@@ -689,6 +716,36 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.I2C_BEGIN, i2c_port]
         self._send_command(command)
 
+    def set_pin_mode_dht(self, pin, callback=None):
+        &#34;&#34;&#34;
+
+        :param pin: connection pin
+
+        :param callback: callback function
+
+        Error Callback: [Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time]
+
+        Valid Data Callback: Callback 0=DHT REPORT, DHT_DATA=1, PIN, Humidity, Temperature Time]
+
+        &#34;&#34;&#34;
+
+        if not callback:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
+
+        if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
+            self.dht_callbacks[pin] = callback
+            self.sonar_count += 1
+
+            command = [PrivateConstants.DHT_NEW, pin]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f&#39;Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}&#39;)
+
+    # noinspection PyRedundantParentheses
     def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
         &#34;&#34;&#34;
 
@@ -716,7 +773,9 @@ class Telemetrix(threading.Thread):
 
         :param echo_pin:
 
-        :param callback: All sonars share a single callback
+        :param callback: callback
+
+        callback data: [PrivateConstants.SONAR_DISTANCE, trigger_pin, distance_value, time_stamp]
 
         &#34;&#34;&#34;
 
@@ -759,7 +818,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.SERVO_DETACH, pin_number]
         self._send_command(command)
 
-    def _set_pin_mode(self, pin_number, pin_state, callback=None):
+    def _set_pin_mode(self, pin_number, pin_state, differential=0, callback=None):
 
         &#34;&#34;&#34;
         A private method to set the various pin modes.
@@ -769,6 +828,10 @@ class Telemetrix(threading.Thread):
         :param pin_state: INPUT/OUTPUT/ANALOG/PWM/PULLUP
                          For SERVO use: set_pin_mode_servo
                          For DHT   use: set_pin_mode_dht
+
+        :param differential: for analog inputs - threshold
+                             value to be achieved for report to
+                             be generated
 
         :param callback: A reference to a call back function to be
                          called when pin data value changes
@@ -795,7 +858,8 @@ class Telemetrix(threading.Thread):
             command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_OUTPUT]
 
         elif pin_state == PrivateConstants.AT_ANALOG:
-            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_ANALOG, 1]
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_ANALOG,
+                       differential &gt;&gt; 8, differential &amp; 0xff, 1]
         else:
             if self.shutdown_on_exception:
                 self.shutdown()
@@ -815,6 +879,9 @@ class Telemetrix(threading.Thread):
 
         try:
             self.disable_all_reporting()
+            command = [PrivateConstants.STOP_ALL_REPORTS]
+            self._send_command(command)
+            time.sleep(.5)
 
             self.serial_port.reset_input_buffer()
             self.serial_port.close()
@@ -843,6 +910,31 @@ class Telemetrix(threading.Thread):
         if self.analog_callbacks[pin]:
             message = [PrivateConstants.ANALOG_REPORT, pin, value, time_stamp]
             self.analog_callbacks[pin](message)
+
+    def _dht_report(self, data):
+        &#34;&#34;&#34;
+        This is a private message handler for dht addition errors
+
+        :param data: message data[0] = dht report sub type
+        &#34;&#34;&#34;
+
+        if data[0]:  # DHT_ERROR
+            # error report
+            # data[0] = report sub type, data[1] = pin, data[2] = error message
+            if self.dht_callbacks[data[1]]:
+                # Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time
+                message = [PrivateConstants.DHT_REPORT, data[0], data[1], data[2], time.time()]
+                self.dht_callbacks[data[1]](message)
+        else:
+            # got valid data DHT_DATA
+            f_humidity = bytearray(data[2:6])
+            f_temperature = bytearray(data[6:])
+            message = [PrivateConstants.DHT_REPORT, data[0], data[1],
+                       (struct.unpack(&#39;&lt;f&#39;, f_humidity))[0],
+                       (struct.unpack(&#39;&lt;f&#39;, f_temperature))[0],
+                       time.time()]
+
+            self.dht_callbacks[data[1]](message)
 
     def _digital_message(self, data):
         &#34;&#34;&#34;
@@ -1002,8 +1094,6 @@ class Telemetrix(threading.Thread):
         processed.
         &#34;&#34;&#34;
         self.run_event.wait()
-        num_args = 0
-        method = None
 
         while self._is_running() and not self.shutdown_flag:
             if len(self.the_deque):
@@ -1014,20 +1104,23 @@ class Telemetrix(threading.Thread):
                     # get all the data for the report and place it into response_data
                     for i in range(packet_length):
                         while not len(self.the_deque):
-                        # while len(self.the_deque) &lt; packet_length:
-                           time.sleep(self.sleep_tune)
+                            time.sleep(self.sleep_tune)
                         data = self.the_deque.popleft()
                         response_data.append(data)
+
+                    # print(response_data)
 
                     # get the report type and look up its dispatch method
                     # here we pop the report type off of response_data
                     report_type = response_data.pop(0)
+                    # print(report_type)
 
                     # retrieve the report handler from the dispatch table
                     dispatch_entry = self.report_dispatch.get(report_type)
 
                     # if there is additional data for the report,
                     # it will be contained in response_data
+                    # noinspection PyArgumentList
                     dispatch_entry(response_data)
                     continue
 
@@ -1180,6 +1273,7 @@ receiving a KeyboardInterrupt exception</p></div>
         self.report_dispatch.update({PrivateConstants.I2C_TOO_FEW_BYTES_RCVD: self._i2c_too_few})
         self.report_dispatch.update({PrivateConstants.I2C_TOO_MANY_BYTES_RCVD: self._i2c_too_many})
         self.report_dispatch.update({PrivateConstants.SONAR_DISTANCE: self._sonar_distance_report})
+        self.report_dispatch.update({PrivateConstants.DHT_REPORT: self._dht_report})
 
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
@@ -1197,6 +1291,10 @@ receiving a KeyboardInterrupt exception</p></div>
         self.sonar_callbacks = {}
 
         self.sonar_count = 0
+
+        self.dht_callbacks = {}
+
+        self.dht_count = 0
 
         # serial port in use
         self.serial_port = None
@@ -1468,6 +1566,8 @@ receiving a KeyboardInterrupt exception</p></div>
         :param callback: Required callback function to report i2c data as a
                    result of read command
 
+       :param i2c_port: 0 = default, 1 = secondary
+
 
         callback returns a data list:
         [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
@@ -1495,6 +1595,8 @@ receiving a KeyboardInterrupt exception</p></div>
 
         :param callback: Required callback function to report i2c data as a
                    result of read command
+
+       :param i2c_port: 0 = default 1 = secondary
 
 
         callback returns a data list:
@@ -1606,6 +1708,21 @@ receiving a KeyboardInterrupt exception</p></div>
         self.loop_back_callback = callback
         self._send_command(command)
 
+    def set_analog_scan_interval(self, interval):
+        &#34;&#34;&#34;
+        Set the analog scanning interval.
+
+        :param interval: value of 0 - 255 - milliseconds
+        &#34;&#34;&#34;
+
+        if 0 &lt;= interval &lt;= 255:
+            command = [PrivateConstants.SET_ANALOG_SCANNING_INTERVAL, interval]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;Analog interval must be between 0 and 255&#39;)
+
     def set_pin_mode_analog_output(self, pin_number):
         &#34;&#34;&#34;
         Set a pin as a pwm (analog output) pin.
@@ -1615,11 +1732,14 @@ receiving a KeyboardInterrupt exception</p></div>
         &#34;&#34;&#34;
         self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)
 
-    def set_pin_mode_analog_input(self, pin_number, callback=None):
+    def set_pin_mode_analog_input(self, pin_number, differential=0, callback=None):
         &#34;&#34;&#34;
         Set a pin as an analog input.
 
         :param pin_number: arduino pin number
+
+        :param differential: difference in previous to current value before
+                             report will be generated
 
         :param callback: callback function
 
@@ -1631,8 +1751,8 @@ receiving a KeyboardInterrupt exception</p></div>
         The pin_type for analog input pins = 2
 
         &#34;&#34;&#34;
-        self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG,
-                           callback=callback)
+        self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG, differential,
+                           callback)
 
     def set_pin_mode_digital_input(self, pin_number, callback=None):
         &#34;&#34;&#34;
@@ -1650,7 +1770,7 @@ receiving a KeyboardInterrupt exception</p></div>
         The pin_type for digital input pins = 0
 
         &#34;&#34;&#34;
-        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback)
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback=callback)
 
     def set_pin_mode_digital_input_pullup(self, pin_number, callback=None):
         &#34;&#34;&#34;
@@ -1710,6 +1830,36 @@ receiving a KeyboardInterrupt exception</p></div>
         command = [PrivateConstants.I2C_BEGIN, i2c_port]
         self._send_command(command)
 
+    def set_pin_mode_dht(self, pin, callback=None):
+        &#34;&#34;&#34;
+
+        :param pin: connection pin
+
+        :param callback: callback function
+
+        Error Callback: [Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time]
+
+        Valid Data Callback: Callback 0=DHT REPORT, DHT_DATA=1, PIN, Humidity, Temperature Time]
+
+        &#34;&#34;&#34;
+
+        if not callback:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
+
+        if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
+            self.dht_callbacks[pin] = callback
+            self.sonar_count += 1
+
+            command = [PrivateConstants.DHT_NEW, pin]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f&#39;Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}&#39;)
+
+    # noinspection PyRedundantParentheses
     def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
         &#34;&#34;&#34;
 
@@ -1737,7 +1887,9 @@ receiving a KeyboardInterrupt exception</p></div>
 
         :param echo_pin:
 
-        :param callback: All sonars share a single callback
+        :param callback: callback
+
+        callback data: [PrivateConstants.SONAR_DISTANCE, trigger_pin, distance_value, time_stamp]
 
         &#34;&#34;&#34;
 
@@ -1780,7 +1932,7 @@ receiving a KeyboardInterrupt exception</p></div>
         command = [PrivateConstants.SERVO_DETACH, pin_number]
         self._send_command(command)
 
-    def _set_pin_mode(self, pin_number, pin_state, callback=None):
+    def _set_pin_mode(self, pin_number, pin_state, differential=0, callback=None):
 
         &#34;&#34;&#34;
         A private method to set the various pin modes.
@@ -1790,6 +1942,10 @@ receiving a KeyboardInterrupt exception</p></div>
         :param pin_state: INPUT/OUTPUT/ANALOG/PWM/PULLUP
                          For SERVO use: set_pin_mode_servo
                          For DHT   use: set_pin_mode_dht
+
+        :param differential: for analog inputs - threshold
+                             value to be achieved for report to
+                             be generated
 
         :param callback: A reference to a call back function to be
                          called when pin data value changes
@@ -1816,7 +1972,8 @@ receiving a KeyboardInterrupt exception</p></div>
             command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_OUTPUT]
 
         elif pin_state == PrivateConstants.AT_ANALOG:
-            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_ANALOG, 1]
+            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_ANALOG,
+                       differential &gt;&gt; 8, differential &amp; 0xff, 1]
         else:
             if self.shutdown_on_exception:
                 self.shutdown()
@@ -1836,6 +1993,9 @@ receiving a KeyboardInterrupt exception</p></div>
 
         try:
             self.disable_all_reporting()
+            command = [PrivateConstants.STOP_ALL_REPORTS]
+            self._send_command(command)
+            time.sleep(.5)
 
             self.serial_port.reset_input_buffer()
             self.serial_port.close()
@@ -1864,6 +2024,31 @@ receiving a KeyboardInterrupt exception</p></div>
         if self.analog_callbacks[pin]:
             message = [PrivateConstants.ANALOG_REPORT, pin, value, time_stamp]
             self.analog_callbacks[pin](message)
+
+    def _dht_report(self, data):
+        &#34;&#34;&#34;
+        This is a private message handler for dht addition errors
+
+        :param data: message data[0] = dht report sub type
+        &#34;&#34;&#34;
+
+        if data[0]:  # DHT_ERROR
+            # error report
+            # data[0] = report sub type, data[1] = pin, data[2] = error message
+            if self.dht_callbacks[data[1]]:
+                # Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time
+                message = [PrivateConstants.DHT_REPORT, data[0], data[1], data[2], time.time()]
+                self.dht_callbacks[data[1]](message)
+        else:
+            # got valid data DHT_DATA
+            f_humidity = bytearray(data[2:6])
+            f_temperature = bytearray(data[6:])
+            message = [PrivateConstants.DHT_REPORT, data[0], data[1],
+                       (struct.unpack(&#39;&lt;f&#39;, f_humidity))[0],
+                       (struct.unpack(&#39;&lt;f&#39;, f_temperature))[0],
+                       time.time()]
+
+            self.dht_callbacks[data[1]](message)
 
     def _digital_message(self, data):
         &#34;&#34;&#34;
@@ -2023,8 +2208,6 @@ receiving a KeyboardInterrupt exception</p></div>
         processed.
         &#34;&#34;&#34;
         self.run_event.wait()
-        num_args = 0
-        method = None
 
         while self._is_running() and not self.shutdown_flag:
             if len(self.the_deque):
@@ -2035,20 +2218,23 @@ receiving a KeyboardInterrupt exception</p></div>
                     # get all the data for the report and place it into response_data
                     for i in range(packet_length):
                         while not len(self.the_deque):
-                        # while len(self.the_deque) &lt; packet_length:
-                           time.sleep(self.sleep_tune)
+                            time.sleep(self.sleep_tune)
                         data = self.the_deque.popleft()
                         response_data.append(data)
+
+                    # print(response_data)
 
                     # get the report type and look up its dispatch method
                     # here we pop the report type off of response_data
                     report_type = response_data.pop(0)
+                    # print(report_type)
 
                     # retrieve the report handler from the dispatch table
                     dispatch_entry = self.report_dispatch.get(report_type)
 
                     # if there is additional data for the report,
                     # it will be contained in response_data
+                    # noinspection PyArgumentList
                     dispatch_entry(response_data)
                     continue
 
@@ -2256,6 +2442,7 @@ the i2c device.</p>
 <p>:param number_of_bytes: number of bytes to be read</p>
 <p>:param callback: Required callback function to report i2c data as a
 result of read command</p>
+<p>:param i2c_port: 0 = default, 1 = secondary</p>
 <p>callback returns a data list:
 [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]</p></div>
 <details class="source">
@@ -2277,6 +2464,8 @@ result of read command</p>
 
     :param callback: Required callback function to report i2c data as a
                result of read command
+
+   :param i2c_port: 0 = default, 1 = secondary
 
 
     callback returns a data list:
@@ -2301,6 +2490,7 @@ selection is needed)</p>
 <p>:param number_of_bytes: number of bytes to be read</p>
 <p>:param callback: Required callback function to report i2c data as a
 result of read command</p>
+<p>:param i2c_port: 0 = default 1 = secondary</p>
 <p>callback returns a data list:</p>
 <p>[I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]</p></div>
 <details class="source">
@@ -2325,6 +2515,8 @@ result of read command</p>
 
     :param callback: Required callback function to report i2c data as a
                result of read command
+
+   :param i2c_port: 0 = default 1 = secondary
 
 
     callback returns a data list:
@@ -2457,12 +2649,40 @@ an integer.</p>
     self._send_command(command)</code></pre>
 </details>
 </dd>
+<dt id="telemetrix.telemetrix.Telemetrix.set_analog_scan_interval"><code class="name flex">
+<span>def <span class="ident">set_analog_scan_interval</span></span>(<span>self, interval)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the analog scanning interval.</p>
+<p>:param interval: value of 0 - 255 - milliseconds</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_analog_scan_interval(self, interval):
+    &#34;&#34;&#34;
+    Set the analog scanning interval.
+
+    :param interval: value of 0 - 255 - milliseconds
+    &#34;&#34;&#34;
+
+    if 0 &lt;= interval &lt;= 255:
+        command = [PrivateConstants.SET_ANALOG_SCANNING_INTERVAL, interval]
+        self._send_command(command)
+    else:
+        if self.shutdown_on_exception:
+            self.shutdown()
+        raise RuntimeError(&#39;Analog interval must be between 0 and 255&#39;)</code></pre>
+</details>
+</dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_input"><code class="name flex">
-<span>def <span class="ident">set_pin_mode_analog_input</span></span>(<span>self, pin_number, callback=None)</span>
+<span>def <span class="ident">set_pin_mode_analog_input</span></span>(<span>self, pin_number, differential=0, callback=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Set a pin as an analog input.</p>
 <p>:param pin_number: arduino pin number</p>
+<p>:param differential: difference in previous to current value before
+report will be generated</p>
 <p>:param callback: callback function</p>
 <p>callback returns a data list:</p>
 <p>[pin_type, pin_number, pin_value, raw_time_stamp]</p>
@@ -2471,11 +2691,14 @@ an integer.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def set_pin_mode_analog_input(self, pin_number, callback=None):
+<pre><code class="python">def set_pin_mode_analog_input(self, pin_number, differential=0, callback=None):
     &#34;&#34;&#34;
     Set a pin as an analog input.
 
     :param pin_number: arduino pin number
+
+    :param differential: difference in previous to current value before
+                         report will be generated
 
     :param callback: callback function
 
@@ -2487,8 +2710,8 @@ an integer.</p>
     The pin_type for analog input pins = 2
 
     &#34;&#34;&#34;
-    self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG,
-                       callback=callback)</code></pre>
+    self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG, differential,
+                       callback)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_output"><code class="name flex">
@@ -2509,6 +2732,48 @@ an integer.</p>
 
     &#34;&#34;&#34;
     self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_dht"><code class="name flex">
+<span>def <span class="ident">set_pin_mode_dht</span></span>(<span>self, pin, callback=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>:param pin: connection pin</p>
+<p>:param callback: callback function</p>
+<p>Error Callback: [Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time]</p>
+<p>Valid Data Callback: Callback 0=DHT REPORT, DHT_DATA=1, PIN, Humidity, Temperature Time]</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_pin_mode_dht(self, pin, callback=None):
+    &#34;&#34;&#34;
+
+    :param pin: connection pin
+
+    :param callback: callback function
+
+    Error Callback: [Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time]
+
+    Valid Data Callback: Callback 0=DHT REPORT, DHT_DATA=1, PIN, Humidity, Temperature Time]
+
+    &#34;&#34;&#34;
+
+    if not callback:
+        if self.shutdown_on_exception:
+            self.shutdown()
+        raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
+
+    if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
+        self.dht_callbacks[pin] = callback
+        self.sonar_count += 1
+
+        command = [PrivateConstants.DHT_NEW, pin]
+        self._send_command(command)
+    else:
+        if self.shutdown_on_exception:
+            self.shutdown()
+        raise RuntimeError(f&#39;Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}&#39;)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input"><code class="name flex">
@@ -2541,7 +2806,7 @@ an integer.</p>
     The pin_type for digital input pins = 0
 
     &#34;&#34;&#34;
-    self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback)</code></pre>
+    self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback=callback)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input_pullup"><code class="name flex">
@@ -2682,7 +2947,8 @@ API.</p>
 <dd>
 <div class="desc"><p>:param trigger_pin:</p>
 <p>:param echo_pin:</p>
-<p>:param callback: All sonars share a single callback</p></div>
+<p>:param callback: callback</p>
+<p>callback data: [PrivateConstants.SONAR_DISTANCE, trigger_pin, distance_value, time_stamp]</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2695,7 +2961,9 @@ API.</p>
 
     :param echo_pin:
 
-    :param callback: All sonars share a single callback
+    :param callback: callback
+
+    callback data: [PrivateConstants.SONAR_DISTANCE, trigger_pin, distance_value, time_stamp]
 
     &#34;&#34;&#34;
 
@@ -2737,6 +3005,9 @@ If any exceptions are thrown, they are ignored.</p></div>
 
     try:
         self.disable_all_reporting()
+        command = [PrivateConstants.STOP_ALL_REPORTS]
+        self._send_command(command)
+        time.sleep(.5)
 
         self.serial_port.reset_input_buffer()
         self.serial_port.close()
@@ -2780,8 +3051,10 @@ If any exceptions are thrown, they are ignored.</p></div>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.loop_back" href="#telemetrix.telemetrix.Telemetrix.loop_back">loop_back</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.servo_detach" href="#telemetrix.telemetrix.Telemetrix.servo_detach">servo_detach</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.servo_write" href="#telemetrix.telemetrix.Telemetrix.servo_write">servo_write</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.set_analog_scan_interval" href="#telemetrix.telemetrix.Telemetrix.set_analog_scan_interval">set_analog_scan_interval</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_input" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_input">set_pin_mode_analog_input</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_output" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_analog_output">set_pin_mode_analog_output</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_dht" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_dht">set_pin_mode_dht</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input">set_pin_mode_digital_input</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input_pullup" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input_pullup">set_pin_mode_digital_input_pullup</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_output" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_output">set_pin_mode_digital_output</a></code></li>
