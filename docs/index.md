@@ -1,54 +1,67 @@
 
 
 <div style="text-align:center;color:#990033; font-family:times, serif; font-size:3.5em"><i>Telemetrix</i></div>
-<div style="text-align:center;color:#990033; font-family:times, serif; font-size:2em"><i>The Extensible Alternative To Arduino Firmata</i></div>
-<br>
-
-# What Is Telemetry?
-*Telemetry* is the process of collecting measurements or other data at remote points and then
-automatically transmitting that data to receiving equipment (telecommunication) for monitoring.
-
-<br>
-
-# What is Telemetrix? 
-
-The [Telemetrix Project](https://github.com/MrYsLab/telemetrix) is a Python-based telemetry package for Arduino Core devices 
-supporting a serial interface. Telemetrix allows you to develop Python applications that both control and monitor
-Arduino Core devices. It was designed to be extensible so that you may easily
-add functionality to support an Arduino library of your choice.
-
+<div style="text-align:center;color:#990033; font-family:times, serif; font-size:2em"><i>A User's Guide </i></div>
 <br>
 
 
-# What is Telemetrix-AIO?
+*Telemetry* is a system for collecting data on a remote device and then 
+automatically transmitting the collected data back to local receiving equipment for processing.
 
-[Telemetrix-AIO](https://github.com/MrYsLab/telemetrix-aio) is a Python 
-asyncio version of the Telemetrix client for users who wish to implement their application
-using Python's asyncio library.  
+The Telemetrix Project is a telemetry system explicitly designed for Arduino 
+Core-based MCUs, using Python on the local client and an Arduino Core 
+sketch on the Microcontroller Unit (MCU). Two clients are offered, 
+[_telemetrix_](https://github.com/MrYsLab/telemetrix), which uses standard Python threading techniques for concurrency, 
+and [_telemetrix-aio_](https://github.com/MrYsLab/telemetrix-aio) for those who prefer to work 
+within a Python asyncio environment.
 
+The server, [Telemetrix4Arduino](TBD), is written using standard Arduino C++. It is in an Arduino library format,
+but all the operational code is located in a single .ino file, simplifying adding an extension.
+
+Telemetrix was designed with extensibility in mind. Adding new functionality is
+straight forward. Debugging tools are integrated into the system aid in extending its functionality.
+
+This guide includes a tutorial explaining the steps taken to add DHT (temperature and humidity) 
+sensor support to Telemetrix. The tutorial covers both telemetrix and telemetrix-aio.
 <br>
 
 # Summary Of Major Features
 
 * Applications are programmed using conventional Python 3.
-* All Data change events are reported using callback functions for asynchronous notification. 
-* Each data change event is time-stamped and stored.
+* All Data change events are reported asynchronously via user registered callback functions. 
+* Each data change event is time-stamped.
 * Online [API Reference Documentation for Telemetrix](https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html).
 * Online [API Reference Documentation for Telemetrix-AIO](https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix-aio/blob/master/html/telemetrix_aio/index.html).
 * A full set of working examples for [Telemetrix](https://github.com/MrYsLab/telemetrix/tree/master/examples) and [Telemetrix-AIO](https://github.com/MrYsLab/telemetrix-aio/tree/master/examples)
 are available for download [online.](https://github.com/MrYsLab/pymata4/tree/master/examples)
-* Both share a common Arduino Sketch, Telemetrix4Arduino.
-* Integrated debugging methods to aid when adding new features.
+* Both clients utilize a common Arduino Sketch, _Telemetrix4Arduino_.
+* Integrated debugging methods are included to aid in adding new features.
 
-## Intuitive And Easy To use APIs
+# Intuitive And Easy To use APIs
 
-For example, to receive asynchronous digital pin state data change notifications, you simply do the following:
+For example, to receive asynchronous digital pin state data change notifications, you do the following:
 
-1. Set a pin mode for the pin and register a callback function.
-2. Have your application sit in a loop waiting for notifications.
+
+* **Set a pin mode for the pin and register an associated callback function for the pin**. 
+    Your callback function is written to accept  a single parameter: 
     
-When either Telemetrix or Telemetrix-AIO executes your callback method, the data parameter will contain
-a list of items that describe the change event, including a time-stamp.
+        def the_callback(data):
+     
+            # Your code here
+    
+    When the telemetrix client calls the callback function, it populates the _data_
+parameter with a list describing the data change event.
+
+    For example, for a digital data change, the list would contain the following:
+    
+    [pin_type=digital input, pin_number, pin_value, time stamp]
+
+    Each input pin type returns a unique list, as described in the API.
+    
+
+*  **Have your application sit in a loop waiting for notifications.**
+    
+# Working Examples    
 
 Here is a Telemetrix example that monitors digital pin 12 for state changes:
 
@@ -201,17 +214,6 @@ Pin: 12 Value: 0 Time Stamp: 2020-03-10 13:26:22
 Pin: 12 Value: 1 Time Stamp: 2020-03-10 13:26:27
 ```
 
-
-## What You Will Find In This Document
-
-* Installation and system requirements:
-    * [Verifying The Python 3 Version.](./python_3_verify/#how-to-verify-the-python-3-version-installed) 
-    * [Python 3 Installation Instructions.](./python_install/#installing-python-37-or-greater)
-    * [Installing _telemtrix_ or _telemetrix-aio_.](./install_pymata4/#before-you-install)
-    * [Installing the Telemetrix4Arduino sketch.](./firmata_express/#installation-instructions)
-* A discussion of the API methods, including links to working examples.
-* A tutorial on how to extend Telemetrix and Telemetrix-AIO using
-the [DHTNew](https://github.com/RobTillaart/DHTNew) library for DHT type temperature sensors.
 
 
 <br>
