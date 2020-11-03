@@ -341,8 +341,7 @@ class Telemetrix(threading.Thread):
 
     def disable_digital_reporting(self, pin):
         """
-        Disables digital reporting. By turning reporting off for this pin,
-        Reporting is disabled for all 8 bits in the "port"
+        Disables digital reporting for a single digital input.
 
         :param pin: Pin and all pins for this port
 
