@@ -66,10 +66,10 @@ def analog_in(my_board, pin):
     # set the pin mode
     my_board.set_pin_mode_analog_input(pin, callback=the_callback)
 
-    time.sleep(5)
-    my_board.disable_analog_reporting()
-    time.sleep(5)
-    my_board.enable_analog_reporting()
+    # time.sleep(5)
+    # my_board.disable_analog_reporting()
+    # time.sleep(5)
+    # my_board.enable_analog_reporting()
 
     print('Enter Control-C to quit.')
     try:
