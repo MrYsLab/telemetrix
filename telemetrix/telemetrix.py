@@ -351,10 +351,7 @@ class Telemetrix(threading.Thread):
 
     def enable_analog_reporting(self, pin):
         """
-        Enables analog reporting. This is an alias for set_pin_mode_analog_input.
-        Disabling analog reporting sets the pin to a digital input pin,
-        so we need to provide the callback and differential if we wish
-        to specify it.
+        Enables analog reporting for the specified pin.
 
         :param pin: Analog pin number. For example for A0, the number is 0.
 
@@ -365,7 +362,7 @@ class Telemetrix(threading.Thread):
 
     def enable_digital_reporting(self, pin):
         """
-        Enable reporting on the digital pin.
+        Enable reporting on the specified digital pin.
 
         :param pin: Pin number.
         """
