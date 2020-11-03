@@ -343,7 +343,7 @@ class Telemetrix(threading.Thread):
         """
         Disables digital reporting for a single digital input.
 
-        :param pin: Pin and all pins for this port
+        :param pin: Pin number.
 
         """
         command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_DISABLE, pin]
