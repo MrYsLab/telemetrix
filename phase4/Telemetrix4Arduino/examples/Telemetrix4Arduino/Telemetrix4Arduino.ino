@@ -139,8 +139,7 @@ command_descriptor command_table[15] =
 #define I2C_TOO_FEW_BYTES_RCVD 8
 #define I2C_TOO_MANY_BYTES_RCVD 9
 #define I2C_READ_REPORT 10
-#define SONAR_MAX_EXCEEDED 11
-#define SONAR_DISTANCE 12
+#define SONAR_DISTANCE 11
 #define DEBUG_PRINT 99
 
 // maximum length of a command in bytes
@@ -502,11 +501,6 @@ void i2c_write() {
 }
 
 void sonar_new(){
-    if(sonars_index == MAX_SONARS){
-        byte report_message[1] = {SONAR_MAX_EXCEEDED};
-        Serial.write(report_message, 1);
-        return;
-    }
 
     sonars[sonars_index].usonic = new Ultrasonic((uint8_t)command_buffer[0], (uint8_t)command_buffer[1],
                                                  80000UL);

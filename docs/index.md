@@ -1,6 +1,6 @@
 
 
-<div style="text-align:center;color:#990033; font-family:times, serif; font-size:3.5em"><i>Telemetrix</i></div>
+<div style="text-align:center;color:#990033; font-family:times, serif; font-size:3.5em"><i>The Telemetrix Project</i></div>
 <div style="text-align:center;color:#990033; font-family:times, serif; font-size:2em"><i>A User's Guide </i></div>
 <br>
 
