@@ -344,7 +344,7 @@ class Telemetrix(threading.Thread):
 
         :param pin: arduino pin number
 
-        :param value: pin value (1 or 0)
+        :param value: pin value (0-255)
 
         &#34;&#34;&#34;
         command = [PrivateConstants.ANALOG_WRITE, pin, value]
@@ -1454,7 +1454,7 @@ receiving a KeyboardInterrupt exception</p></div>
 
         :param pin: arduino pin number
 
-        :param value: pin value (1 or 0)
+        :param value: pin value (0-255)
 
         &#34;&#34;&#34;
         command = [PrivateConstants.ANALOG_WRITE, pin, value]
@@ -2270,7 +2270,7 @@ receiving a KeyboardInterrupt exception</p></div>
 <dd>
 <div class="desc"><p>Set the specified pin to the specified value.</p>
 <p>:param pin: arduino pin number</p>
-<p>:param value: pin value (1 or 0)</p></div>
+<p>:param value: pin value (0-255)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2281,7 +2281,7 @@ receiving a KeyboardInterrupt exception</p></div>
 
     :param pin: arduino pin number
 
-    :param value: pin value (1 or 0)
+    :param value: pin value (0-255)
 
     &#34;&#34;&#34;
     command = [PrivateConstants.ANALOG_WRITE, pin, value]

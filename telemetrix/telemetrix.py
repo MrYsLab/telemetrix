@@ -303,7 +303,7 @@ class Telemetrix(threading.Thread):
 
         :param pin: arduino pin number
 
-        :param value: pin value (1 or 0)
+        :param value: pin value (0-255)
 
         """
         command = [PrivateConstants.ANALOG_WRITE, pin, value]
