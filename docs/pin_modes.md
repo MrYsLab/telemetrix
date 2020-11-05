@@ -239,6 +239,22 @@ ddef set_pin_mode_i2c(self, i2c_port=0):
 1. telemetrix: [servo.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/servo.py)
 2. telemetrix-aio: [servo.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/servo.py)
 
+### servo_detach
+
+```python
+  def servo_detach(self, pin_number)
+
+    Detach a servo for reuse
+
+    :param pin_number: attached pin
+```
+
+**Examples:** 
+
+1. telemetrix: [servo](https://github.com/MrYsLab/telemetrix/blob/master/examples/servo.py)
+2. telemetrix-aio: [servo](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/servo.py)
+
+
 
 ### set_pin_mode_sonar
 ```python

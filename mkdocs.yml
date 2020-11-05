@@ -15,8 +15,8 @@ nav:
         - Enabling/Disabling Analog And Digital Reporting: enable_disable.md
         - Writing Values To Pins And Selected Devices:  device_writes.md
         - I2C Reads And Writes: i2c.md
-        - Management Requests: management.md
-        - Exceptions: exceptions.md
+        - Shutting Down: management.md
+        - Debugging: debug.md
     - Adding Additional Functionality - A Use Case: dht.md
     - About: about.md
     - License: license.md
