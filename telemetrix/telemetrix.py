@@ -870,27 +870,25 @@ class Telemetrix(threading.Thread):
         """
         This is the dht report handler method.
 
-        :param data:            data[0] = dht report sub type
+        :param data:            data[0] = report sub type - DHT_DATA or DHT_ERROR
 
-                                data[1] = report sub type - DHT_DATA or DHT_ERROR
+                                data[1] = pin number
 
-                                data[2] = pin number
+                                data[2] = humidity high order byte or error value if DHT_ERROR
 
-                                data[3] = humidity high order byte or error value if DHT_ERROR
+                                data[3] = humidity byte 2
 
-                                data[4] = humidity byte 2
+                                data[4] = humidity byte 3
 
-                                data[5] = humidity byte 3
+                                data[5] = humidity byte 4
 
-                                data[6] = humidity byte 4
+                                data[6] = temperature high order byte for data
 
-                                data[7] = temperature high order byte for data
+                                data[7] = temperature byte 2
 
-                                data[8] = temperature byte 2
+                                data[8] = temperature byte 3
 
-                                data[9] = temperature byte 3
-
-                                data[10] = temperature byte 4
+                                data[9] = temperature byte 4
         """
 
         if data[0]:  # DHT_ERROR
