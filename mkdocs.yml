@@ -17,7 +17,7 @@ nav:
         - I2C Reads And Writes: i2c.md
         - Shutting Down: management.md
         - Debugging: debug.md
-    - Adding Additional Functionality - A Use Case: dht.md
+    - Extentending Telemetrix: dht.md
     - About: about.md
     - License: license.md
 # theme: windmill
