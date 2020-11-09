@@ -72,7 +72,6 @@ This mode is used to place a digital pin into PWM output mode. Arduino refers to
 analog output mode.
 
 ```python
-```python
  def set_pin_mode_analog_output(self, pin_number)
 
     Set a pin as an analog input.
