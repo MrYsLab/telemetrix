@@ -737,8 +737,7 @@ For example, pin A3 is referred to as pin 3.</li>
 <h3 id="set_pin_mode_analog_output">set_pin_mode_analog_output</h3>
 <p>This mode is used to place a digital pin into PWM output mode. Arduino refers to this mode of operation as
 analog output mode.</p>
-<pre><code class="python">```python
- def set_pin_mode_analog_output(self, pin_number)
+<pre><code class="python"> def set_pin_mode_analog_output(self, pin_number)
 
     Set a pin as an analog input.
 
@@ -763,9 +762,8 @@ analog output mode.</p>
 <p>Only specific digital pins support this mode. Check with the Arduino documentation
 for your board to determine which pins support PWM.</p>
 <h3 id="set_pin_mode_dht">set_pin_mode_dht</h3>
-<p>When this method is called, a check for a valid DHT device is made. A report 
-is generated and sent back through the callback, indicating that a DHT device was 
-found or an error occurred.</p>
+<p>When this method is called, a check for a valid DHT device is made. If an error
+ is found an error report is generated.</p>
 <pre><code> def set_pin_mode_dht(self, pin, callback=None)
 
     This method sets a pin as a DHT22 pin
@@ -803,7 +801,7 @@ found or an error occurred.</p>
 <p><strong>Examples:</strong> </p>
 <ol>
 <li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/digital_input.py">digital_input.py</a></li>
-<li>telemetrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/digital_input.py">digital_input_debounce.py</a></li>
+<li>telemetrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/digital_input.py">digital_input.py</a></li>
 </ol>
 <p><strong>Notes:</strong> </p>
 <p>Data reporting via callbacks for this pin begins immediately after this method is called. </p>
@@ -826,8 +824,8 @@ found or an error occurred.</p>
 
 <p><strong>Example:</strong> </p>
 <ol>
-<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/digital_input_pullup.py">digital_input.py</a></li>
-<li>telemetrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/digital_input_pullup.py">digital_input.py</a>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/digital_input_pullup.py">digital_input_pullup.py</a></li>
+<li>telemetrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/digital_input_pullup.py">digital_input_pullup.py</a>
 <strong>Notes:</strong> </li>
 </ol>
 <p>Data reporting via callbacks for this pin begins immediately after this method is called. </p>
