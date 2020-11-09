@@ -99,9 +99,8 @@ Only specific digital pins support this mode. Check with the Arduino documentati
 for your board to determine which pins support PWM.
 
 ### set_pin_mode_dht
-When this method is called, a check for a valid DHT device is made. A report 
-is generated and sent back through the callback, indicating that a DHT device was 
-found or an error occurred.
+When this method is called, a check for a valid DHT device is made. If an error
+ is found an error report is generated.
 
 ```
  def set_pin_mode_dht(self, pin, callback=None)
