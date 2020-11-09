@@ -15,4 +15,3 @@ the [DHTNew](https://github.com/RobTillaart/DHTNew) library for DHT type tempera
 
 Copyright (C) 2020 Alan Yorinks. All Rights Reserved.
 
-**Last updated 24 October 2020 **
