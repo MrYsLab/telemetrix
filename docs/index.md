@@ -15,7 +15,8 @@ sketch on the Microcontroller Unit (MCU). Two clients are offered,
 and [_telemetrix-aio_](https://github.com/MrYsLab/telemetrix-aio) for those who prefer to work 
 within a Python asyncio environment.
 
-The server, [Telemetrix4Arduino](TBD), is written using standard Arduino C++. It is in an Arduino library format,
+The server, [Telemetrix4Arduino](https://github.com/MrYsLab/Telemetrix4Arduino), is written using standard Arduino
+ C++. It is in an Arduino library format,
 but all the operational code is located in a single .ino file, simplifying adding an extension.
 
 Telemetrix was designed with extensibility in mind. Adding new functionality is
