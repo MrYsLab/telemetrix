@@ -3,10 +3,10 @@
 The Telemetrix Project comes pre-packaged with support for a fixed set of sensors and actuators.
 But, what if you want to add support for something outside of the base set?
 
-In this section, you will learn how to add custom support for a sensor or actuator of your choice.
+In this section, you will learn how to add custom support for a sensor or actuator of your choosing.
 
-For discussion purposes, we will be using the DHT 22 temperature/humidity sensor to illustrate how to
- extend the Telemetrix Project's capabilities.
+We will be using the DHT 22 temperature/humidity sensor to 
+illustrate how to extend the Telemetrix Project's capabilities for discussion purposes.
  
 ## The Command And Reporter Packets
 
@@ -25,26 +25,27 @@ The _packet length_ and _packet ID_ portions of the packet are each one byte in 
 The total payload length is of variable size.
 
 The packet length byte represents the total length in bytes of the payload section of the packet.
-Note that length does not include the packet length byte.
+Note that the length does not include the packet length byte.
 
-When Telemetrix4Arduino receives a command in its _get_next_command_ function, it places all of the bytes
-that follow the payload ID into a command_buffer for processing.
+When Telemetrix4Arduino receives a command in the get_next_command function, 
+all of the bytes that follow the payload ID are placed into a command_buffer for processing.
 
 When a Telemetrix client receives a report, the _reporter method also places all of the bytes following the payload
 ID into the response_data buffer for processing.
  
-## Coping With Various Data Types With A Byte Oriented Serial Link
+## Coping With Various Data Types With A Byte-Oriented Serial Link
 When data is sent across the serial link, it is sent as a series of bytes.
-Some data types, such as integers and floating point values are larger in size than a single byte.
-For the Telemetrix Project, an integer value is two bytes in length and a floating point value is four bytes
+Some data types, such as integers and floating-point values, are larger than a single byte.
+For the Telemetrix Project, an integer value is two bytes in length, and a floating-point value is four bytes
 in length.
 
-To send types larger than a byte, the multi-byte values are disassembled into individual bytes before transmission.
-When received the individual bytes are reassembled into the original multi-byte value. 
- For all data items that must be represented in this manner, by convention the most significant byte 
+When sending a value larger than a byte in length, the multi-byte values are disassembled into 
+individual bytes before transmission.
+When received, the individual bytes are reassembled into the original multi-byte value. 
+ For all data items that must be represented in this manner, by convention, the most significant byte 
  is the first byte transmitted, followed by all subsequent bytes in descending byte order.
 
-For example, the DHT 22 sensor expresses temperature and humidity values as floating point. To send a report containing
+For example, the DHT 22 sensor expresses temperature and humidity values as floating-point. To send a report containing
 these values to the client, they must first be converted to individual bytes.
 
 Using humidity as an example, let's see how this is done:
@@ -55,7 +56,7 @@ dht_data = dhts[i].dht_sensor->getHumidity();
 memcpy(&report_message[4], &dht_data, sizeof dht_data);
 ```
 The humidity is retrieved by calling the DHTNEW method,  _getHumdity_.
-The floating point value returned in dht_data is converted to bytes, by using
+The floating-point value returned in dht_data is converted to bytes, by using
 the memcpy function. In the example above, the bytes are copied into a report_message
 buffer in MSB order.
 
@@ -73,7 +74,7 @@ message = [PrivateConstants.DHT_REPORT, data[0], data[1],
 
 In the example above, the humidity and temperature values are first extracted from the incoming report
 as bytearrays. Then using the Python struct library, the bytearrays are reassembled into their
- original floating point values.
+ original floating-point values.
 
 
 ## Preparing For The New Extension
@@ -83,7 +84,7 @@ your extension.
 
 1. Review the library's API to select the methods you wish to support.
 
-    You may support the full set of library functions or a subset. For this example
+    You may support the full set of library functions or a subset. For this example,
     only the minimum functions will be supported to help keep things as simple as possible.
     
     The library chosen for the DHT is the [dhtnew library](https://github.com/RobTillaart/DHTNew).
@@ -105,7 +106,7 @@ purposes. Modifying telemetrix-aio would take a similar approach.
 Each step will be discussed in detail in the following sections.
 The assumption is that the new extension will ultimately result in continuous report generation
  without any additional API calls. 
-Your device may have different requirements and you will need to adjust things for your particular case.
+Your device may have different requirements, and you will need to adjust things for your particular case.
 
 1. Add a new **client** command to be transmitted to the server.
 
@@ -156,7 +157,7 @@ Add this value to private_contants.py
  MAX_DHTS = 6
 ```
 
-<p><b>3. Add storage to telemetrix.py to keep track of the number of currently active DHT devices and
+<p><b>3. Add storage to telemetrix.py to keeps track of the number of currently active DHT devices and
 their associated callback functions.</b></p>
 
 ```python
@@ -167,7 +168,7 @@ self.dht_count = 0
 The dht_callbacks dictionary uses the pin number for the DHT device as a key to retrieve its associated callback 
 function.
 
-The dht_count variable keep track of the currently active DHT devices.
+The dht_count variable keeps track of the currently active DHT devices.
 
 <p><b>4. Add a command method to telemetrix.py to command the server to add a new DHT device.</b></p>
 
@@ -196,10 +197,10 @@ def set_pin_mode_dht(self, pin, callback=None):
                 self.shutdown()
             raise RuntimeError(f'Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}')
 ```
-The name chosen, set_pin_mode_dht, was used to stay consistent with the telemetrix naming convention.
+The name set_pin_mode_dht, was chosen to stay consistent with the telemetrix naming conventions.
 Because DHT devices generate reports, we ensure that the user specifies a callback function for the device.
-The callback is added to dht_callbacks and the number of active DHT devices is incremented. If the maximum number of 
-DHT devices is exceeded, a RuntimeError is raised, otherwise a command data packet is built and sent to the server.
+The callback is added to dht_callbacks, and the number of active DHT devices is incremented. If the maximum number of DHT 
+devices is exceeded, a RuntimeError is raised.  Otherwise, a command data packet is built and sent to the server.
 
 **NOTE:** The _send_command method will automatically calculate the packet length and append it to the packet.
 
@@ -286,7 +287,7 @@ extern void set_analog_scanning_interval();
 <p><b>4. Update The Command Table With The New Command</b></p>
 
 The data structures are provided below. To update the table, increase
-the size of the command_table to handle accept the new command.
+the size of the command_table to accept the new command.
 
 The command_table contains pointers to the command functions. Note
 that you may optionally specify the command without the & operator. The
@@ -398,22 +399,21 @@ void dht_new()
 }
 ```
 When a DHT is added, a read is performed to see if there are any issues with the device.
-If the read returns a zero, then there are no issues, and nothing to report. However a non-zero
+If the read returns a zero, then there are no issues and nothing to report. However, a non-zero
 value is an error indicator. The error value is returned as a report.
 
 ### Add A New Server Function To Continuously Monitor The Device
 
-<p><b>1. Create A Deivce Scanner Function For Active DHT Devices</b></p>
+<p><b>1. Create A Device Scanner Function For Active DHT Devices</b></p>
 We are going to create the _scan_dhts_ scanning function and then call the function in 
 the loop section of the sketch.
 
 The scan_dhts function prebuilds a report_message buffer assuming that the read
 will return valid data.  The format for the report is shown in the comments for the function.
-For valid data, the floating point values are copied to the buffer as bytes and report is sent across
-the link. 
+For valid data, the floating-point values are copied to the buffer as bytes, and a report is sent across the link.
 
 If an error is returned as a result of the read, byte 2 of the report, the report sub-type is changed 
-from DHT_DATA to DHT_ERROR and packet length is changed to a value of 4 bytes. The report is then 
+from DHT_DATA to DHT_ERROR, and the packet length is changed to a value of 4 bytes. The report is then 
 sent across the serial link.
 
 
@@ -509,9 +509,10 @@ void loop()
 
 ### Add a New Client Report Handler
 
-<p><b>1. Add An Entry For The DHT Report To The Report Dipatch Dictionary</b></p>
+<p><b>1. Add An Entry For The DHT Report To The Report Dispatch Dictionary</b></p>
 The report_dispatch dictionary uses report ID values as a key to look up the
-handler for the incoming report. To add a new entry, the dictionary update method is used.
+handler for the incoming report. The dictionary update method is used when adding a new entry into 
+the dispatch dictionary.
 
 ```
 # The report_dispatch dictionary is used to process
@@ -574,8 +575,4 @@ def _dht_report(self, data):
             self.dht_callbacks[data[1]](message)
 ```
 
-
-
-
-```
 
