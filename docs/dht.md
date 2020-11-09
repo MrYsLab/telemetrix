@@ -27,10 +27,13 @@ The total payload length is of variable size.
 The packet length byte represents the total length in bytes of the payload section of the packet.
 Note that the length does not include the packet length byte.
 
-When Telemetrix4Arduino receives a command in the get_next_command function, 
+When Telemetrix4Arduino receives a command in the 
+[get_next_command](https://github.com/MrYsLab/Telemetrix4Arduino/blob/275f58b98e336855deb677ae5f7406e5a253b469/examples/Telemetrix4Arduino/Telemetrix4Arduino.ino#L768) function, 
 all of the bytes that follow the payload ID are placed into a command_buffer for processing.
 
-When a Telemetrix client receives a report, the _reporter method also places all of the bytes following the payload
+When a Telemetrix client receives a report, the
+ [_reporter](https://github.com/MrYsLab/telemetrix/blob/aebc7d985328c8d8c4de192d175e0792e5154637/telemetrix/telemetrix.py#L1063) 
+ method also places all of the bytes following the payload
 ID into the response_data buffer for processing.
  
 ## Coping With Various Data Types With A Byte-Oriented Serial Link
@@ -42,7 +45,7 @@ in length.
 When sending a value larger than a byte in length, the multi-byte values are disassembled into 
 individual bytes before transmission.
 When received, the individual bytes are reassembled into the original multi-byte value. 
- For all data items that must be represented in this manner, by convention, the most significant byte 
+ For all data items that must be represented in this manner, by convention, the most significant byte (MSB)
  is the first byte transmitted, followed by all subsequent bytes in descending byte order.
 
 For example, the DHT 22 sensor expresses temperature and humidity values as floating-point. To send a report containing
@@ -92,7 +95,7 @@ your extension.
 2. Determine if there is a time constraint on how often a device can be accessed.
 
       The DHT 22, for example, can only be read every 2 seconds to receive valid data. 
-      We will demonstrate how to support this restriction in a non-blocking manner.**
+      We will demonstrate how to support this restriction in a non-blocking manner.
 
 3. Determine the number of instances of the device you wish to support.
 
@@ -157,7 +160,7 @@ Add this value to private_contants.py
  MAX_DHTS = 6
 ```
 
-<p><b>3. Add storage to telemetrix.py to keeps track of the number of currently active DHT devices and
+<p><b>3. Add storage to telemetrix.py to keep track of the number of currently active DHT devices and
 their associated callback functions.</b></p>
 
 ```python
@@ -168,7 +171,7 @@ self.dht_count = 0
 The dht_callbacks dictionary uses the pin number for the DHT device as a key to retrieve its associated callback 
 function.
 
-The dht_count variable keeps track of the currently active DHT devices.
+The dht_count variable keeps track of the number of currently active DHT devices.
 
 <p><b>4. Add a command method to telemetrix.py to command the server to add a new DHT device.</b></p>
 
@@ -202,7 +205,8 @@ Because DHT devices generate reports, we ensure that the user specifies a callba
 The callback is added to dht_callbacks, and the number of active DHT devices is incremented. If the maximum number of DHT 
 devices is exceeded, a RuntimeError is raised.  Otherwise, a command data packet is built and sent to the server.
 
-**NOTE:** The _send_command method will automatically calculate the packet length and append it to the packet.
+**NOTE:** The [_send_command](https://github.com/MrYsLab/telemetrix/blob/aebc7d985328c8d8c4de192d175e0792e5154637/telemetrix/telemetrix.py#L1007)
+ method will automatically calculate the packet length and append it to the packet.
 
 
 
