@@ -636,9 +636,12 @@ illustrate how to extend the Telemetrix Project's capabilities for discussion pu
 The total payload length is of variable size.</p>
 <p>The packet length byte represents the total length in bytes of the payload section of the packet.
 Note that the length does not include the packet length byte.</p>
-<p>When Telemetrix4Arduino receives a command in the get_next_command function, 
+<p>When Telemetrix4Arduino receives a command in the 
+<a href="https://github.com/MrYsLab/Telemetrix4Arduino/blob/275f58b98e336855deb677ae5f7406e5a253b469/examples/Telemetrix4Arduino/Telemetrix4Arduino.ino#L768">get_next_command</a> function, 
 all of the bytes that follow the payload ID are placed into a command_buffer for processing.</p>
-<p>When a Telemetrix client receives a report, the _reporter method also places all of the bytes following the payload
+<p>When a Telemetrix client receives a report, the
+ <a href="https://github.com/MrYsLab/telemetrix/blob/aebc7d985328c8d8c4de192d175e0792e5154637/telemetrix/telemetrix.py#L1063">_reporter</a> 
+ method also places all of the bytes following the payload
 ID into the response_data buffer for processing.</p>
 <h2 id="coping-with-various-data-types-with-a-byte-oriented-serial-link">Coping With Various Data Types With A Byte-Oriented Serial Link</h2>
 <p>When data is sent across the serial link, it is sent as a series of bytes.
@@ -648,7 +651,7 @@ in length.</p>
 <p>When sending a value larger than a byte in length, the multi-byte values are disassembled into 
 individual bytes before transmission.
 When received, the individual bytes are reassembled into the original multi-byte value. 
- For all data items that must be represented in this manner, by convention, the most significant byte 
+ For all data items that must be represented in this manner, by convention, the most significant byte (MSB)
  is the first byte transmitted, followed by all subsequent bytes in descending byte order.</p>
 <p>For example, the DHT 22 sensor expresses temperature and humidity values as floating-point. To send a report containing
 these values to the client, they must first be converted to individual bytes.</p>
@@ -688,7 +691,7 @@ only the minimum functions will be supported to help keep things as simple as po
 <li>
 <p>Determine if there is a time constraint on how often a device can be accessed.</p>
 <p>The DHT 22, for example, can only be read every 2 seconds to receive valid data. 
-  We will demonstrate how to support this restriction in a non-blocking manner.**</p>
+  We will demonstrate how to support this restriction in a non-blocking manner.</p>
 </li>
 <li>
 <p>Determine the number of instances of the device you wish to support.</p>
@@ -754,7 +757,7 @@ Your device may have different requirements, and you will need to adjust things 
  MAX_DHTS = 6
 </code></pre>
 
-<p><b>3. Add storage to telemetrix.py to keeps track of the number of currently active DHT devices and
+<p><b>3. Add storage to telemetrix.py to keep track of the number of currently active DHT devices and
 their associated callback functions.</b></p>
 
 <pre><code class="python">self.dht_callbacks = {}
@@ -764,7 +767,7 @@ self.dht_count = 0
 
 <p>The dht_callbacks dictionary uses the pin number for the DHT device as a key to retrieve its associated callback 
 function.</p>
-<p>The dht_count variable keeps track of the currently active DHT devices.</p>
+<p>The dht_count variable keeps track of the number of currently active DHT devices.</p>
 <p><b>4. Add a command method to telemetrix.py to command the server to add a new DHT device.</b></p>
 
 <pre><code>def set_pin_mode_dht(self, pin, callback=None):
@@ -796,7 +799,8 @@ function.</p>
 Because DHT devices generate reports, we ensure that the user specifies a callback function for the device.
 The callback is added to dht_callbacks, and the number of active DHT devices is incremented. If the maximum number of DHT 
 devices is exceeded, a RuntimeError is raised.  Otherwise, a command data packet is built and sent to the server.</p>
-<p><strong>NOTE:</strong> The _send_command method will automatically calculate the packet length and append it to the packet.</p>
+<p><strong>NOTE:</strong> The <a href="https://github.com/MrYsLab/telemetrix/blob/aebc7d985328c8d8c4de192d175e0792e5154637/telemetrix/telemetrix.py#L1007">_send_command</a>
+ method will automatically calculate the packet length and append it to the packet.</p>
 <h3 id="adding-a-new-server-command-handler">Adding A New Server Command Handler</h3>
 <p><p><b>1. Add the library to the list of #includes</b></p></p>
 <pre><code>#include &lt;Arduino.h&gt;
