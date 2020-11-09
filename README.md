@@ -1,43 +1,20 @@
 # The Telemetrix Project
 
-Telemetry is the collection of measurements or other data at remote points and their 
-automatic transmission to receiving equipment (telecommunication) for monitoring.
+Telemetry is a system for collecting data on a remote device and then automatically transmitting the 
+collected data back to local receiving equipment for processing.
 
-The Telemetrix Project is a telemetry package for Arduino core devices with a serial interface.
+The Telemetrix Project is a telemetry system explicitly designed for Arduino Core-based MCUs, using 
+Python on the local client and an 
+Arduino Core sketch, called 
+[Telemetrix4Arduino](https://github.com/MrYsLab/Telemetrix4Arduino) on the Microcontroller Unit (MCU). 
 
-It is intended to become a user-extensible replacement for StandardFirmata, without
-the complexity of Firmata.
+It is designed to be user extensible so that you may add support for sensors and actuators
+of your choosing.
 
-Feature Punch List
+A [User's Guide](https://mryslab.github.io/telemetrix/) explaining installation and use is available online.
 
-|           Feature          	|         Example         	|  Status  	|   Phase   |
-|:--------------------------:	|:-----------------------:	|:--------:	|:--------:	|
-| Debug Support              	| loop_back.py            	| Complete 	| Phase 1   |
-| Analog Input               	| analog_input.py         	| Complete 	| Phase 1   |
-| Digital Input              	| digital_input.py        	| Complete 	| Phase 1   |
-| Digital Input Pullup       	| digital_input_pullup.py 	| Complete 	| Phase 1   |
-| Digital Output             	| blink.py                	| Complete 	| Phase 1   |
-| PWM Output (analog output) 	| fade.py                 	| Complete 	| Phase 1   |
-| Servo                      	| servo.py               	| Complete 	| Phase 2   |
-| i2c                        	| i2c_adxl345_accelerometer.py | Complete  | Phase 3 |
-| HC-SR04                    	| hc-sr04_distance_sensor.py | Complete | Phase 4 |
-| DHT                        	| dht.py (note this is for DHT22 Only) | Complete   | Phase 6      	|
+A Python API for may be found [here.](https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html) 
 
-It is early stages of this project, so there are may be some bugs lurking.
-A word about the current directory structure. The code in the "phase" directories
-contain the latest code, examples and arduino sketch. As the phases progress through
-development each phase will contain the contents of the previous phase as well as the
-additions for the phase itself.
-
-Arduino-telemetrix is the Arduino server sketch, and telemetrix is the python client.
-
-Python API for phase 6 may be found [here.](https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html) 
-
-The code outside of the phase directories is likely to be highly volatile and should
-be used with caution.
-
-The project will be documented on my [Bots In Pieces blog.](https://mryslab.github.io/bots-in-pieces/index.html)
-Here is a link to the [first installment.](https://mryslab.github.io/bots-in-pieces/arduino,stm32,firmata/2020/09/20/telemetrix-phase-1.html)
-
-If you find bugs or would like to comment on the features, please enter an issue
- [here.](https://github.com/MrYsLab/telemetrix/issues)
+This project was developed in phases and the directories for those phases were left intact. During the development
+phase, the phases were discussed on the 
+[Bots In Pieces](https://mryslab.github.io/bots-in-pieces/arduino,stm32,firmata/2020/09/20/telemetrix-phase-1.html) blog.
