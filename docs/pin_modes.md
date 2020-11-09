@@ -140,7 +140,7 @@ When this method is called, a check for a valid DHT device is made. If an error
 **Examples:** 
 
 1. telemetrix: [digital_input.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/digital_input.py)
-2. telemetrix-aio: [digital_input_debounce.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/digital_input.py)
+2. telemetrix-aio: [digital_input.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/digital_input.py)
 
 **Notes:** 
 
@@ -167,8 +167,8 @@ Data reporting via callbacks for this pin begins immediately after this method i
 ```
 **Example:** 
 
-1. telemetrix: [digital_input.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/digital_input_pullup.py)
-2. telemetrix-aio: [digital_input.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/digital_input_pullup.py)
+1. telemetrix: [digital_input_pullup.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/digital_input_pullup.py)
+2. telemetrix-aio: [digital_input_pullup.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/digital_input_pullup.py)
 **Notes:** 
 
 Data reporting via callbacks for this pin begins immediately after this method is called. 
