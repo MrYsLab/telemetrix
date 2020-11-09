@@ -2,14 +2,19 @@
 
 from setuptools import setup
 
+with open('README.md') as f:
+    long_description = f.read()
+
 
 setup(
     name='telemetrix',
     packages=['telemetrix'],
     install_requires=['pyserial'],
 
-    version='1.0',
-    description="telemetrix phase1 client and server",
+    version='1.1',
+    description="Remotely Control And Monitor Arduino-Core devices",
+    long_description=long_description,
+    long_description_content_type='text/markdown',
 
     author='Alan Yorinks',
     author_email='MisterYsLab@gmail.com',
