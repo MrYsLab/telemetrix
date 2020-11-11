@@ -271,6 +271,7 @@ class Telemetrix(threading.Thread):
 
             print(f'\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to '
                   'reset...')
+            self._run_threads()
             time.sleep(self.arduino_wait)
 
             self._get_arduino_id()
