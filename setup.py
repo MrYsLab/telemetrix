@@ -22,7 +22,7 @@ setup(
     download_url='https://github.com/MrYsLab/telemetrix',
     keywords=['telemetrix', 'Arduino', 'Protocol', 'Python'],
     classifiers=[
-         'Development Status :: 5 - Production/Stable',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Other Environment',
         'Intended Audience :: Developers',
         'Intended Audience :: Education',

@@ -64,7 +64,8 @@ def analog_in(my_board, pin):
      """
 
     # set the pin mode
-    my_board.set_pin_mode_analog_input(pin, callback=the_callback)
+    my_board.set_pin_mode_analog_input(pin, differential=5, callback=the_callback)
+
 
     # time.sleep(5)
     # my_board.disable_analog_reporting()
