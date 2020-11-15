@@ -40,6 +40,7 @@ class PrivateConstants:
     DHT_NEW = 14
     STOP_ALL_REPORTS = 15
     SET_ANALOG_SCANNING_INTERVAL = 16
+    ENABLE_ALL_REPORTS = 17
 
     # reports
     # debug data from Arduino

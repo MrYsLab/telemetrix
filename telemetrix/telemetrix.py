@@ -218,6 +218,8 @@ class Telemetrix(threading.Thread):
         else:
             print(f'Telemetrix4Arduino firmware version: {self.firmware_version[0]}.'
                   f'{self.firmware_version[1]}')
+        command = [PrivateConstants.ENABLE_ALL_REPORTS]
+        self._send_command(command)
 
     def _find_arduino(self):
         """
@@ -834,7 +836,6 @@ class Telemetrix(threading.Thread):
         self._stop_threads()
 
         try:
-            self.disable_all_reporting()
             command = [PrivateConstants.STOP_ALL_REPORTS]
             self._send_command(command)
             time.sleep(.5)
