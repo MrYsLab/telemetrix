@@ -15,6 +15,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 """
+import socket
 import struct
 import sys
 import threading
@@ -43,7 +44,8 @@ class Telemetrix(threading.Thread):
     # noinspection PyPep8,PyPep8,PyPep8
     def __init__(self, com_port=None, arduino_instance_id=1,
                  arduino_wait=4, sleep_tune=0.000001,
-                 shutdown_on_exception=True):
+                 shutdown_on_exception=True,
+                 ip_address=None, ip_port=31335):
 
         """
 
@@ -62,6 +64,10 @@ class Telemetrix(threading.Thread):
         :param shutdown_on_exception: call shutdown before raising
                                       a RunTimeError exception, or
                                       receiving a KeyboardInterrupt exception
+
+        :param ip_address: ip address of tcp/ip connected device.
+
+        :param ip_port: ip port of tcp/ip connected device
         """
 
         # initialize threading parent
@@ -74,7 +80,13 @@ class Telemetrix(threading.Thread):
         self.the_reporter_thread = threading.Thread(target=self._reporter)
         self.the_reporter_thread.daemon = True
 
-        self.the_data_receive_thread = threading.Thread(target=self._serial_receiver)
+        self.ip_address = ip_address
+        self.ip_port = ip_port
+
+        if not self.ip_address:
+            self.the_data_receive_thread = threading.Thread(target=self._serial_receiver)
+        else:
+            self.the_data_receive_thread = threading.Thread(target=self._tcp_receiver)
 
         self.the_data_receive_thread.daemon = True
 
@@ -144,6 +156,9 @@ class Telemetrix(threading.Thread):
         # serial port in use
         self.serial_port = None
 
+        # socket for tcp/ip communications
+        self.sock = None
+
         # flag to indicate we are in shutdown mode
         self.shutdown_flag = False
 
@@ -168,32 +183,38 @@ class Telemetrix(threading.Thread):
         print(f"Telemetrix:  Version {PrivateConstants.TELEMETRIX_VERSION}\n\n"
               f"Copyright (c) 2020 Alan Yorinks All Rights Reserved.\n")
 
-        if not self.com_port:
-            # user did not specify a com_port
-            try:
-                self._find_arduino()
-            except KeyboardInterrupt:
+        # using the serial link
+        if not self.ip_address:
+            if not self.com_port:
+                # user did not specify a com_port
+                try:
+                    self._find_arduino()
+                except KeyboardInterrupt:
+                    if self.shutdown_on_exception:
+                        self.shutdown()
+            else:
+                # com_port specified - set com_port and baud rate
+                try:
+                    self._manual_open()
+                except KeyboardInterrupt:
+                    if self.shutdown_on_exception:
+                        self.shutdown()
+
+            if self.serial_port:
+                print(f"Arduino compatible device found and connected to {self.serial_port.port}")
+
+                self.serial_port.reset_input_buffer()
+                self.serial_port.reset_output_buffer()
+
+            # no com_port found - raise a runtime exception
+            else:
                 if self.shutdown_on_exception:
                     self.shutdown()
+                raise RuntimeError('No Arduino Found or User Aborted Program')
         else:
-            # com_port specified - set com_port and baud rate
-            try:
-                self._manual_open()
-            except KeyboardInterrupt:
-                if self.shutdown_on_exception:
-                    self.shutdown()
-
-        if self.serial_port:
-            print(f"Arduino compatible device found and connected to {self.serial_port.port}")
-
-            self.serial_port.reset_input_buffer()
-            self.serial_port.reset_output_buffer()
-
-        # no com_port found - raise a runtime exception
-        else:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('No Arduino Found or User Aborted Program')
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((self.ip_address, self.ip_port))
+            print(f'Successfully connected to: {self.ip_address}:{self.ip_port}')
 
         # allow the threads to run
         self._run_threads()
@@ -306,10 +327,12 @@ class Telemetrix(threading.Thread):
 
         :param pin: arduino pin number
 
-        :param value: pin value (0-255)
+        :param value: pin value (maximum 16 bitrs)
 
         """
-        command = [PrivateConstants.ANALOG_WRITE, pin, value]
+        value_msb = value >> 8
+        value_lsb = value & 0xff
+        command = [PrivateConstants.ANALOG_WRITE, pin, value_msb, value_lsb]
         self._send_command(command)
 
     def digital_write(self, pin, value):
@@ -381,7 +404,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.ARE_U_THERE]
         self._send_command(command)
         # provide time for the reply
-        time.sleep(.1)
+        time.sleep(.5)
 
     def _get_firmware_version(self):
         """
@@ -392,7 +415,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.GET_FIRMWARE_VERSION]
         self._send_command(command)
         # provide time for the reply
-        time.sleep(.1)
+        time.sleep(.5)
 
     def i2c_read(self, address, register, number_of_bytes,
                  callback=None, i2c_port=0):
@@ -840,12 +863,22 @@ class Telemetrix(threading.Thread):
             self._send_command(command)
             time.sleep(.5)
 
-            self.serial_port.reset_input_buffer()
-            self.serial_port.close()
+            if self.ip_address:
+                try:
+                    self.sock.shutdown(socket.SHUT_RDWR)
+                    self.sock.close()
+                except Exception:
+                    pass
+            else:
+                try:
+                    self.serial_port.reset_input_buffer()
+                    self.serial_port.close()
 
-        except (RuntimeError, SerialException, OSError):
-            # ignore error on shutdown
-            pass
+                except (RuntimeError, SerialException, OSError):
+                    # ignore error on shutdown
+                    pass
+        except Exception:
+            raise RuntimeError('Shutdown failed - could not send stop streaming message')
 
     '''
     report message handlers
@@ -1013,19 +1046,23 @@ class Telemetrix(threading.Thread):
 
         :param command:  command data in the form of a list
 
-        :returns: number of bytes sent
         """
         # the length of the list is added at the head
         command.insert(0, len(command))
         # print(command)
         send_message = bytes(command)
-        try:
-            self.serial_port.write(send_message)
-            # print(send_message)
-        except SerialException:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('write fail in _send_command')
+
+        if self.serial_port:
+            try:
+                self.serial_port.write(send_message)
+            except SerialException:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError('write fail in _send_command')
+        elif self.ip_address:
+            self.sock.sendall(send_message)
+        else:
+            raise RuntimeError('No serial port or ip address set.')
 
     def _servo_unavailable(self, report):
         """
@@ -1113,6 +1150,10 @@ class Telemetrix(threading.Thread):
         """
         self.run_event.wait()
 
+        # Don't start this thread if using a tcp/ip transport
+        if self.ip_address:
+            return
+
         while self._is_running() and not self.shutdown_flag:
             # we can get an OSError: [Errno9] Bad file descriptor when shutting down
             # just ignore it
@@ -1126,3 +1167,23 @@ class Telemetrix(threading.Thread):
                     # continue
             except OSError:
                 pass
+
+    def _tcp_receiver(self):
+        """
+        Thread to continuously check for incoming data.
+        When a byte comes in, place it onto the deque.
+        """
+        self.run_event.wait()
+
+        # Start this thread only if ip_address is set
+
+        if self.ip_address:
+
+            while self._is_running() and not self.shutdown_flag:
+                try:
+                    payload = self.sock.recv(1)
+                    self.the_deque.append(ord(payload))
+                except Exception:
+                    pass
+        else:
+            return
