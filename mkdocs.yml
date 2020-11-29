@@ -8,6 +8,7 @@ nav:
           - Installing Telemetrix: install_telemetrix.md
           - Installing Telemetrix-AIO: install_telemetrix-aio.md
           - Installing Telemetrix4Arduino: telemetrix4arduino.md
+          - Installing And Using Telemetrix4Esp8266: telemetrix4esp8266.md
           - Upgrading To The Latest Version Python Clients: upgrade.md
     - The Python APIs:
         - The __init__ Method: init.md
@@ -17,7 +18,7 @@ nav:
         - I2C Reads And Writes: i2c.md
         - Shutting Down: management.md
         - Debugging: debug.md
-    - Extentending Telemetrix: dht.md
+    - Extending Telemetrix: dht.md
     - About: about.md
     - License: license.md
 # theme: windmill

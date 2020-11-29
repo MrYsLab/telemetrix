@@ -5,6 +5,8 @@
     * [Python 3 Installation Instructions.](./python_install.md)
     * [Installing _telemtrix_](./install_telemetrix.md) or [_telemetrix-aio_.](./install_telemetrix-aio.md)
     * [Installing the Telemetrix4Arduino sketch.](./telemetrix4arduino.md)
+    * [Installing the Telemetrix4Esp8266 sketch.](./telemetrix4esp8266.md)
+
 * A discussion of the [API methods](./init.md), including links to working examples.
 * A [tutorial on how to extend Telemetrix and Telemetrix-AIO](./dht.md) using
 the [DHTNew](https://github.com/RobTillaart/DHTNew) library for DHT type temperature sensors.

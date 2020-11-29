@@ -51,7 +51,8 @@ There is nothing *magic* about the name *board*.
 ```python
 def __init__(self, com_port=None, arduino_instance_id=1,
                  arduino_wait=4, sleep_tune=0.000001,
-                 shutdown_on_exception=True)
+                 shutdown_on_exception=True,
+                 ip_address=None, ip_port=31335):
 ```
 There are several optional parameters available to instantiate the Telemetrix class.
 Typically, one accepts all the default values. However, there are times when you may wish 
@@ -99,6 +100,19 @@ By setting this parameter to False, the Arduino may continue to send data to
 your application even after restarting it.
 
 The default is True and recommended to be used.
+
+### ip_address
+When using a WiFi connection to your device, you must specify the IP address of the device. 
+If you are using a NodeMCU type device, you can determine the IP address the device is using by 
+connecting a serial terminal set to 115200 baud to the USB connector. When a 
+connection to the router is complete, the IP address of the device is printed to the terminal console, for example:
+
+```
+Connected to WiFi. IP Address: 192.168.2.220  IP Port: 31335
+```
+
+### ip_port
+The IP port used for the WiFi connection is specified with this parameter. The default is 31335.
 
 
 ## Understanding The TelemetrixAIO *\__init__* Parameters
@@ -177,15 +191,35 @@ The default for this parameter is True. If True, then when a shutdown occurs,
 the asyncio loop will be closed. If you wish to keep the loop active upon a 
 telemetrix_aio shutdown, set this parameter to False.
 
+### ip_address
+
+When using a WiFi connection to your device, you must specify the IP address of the device. 
+If you are using a NodeMCU type device, you can determine the IP address the device is using
+ by connecting a serial terminal set to 115200 baud to the USB connector. When a connection 
+to the router is complete, the IP address of the device is printed to the terminal console, for example:
+
+```
+Connected to WiFi. IP Address: 192.168.2.220  IP Port: 31335
+```
+
+### ip_port
+The IP port used for the WiFi connection is specified with this parameter. The default is 31335.
+
 ## API Examples
 
 ### Telemetrix
    Each [example on GitHub](https://github.com/MrYsLab/telemetrix/tree/master/examples) 
-   demonstrates instantiating the Telemetrix class.
+   demonstrates instantiating the Telemetrix class. 
+   
+   WiFi examples are available
+   [here](https://github.com/MrYsLab/telemetrix/tree/master/examples/wifi).
    
 ### TelemetrixAIO
    Each [example on GitHub](https://github.com/MrYsLab/telemetrix-aio/tree/master/examples) 
-   demonstrates instantiating the TelemetrixAIO class.
+   demonstrates instantiating the TelemetrixAIO class. 
+   
+   WiFi examples are available
+   [here](https://github.com/MrYsLab/telemetrix-aio/tree/master/examples/wifi).
    
 <br>
 <br>

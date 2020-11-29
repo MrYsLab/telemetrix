@@ -29,8 +29,7 @@ Arduino. The ID number is then supplied as an input parameter when your applicat
  
 <img src="../images/add_zip3.png">
 
-Note that for the server, if you wish to change the instance_id, you must edit the sketch code and 
-upload the changes to the Arduino. 
+Note that if you wish to change the instance_id for the server, you must edit the sketch code and upload the changes to the Arduino.
 
 To match the instance_id on the client side, you will need to specify the arduino_instance id parameter
 when instantiating the client class:

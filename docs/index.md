@@ -16,12 +16,12 @@ and [_telemetrix-aio_](https://github.com/MrYsLab/telemetrix-aio) for those who 
 within a Python asyncio environment. Both clients support both serial and WiFi communications.
 
 The servers, [Telemetrix4Arduino](https://github.com/MrYsLab/Telemetrix4Arduino), and 
-[Telemetrix4ESP8266](https://github.com/MrYsLab/Telemetrix4Esp8266) are written using standard Arduino
+[Telemetrix4ESP8266](https://github.com/MrYsLab/Telemetrix4Esp8266), are written using standard Arduino
  C++. It is in an Arduino library format,
 but all the operational code for each server is located in a single .ino file, simplifying adding an extension to the servers.
 
 Telemetrix was designed with extensibility in mind. Adding new functionality is
-straight forward. Debugging tools are integrated into the system aid in extending its functionality.
+straight forward. Debugging tools are integrated into the system to aid in extending its functionality.
 
 This guide includes a tutorial explaining the steps taken to add DHT (temperature and humidity) 
 sensor support to Telemetrix. The tutorial covers both telemetrix and telemetrix-aio.
@@ -35,7 +35,7 @@ sensor support to Telemetrix. The tutorial covers both telemetrix and telemetrix
 * Online [API Reference Documentation for Telemetrix](https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html).
 * Online [API Reference Documentation for Telemetrix-AIO](https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix-aio/blob/master/html/telemetrix_aio/index.html).
 * A full set of working examples for [Telemetrix](https://github.com/MrYsLab/telemetrix/tree/master/examples) and [Telemetrix-AIO](https://github.com/MrYsLab/telemetrix-aio/tree/master/examples)
-are available for download online.
+are available for download online. WiFi examples are also provided.
 * Both clients connect to the servers using a serial or WiFi interface, depending upon the server in use.
 * Integrated debugging methods are included to aid in adding new features.
 
@@ -61,7 +61,7 @@ parameter with a list describing the data change event.
     Each input pin type returns a unique list, as described in the API.
     
 
-*  **Have your application sit in a loop waiting for notifications.**
+*  **Have your application sit in a loop, waiting for notifications.**
     
 # Working Examples    
 
@@ -223,5 +223,5 @@ Pin: 12 Value: 1 Time Stamp: 2020-03-10 13:26:27
 
 Copyright (C) 2020 Alan Yorinks. All Rights Reserved.
 
-**Last updated 09 November 2020 **
+**Last updated 29 November 2020 **
 
