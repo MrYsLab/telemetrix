@@ -8,6 +8,9 @@ Python on the local client and an
 Arduino Core sketch, called 
 [Telemetrix4Arduino](https://github.com/MrYsLab/Telemetrix4Arduino) on the Microcontroller Unit (MCU). 
 
+In addition, WiFi is supported for the ESP8266 when used in conjunction with 
+[Telemetrix4Esp8266](https://github.com/MrYsLab/Telemetrix4Esp8266).
+
 It is designed to be user extensible so that you may add support for sensors and actuators
 of your choosing.
 

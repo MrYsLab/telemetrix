@@ -56,6 +56,7 @@ USA</p>
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 &#34;&#34;&#34;
+import socket
 import struct
 import sys
 import threading
@@ -84,7 +85,8 @@ class Telemetrix(threading.Thread):
     # noinspection PyPep8,PyPep8,PyPep8
     def __init__(self, com_port=None, arduino_instance_id=1,
                  arduino_wait=4, sleep_tune=0.000001,
-                 shutdown_on_exception=True):
+                 shutdown_on_exception=True,
+                 ip_address=None, ip_port=31335):
 
         &#34;&#34;&#34;
 
@@ -103,6 +105,10 @@ class Telemetrix(threading.Thread):
         :param shutdown_on_exception: call shutdown before raising
                                       a RunTimeError exception, or
                                       receiving a KeyboardInterrupt exception
+
+        :param ip_address: ip address of tcp/ip connected device.
+
+        :param ip_port: ip port of tcp/ip connected device
         &#34;&#34;&#34;
 
         # initialize threading parent
@@ -115,7 +121,13 @@ class Telemetrix(threading.Thread):
         self.the_reporter_thread = threading.Thread(target=self._reporter)
         self.the_reporter_thread.daemon = True
 
-        self.the_data_receive_thread = threading.Thread(target=self._serial_receiver)
+        self.ip_address = ip_address
+        self.ip_port = ip_port
+
+        if not self.ip_address:
+            self.the_data_receive_thread = threading.Thread(target=self._serial_receiver)
+        else:
+            self.the_data_receive_thread = threading.Thread(target=self._tcp_receiver)
 
         self.the_data_receive_thread.daemon = True
 
@@ -185,6 +197,9 @@ class Telemetrix(threading.Thread):
         # serial port in use
         self.serial_port = None
 
+        # socket for tcp/ip communications
+        self.sock = None
+
         # flag to indicate we are in shutdown mode
         self.shutdown_flag = False
 
@@ -209,32 +224,38 @@ class Telemetrix(threading.Thread):
         print(f&#34;Telemetrix:  Version {PrivateConstants.TELEMETRIX_VERSION}\n\n&#34;
               f&#34;Copyright (c) 2020 Alan Yorinks All Rights Reserved.\n&#34;)
 
-        if not self.com_port:
-            # user did not specify a com_port
-            try:
-                self._find_arduino()
-            except KeyboardInterrupt:
+        # using the serial link
+        if not self.ip_address:
+            if not self.com_port:
+                # user did not specify a com_port
+                try:
+                    self._find_arduino()
+                except KeyboardInterrupt:
+                    if self.shutdown_on_exception:
+                        self.shutdown()
+            else:
+                # com_port specified - set com_port and baud rate
+                try:
+                    self._manual_open()
+                except KeyboardInterrupt:
+                    if self.shutdown_on_exception:
+                        self.shutdown()
+
+            if self.serial_port:
+                print(f&#34;Arduino compatible device found and connected to {self.serial_port.port}&#34;)
+
+                self.serial_port.reset_input_buffer()
+                self.serial_port.reset_output_buffer()
+
+            # no com_port found - raise a runtime exception
+            else:
                 if self.shutdown_on_exception:
                     self.shutdown()
+                raise RuntimeError(&#39;No Arduino Found or User Aborted Program&#39;)
         else:
-            # com_port specified - set com_port and baud rate
-            try:
-                self._manual_open()
-            except KeyboardInterrupt:
-                if self.shutdown_on_exception:
-                    self.shutdown()
-
-        if self.serial_port:
-            print(f&#34;Arduino compatible device found and connected to {self.serial_port.port}&#34;)
-
-            self.serial_port.reset_input_buffer()
-            self.serial_port.reset_output_buffer()
-
-        # no com_port found - raise a runtime exception
-        else:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;No Arduino Found or User Aborted Program&#39;)
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((self.ip_address, self.ip_port))
+            print(f&#39;Successfully connected to: {self.ip_address}:{self.ip_port}&#39;)
 
         # allow the threads to run
         self._run_threads()
@@ -259,6 +280,8 @@ class Telemetrix(threading.Thread):
         else:
             print(f&#39;Telemetrix4Arduino firmware version: {self.firmware_version[0]}.&#39;
                   f&#39;{self.firmware_version[1]}&#39;)
+        command = [PrivateConstants.ENABLE_ALL_REPORTS]
+        self._send_command(command)
 
     def _find_arduino(self):
         &#34;&#34;&#34;
@@ -312,6 +335,7 @@ class Telemetrix(threading.Thread):
 
             print(f&#39;\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to &#39;
                   &#39;reset...&#39;)
+            self._run_threads()
             time.sleep(self.arduino_wait)
 
             self._get_arduino_id()
@@ -344,10 +368,12 @@ class Telemetrix(threading.Thread):
 
         :param pin: arduino pin number
 
-        :param value: pin value (0-255)
+        :param value: pin value (maximum 16 bitrs)
 
         &#34;&#34;&#34;
-        command = [PrivateConstants.ANALOG_WRITE, pin, value]
+        value_msb = value &gt;&gt; 8
+        value_lsb = value &amp; 0xff
+        command = [PrivateConstants.ANALOG_WRITE, pin, value_msb, value_lsb]
         self._send_command(command)
 
     def digital_write(self, pin, value):
@@ -419,7 +445,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.ARE_U_THERE]
         self._send_command(command)
         # provide time for the reply
-        time.sleep(.1)
+        time.sleep(.5)
 
     def _get_firmware_version(self):
         &#34;&#34;&#34;
@@ -430,7 +456,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.GET_FIRMWARE_VERSION]
         self._send_command(command)
         # provide time for the reply
-        time.sleep(.1)
+        time.sleep(.5)
 
     def i2c_read(self, address, register, number_of_bytes,
                  callback=None, i2c_port=0):
@@ -732,7 +758,7 @@ class Telemetrix(threading.Thread):
 
         if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
             self.dht_callbacks[pin] = callback
-            self.sonar_count += 1
+            self.dht_count += 1
 
             command = [PrivateConstants.DHT_NEW, pin]
             self._send_command(command)
@@ -874,17 +900,26 @@ class Telemetrix(threading.Thread):
         self._stop_threads()
 
         try:
-            self.disable_all_reporting()
             command = [PrivateConstants.STOP_ALL_REPORTS]
             self._send_command(command)
             time.sleep(.5)
 
-            self.serial_port.reset_input_buffer()
-            self.serial_port.close()
+            if self.ip_address:
+                try:
+                    self.sock.shutdown(socket.SHUT_RDWR)
+                    self.sock.close()
+                except Exception:
+                    pass
+            else:
+                try:
+                    self.serial_port.reset_input_buffer()
+                    self.serial_port.close()
 
-        except (RuntimeError, SerialException, OSError):
-            # ignore error on shutdown
-            pass
+                except (RuntimeError, SerialException, OSError):
+                    # ignore error on shutdown
+                    pass
+        except Exception:
+            raise RuntimeError(&#39;Shutdown failed - could not send stop streaming message&#39;)
 
     &#39;&#39;&#39;
     report message handlers
@@ -909,9 +944,27 @@ class Telemetrix(threading.Thread):
 
     def _dht_report(self, data):
         &#34;&#34;&#34;
-        This is a private message handler for dht addition errors
+        This is the dht report handler method.
 
-        :param data: message data[0] = dht report sub type
+        :param data:            data[0] = report sub type - DHT_DATA or DHT_ERROR
+
+                                data[1] = pin number
+
+                                data[2] = humidity high order byte or error value if DHT_ERROR
+
+                                data[3] = humidity byte 2
+
+                                data[4] = humidity byte 3
+
+                                data[5] = humidity byte 4
+
+                                data[6] = temperature high order byte for data
+
+                                data[7] = temperature byte 2
+
+                                data[8] = temperature byte 3
+
+                                data[9] = temperature byte 4
         &#34;&#34;&#34;
 
         if data[0]:  # DHT_ERROR
@@ -1034,19 +1087,23 @@ class Telemetrix(threading.Thread):
 
         :param command:  command data in the form of a list
 
-        :returns: number of bytes sent
         &#34;&#34;&#34;
         # the length of the list is added at the head
         command.insert(0, len(command))
         # print(command)
         send_message = bytes(command)
-        try:
-            self.serial_port.write(send_message)
-            # print(send_message)
-        except SerialException:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;write fail in _send_command&#39;)
+
+        if self.serial_port:
+            try:
+                self.serial_port.write(send_message)
+            except SerialException:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;write fail in _send_command&#39;)
+        elif self.ip_address:
+            self.sock.sendall(send_message)
+        else:
+            raise RuntimeError(&#39;No serial port or ip address set.&#39;)
 
     def _servo_unavailable(self, report):
         &#34;&#34;&#34;
@@ -1134,6 +1191,10 @@ class Telemetrix(threading.Thread):
         &#34;&#34;&#34;
         self.run_event.wait()
 
+        # Don&#39;t start this thread if using a tcp/ip transport
+        if self.ip_address:
+            return
+
         while self._is_running() and not self.shutdown_flag:
             # we can get an OSError: [Errno9] Bad file descriptor when shutting down
             # just ignore it
@@ -1146,7 +1207,27 @@ class Telemetrix(threading.Thread):
                     time.sleep(self.sleep_tune)
                     # continue
             except OSError:
-                pass</code></pre>
+                pass
+
+    def _tcp_receiver(self):
+        &#34;&#34;&#34;
+        Thread to continuously check for incoming data.
+        When a byte comes in, place it onto the deque.
+        &#34;&#34;&#34;
+        self.run_event.wait()
+
+        # Start this thread only if ip_address is set
+
+        if self.ip_address:
+
+            while self._is_running() and not self.shutdown_flag:
+                try:
+                    payload = self.sock.recv(1)
+                    self.the_deque.append(ord(payload))
+                except Exception:
+                    pass
+        else:
+            return</code></pre>
 </details>
 </section>
 <section>
@@ -1160,7 +1241,7 @@ class Telemetrix(threading.Thread):
 <dl>
 <dt id="telemetrix.telemetrix.Telemetrix"><code class="flex name class">
 <span>class <span class="ident">Telemetrix</span></span>
-<span>(</span><span>com_port=None, arduino_instance_id=1, arduino_wait=4, sleep_tune=1e-06, shutdown_on_exception=True)</span>
+<span>(</span><span>com_port=None, arduino_instance_id=1, arduino_wait=4, sleep_tune=1e-06, shutdown_on_exception=True, ip_address=None, ip_port=31335)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This class exposes and implements the telemetrix API.
@@ -1177,7 +1258,9 @@ fully reset itself.</p>
 <p>:param sleep_tune: A tuning parameter (typically not changed by user)</p>
 <p>:param shutdown_on_exception: call shutdown before raising
 a RunTimeError exception, or
-receiving a KeyboardInterrupt exception</p></div>
+receiving a KeyboardInterrupt exception</p>
+<p>:param ip_address: ip address of tcp/ip connected device.</p>
+<p>:param ip_port: ip port of tcp/ip connected device</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1194,7 +1277,8 @@ receiving a KeyboardInterrupt exception</p></div>
     # noinspection PyPep8,PyPep8,PyPep8
     def __init__(self, com_port=None, arduino_instance_id=1,
                  arduino_wait=4, sleep_tune=0.000001,
-                 shutdown_on_exception=True):
+                 shutdown_on_exception=True,
+                 ip_address=None, ip_port=31335):
 
         &#34;&#34;&#34;
 
@@ -1213,6 +1297,10 @@ receiving a KeyboardInterrupt exception</p></div>
         :param shutdown_on_exception: call shutdown before raising
                                       a RunTimeError exception, or
                                       receiving a KeyboardInterrupt exception
+
+        :param ip_address: ip address of tcp/ip connected device.
+
+        :param ip_port: ip port of tcp/ip connected device
         &#34;&#34;&#34;
 
         # initialize threading parent
@@ -1225,7 +1313,13 @@ receiving a KeyboardInterrupt exception</p></div>
         self.the_reporter_thread = threading.Thread(target=self._reporter)
         self.the_reporter_thread.daemon = True
 
-        self.the_data_receive_thread = threading.Thread(target=self._serial_receiver)
+        self.ip_address = ip_address
+        self.ip_port = ip_port
+
+        if not self.ip_address:
+            self.the_data_receive_thread = threading.Thread(target=self._serial_receiver)
+        else:
+            self.the_data_receive_thread = threading.Thread(target=self._tcp_receiver)
 
         self.the_data_receive_thread.daemon = True
 
@@ -1295,6 +1389,9 @@ receiving a KeyboardInterrupt exception</p></div>
         # serial port in use
         self.serial_port = None
 
+        # socket for tcp/ip communications
+        self.sock = None
+
         # flag to indicate we are in shutdown mode
         self.shutdown_flag = False
 
@@ -1319,32 +1416,38 @@ receiving a KeyboardInterrupt exception</p></div>
         print(f&#34;Telemetrix:  Version {PrivateConstants.TELEMETRIX_VERSION}\n\n&#34;
               f&#34;Copyright (c) 2020 Alan Yorinks All Rights Reserved.\n&#34;)
 
-        if not self.com_port:
-            # user did not specify a com_port
-            try:
-                self._find_arduino()
-            except KeyboardInterrupt:
+        # using the serial link
+        if not self.ip_address:
+            if not self.com_port:
+                # user did not specify a com_port
+                try:
+                    self._find_arduino()
+                except KeyboardInterrupt:
+                    if self.shutdown_on_exception:
+                        self.shutdown()
+            else:
+                # com_port specified - set com_port and baud rate
+                try:
+                    self._manual_open()
+                except KeyboardInterrupt:
+                    if self.shutdown_on_exception:
+                        self.shutdown()
+
+            if self.serial_port:
+                print(f&#34;Arduino compatible device found and connected to {self.serial_port.port}&#34;)
+
+                self.serial_port.reset_input_buffer()
+                self.serial_port.reset_output_buffer()
+
+            # no com_port found - raise a runtime exception
+            else:
                 if self.shutdown_on_exception:
                     self.shutdown()
+                raise RuntimeError(&#39;No Arduino Found or User Aborted Program&#39;)
         else:
-            # com_port specified - set com_port and baud rate
-            try:
-                self._manual_open()
-            except KeyboardInterrupt:
-                if self.shutdown_on_exception:
-                    self.shutdown()
-
-        if self.serial_port:
-            print(f&#34;Arduino compatible device found and connected to {self.serial_port.port}&#34;)
-
-            self.serial_port.reset_input_buffer()
-            self.serial_port.reset_output_buffer()
-
-        # no com_port found - raise a runtime exception
-        else:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;No Arduino Found or User Aborted Program&#39;)
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((self.ip_address, self.ip_port))
+            print(f&#39;Successfully connected to: {self.ip_address}:{self.ip_port}&#39;)
 
         # allow the threads to run
         self._run_threads()
@@ -1369,6 +1472,8 @@ receiving a KeyboardInterrupt exception</p></div>
         else:
             print(f&#39;Telemetrix4Arduino firmware version: {self.firmware_version[0]}.&#39;
                   f&#39;{self.firmware_version[1]}&#39;)
+        command = [PrivateConstants.ENABLE_ALL_REPORTS]
+        self._send_command(command)
 
     def _find_arduino(self):
         &#34;&#34;&#34;
@@ -1422,6 +1527,7 @@ receiving a KeyboardInterrupt exception</p></div>
 
             print(f&#39;\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to &#39;
                   &#39;reset...&#39;)
+            self._run_threads()
             time.sleep(self.arduino_wait)
 
             self._get_arduino_id()
@@ -1454,10 +1560,12 @@ receiving a KeyboardInterrupt exception</p></div>
 
         :param pin: arduino pin number
 
-        :param value: pin value (0-255)
+        :param value: pin value (maximum 16 bitrs)
 
         &#34;&#34;&#34;
-        command = [PrivateConstants.ANALOG_WRITE, pin, value]
+        value_msb = value &gt;&gt; 8
+        value_lsb = value &amp; 0xff
+        command = [PrivateConstants.ANALOG_WRITE, pin, value_msb, value_lsb]
         self._send_command(command)
 
     def digital_write(self, pin, value):
@@ -1529,7 +1637,7 @@ receiving a KeyboardInterrupt exception</p></div>
         command = [PrivateConstants.ARE_U_THERE]
         self._send_command(command)
         # provide time for the reply
-        time.sleep(.1)
+        time.sleep(.5)
 
     def _get_firmware_version(self):
         &#34;&#34;&#34;
@@ -1540,7 +1648,7 @@ receiving a KeyboardInterrupt exception</p></div>
         command = [PrivateConstants.GET_FIRMWARE_VERSION]
         self._send_command(command)
         # provide time for the reply
-        time.sleep(.1)
+        time.sleep(.5)
 
     def i2c_read(self, address, register, number_of_bytes,
                  callback=None, i2c_port=0):
@@ -1842,7 +1950,7 @@ receiving a KeyboardInterrupt exception</p></div>
 
         if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
             self.dht_callbacks[pin] = callback
-            self.sonar_count += 1
+            self.dht_count += 1
 
             command = [PrivateConstants.DHT_NEW, pin]
             self._send_command(command)
@@ -1984,17 +2092,26 @@ receiving a KeyboardInterrupt exception</p></div>
         self._stop_threads()
 
         try:
-            self.disable_all_reporting()
             command = [PrivateConstants.STOP_ALL_REPORTS]
             self._send_command(command)
             time.sleep(.5)
 
-            self.serial_port.reset_input_buffer()
-            self.serial_port.close()
+            if self.ip_address:
+                try:
+                    self.sock.shutdown(socket.SHUT_RDWR)
+                    self.sock.close()
+                except Exception:
+                    pass
+            else:
+                try:
+                    self.serial_port.reset_input_buffer()
+                    self.serial_port.close()
 
-        except (RuntimeError, SerialException, OSError):
-            # ignore error on shutdown
-            pass
+                except (RuntimeError, SerialException, OSError):
+                    # ignore error on shutdown
+                    pass
+        except Exception:
+            raise RuntimeError(&#39;Shutdown failed - could not send stop streaming message&#39;)
 
     &#39;&#39;&#39;
     report message handlers
@@ -2019,9 +2136,27 @@ receiving a KeyboardInterrupt exception</p></div>
 
     def _dht_report(self, data):
         &#34;&#34;&#34;
-        This is a private message handler for dht addition errors
+        This is the dht report handler method.
 
-        :param data: message data[0] = dht report sub type
+        :param data:            data[0] = report sub type - DHT_DATA or DHT_ERROR
+
+                                data[1] = pin number
+
+                                data[2] = humidity high order byte or error value if DHT_ERROR
+
+                                data[3] = humidity byte 2
+
+                                data[4] = humidity byte 3
+
+                                data[5] = humidity byte 4
+
+                                data[6] = temperature high order byte for data
+
+                                data[7] = temperature byte 2
+
+                                data[8] = temperature byte 3
+
+                                data[9] = temperature byte 4
         &#34;&#34;&#34;
 
         if data[0]:  # DHT_ERROR
@@ -2144,19 +2279,23 @@ receiving a KeyboardInterrupt exception</p></div>
 
         :param command:  command data in the form of a list
 
-        :returns: number of bytes sent
         &#34;&#34;&#34;
         # the length of the list is added at the head
         command.insert(0, len(command))
         # print(command)
         send_message = bytes(command)
-        try:
-            self.serial_port.write(send_message)
-            # print(send_message)
-        except SerialException:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;write fail in _send_command&#39;)
+
+        if self.serial_port:
+            try:
+                self.serial_port.write(send_message)
+            except SerialException:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;write fail in _send_command&#39;)
+        elif self.ip_address:
+            self.sock.sendall(send_message)
+        else:
+            raise RuntimeError(&#39;No serial port or ip address set.&#39;)
 
     def _servo_unavailable(self, report):
         &#34;&#34;&#34;
@@ -2244,6 +2383,10 @@ receiving a KeyboardInterrupt exception</p></div>
         &#34;&#34;&#34;
         self.run_event.wait()
 
+        # Don&#39;t start this thread if using a tcp/ip transport
+        if self.ip_address:
+            return
+
         while self._is_running() and not self.shutdown_flag:
             # we can get an OSError: [Errno9] Bad file descriptor when shutting down
             # just ignore it
@@ -2256,7 +2399,27 @@ receiving a KeyboardInterrupt exception</p></div>
                     time.sleep(self.sleep_tune)
                     # continue
             except OSError:
-                pass</code></pre>
+                pass
+
+    def _tcp_receiver(self):
+        &#34;&#34;&#34;
+        Thread to continuously check for incoming data.
+        When a byte comes in, place it onto the deque.
+        &#34;&#34;&#34;
+        self.run_event.wait()
+
+        # Start this thread only if ip_address is set
+
+        if self.ip_address:
+
+            while self._is_running() and not self.shutdown_flag:
+                try:
+                    payload = self.sock.recv(1)
+                    self.the_deque.append(ord(payload))
+                except Exception:
+                    pass
+        else:
+            return</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -2270,7 +2433,7 @@ receiving a KeyboardInterrupt exception</p></div>
 <dd>
 <div class="desc"><p>Set the specified pin to the specified value.</p>
 <p>:param pin: arduino pin number</p>
-<p>:param value: pin value (0-255)</p></div>
+<p>:param value: pin value (maximum 16 bitrs)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2281,10 +2444,12 @@ receiving a KeyboardInterrupt exception</p></div>
 
     :param pin: arduino pin number
 
-    :param value: pin value (0-255)
+    :param value: pin value (maximum 16 bitrs)
 
     &#34;&#34;&#34;
-    command = [PrivateConstants.ANALOG_WRITE, pin, value]
+    value_msb = value &gt;&gt; 8
+    value_lsb = value &amp; 0xff
+    command = [PrivateConstants.ANALOG_WRITE, pin, value_msb, value_lsb]
     self._send_command(command)</code></pre>
 </details>
 </dd>
@@ -2750,7 +2915,7 @@ report will be generated</p>
 
     if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
         self.dht_callbacks[pin] = callback
-        self.sonar_count += 1
+        self.dht_count += 1
 
         command = [PrivateConstants.DHT_NEW, pin]
         self._send_command(command)
@@ -2988,17 +3153,26 @@ If any exceptions are thrown, they are ignored.</p></div>
     self._stop_threads()
 
     try:
-        self.disable_all_reporting()
         command = [PrivateConstants.STOP_ALL_REPORTS]
         self._send_command(command)
         time.sleep(.5)
 
-        self.serial_port.reset_input_buffer()
-        self.serial_port.close()
+        if self.ip_address:
+            try:
+                self.sock.shutdown(socket.SHUT_RDWR)
+                self.sock.close()
+            except Exception:
+                pass
+        else:
+            try:
+                self.serial_port.reset_input_buffer()
+                self.serial_port.close()
 
-    except (RuntimeError, SerialException, OSError):
-        # ignore error on shutdown
-        pass</code></pre>
+            except (RuntimeError, SerialException, OSError):
+                # ignore error on shutdown
+                pass
+    except Exception:
+        raise RuntimeError(&#39;Shutdown failed - could not send stop streaming message&#39;)</code></pre>
 </details>
 </dd>
 </dl>
