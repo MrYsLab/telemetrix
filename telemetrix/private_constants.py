@@ -55,6 +55,7 @@ class PrivateConstants:
     SONAR_DISTANCE = 11
     DHT_REPORT = 12
 
+    STRING_PRINT = 98
     DEBUG_PRINT = 99
 
     TELEMETRIX_VERSION = "1.4"

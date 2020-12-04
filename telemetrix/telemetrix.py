@@ -131,6 +131,7 @@ class Telemetrix(threading.Thread):
         self.report_dispatch.update({PrivateConstants.I2C_TOO_MANY_BYTES_RCVD: self._i2c_too_many})
         self.report_dispatch.update({PrivateConstants.SONAR_DISTANCE: self._sonar_distance_report})
         self.report_dispatch.update({PrivateConstants.DHT_REPORT: self._dht_report})
+        self.report_dispatch.update({PrivateConstants.STRING_PRINT: self._string_print})
 
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
@@ -327,7 +328,7 @@ class Telemetrix(threading.Thread):
 
         :param pin: arduino pin number
 
-        :param value: pin value (maximum 16 bitrs)
+        :param value: pin value (maximum 16 bits)
 
         """
         value_msb = value >> 8
@@ -1029,6 +1030,18 @@ class Telemetrix(threading.Thread):
         """
         value = (data[1] << 8) + data[2]
         print(f'DEBUG ID: {data[0]} Value: {value}')
+
+    def _string_print(self, data):
+        """
+        Print sketch string data to console
+        :param data:
+        :return:
+        """
+        z = ""
+        for x in data:
+            z += chr(x)
+        print(z)
+
 
     def _report_loop_data(self, data):
         """
