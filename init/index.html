@@ -259,6 +259,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../telemetrix4esp8266/" title="Installing And Using Telemetrix4Esp8266" class="md-nav__link">
+      Installing And Using Telemetrix4Esp8266
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../upgrade/" title="Upgrading To The Latest Version Python Clients" class="md-nav__link">
       Upgrading To The Latest Version Python Clients
     </a>
@@ -434,6 +446,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#ip_address" class="md-nav__link">
+    ip_address
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ip_port" class="md-nav__link">
+    ip_port
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -499,6 +525,20 @@
           <li class="md-nav__item">
   <a href="#close_loop_on_shutdown" class="md-nav__link">
     close_loop_on_shutdown
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ip_address_1" class="md-nav__link">
+    ip_address
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ip_port_1" class="md-nav__link">
+    ip_port
   </a>
   
 </li>
@@ -625,8 +665,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../dht/" title="Extentending Telemetrix" class="md-nav__link">
-      Extentending Telemetrix
+    <a href="../dht/" title="Extending Telemetrix" class="md-nav__link">
+      Extending Telemetrix
     </a>
   </li>
 
@@ -777,6 +817,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#ip_address" class="md-nav__link">
+    ip_address
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ip_port" class="md-nav__link">
+    ip_port
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -842,6 +896,20 @@
           <li class="md-nav__item">
   <a href="#close_loop_on_shutdown" class="md-nav__link">
     close_loop_on_shutdown
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ip_address_1" class="md-nav__link">
+    ip_address
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ip_port_1" class="md-nav__link">
+    ip_port
   </a>
   
 </li>
@@ -928,7 +996,8 @@ There is nothing <em>magic</em> about the name <em>board</em>.</p>
 <h2 id="understanding-the-telemetrix-__init__-parameters">Understanding The Telemetrix <em>__init__</em> Parameters</h2>
 <pre><code class="python">def __init__(self, com_port=None, arduino_instance_id=1,
                  arduino_wait=4, sleep_tune=0.000001,
-                 shutdown_on_exception=True)
+                 shutdown_on_exception=True,
+                 ip_address=None, ip_port=31335):
 </code></pre>
 
 <p>There are several optional parameters available to instantiate the Telemetrix class.
@@ -966,6 +1035,16 @@ called when an exception is detected, and all reporting is disabled.</p>
 <p>By setting this parameter to False, the Arduino may continue to send data to
 your application even after restarting it.</p>
 <p>The default is True and recommended to be used.</p>
+<h3 id="ip_address">ip_address</h3>
+<p>When using a WiFi connection to your device, you must specify the IP address of the device. 
+If you are using a NodeMCU type device, you can determine the IP address the device is using by 
+connecting a serial terminal set to 115200 baud to the USB connector. When a 
+connection to the router is complete, the IP address of the device is printed to the terminal console, for example:</p>
+<pre><code>Connected to WiFi. IP Address: 192.168.2.220  IP Port: 31335
+</code></pre>
+
+<h3 id="ip_port">ip_port</h3>
+<p>The IP port used for the WiFi connection is specified with this parameter. The default is 31335.</p>
 <h2 id="understanding-the-telemetrixaio-__init__-parameters">Understanding The TelemetrixAIO <em>__init__</em> Parameters</h2>
 <pre><code class="python">def __init__(self, com_port=None,
                  arduino_instance_id=1, arduino_wait=4,
@@ -1025,13 +1104,27 @@ your application even after restarting it.</p>
 <p>The default for this parameter is True. If True, then when a shutdown occurs,
 the asyncio loop will be closed. If you wish to keep the loop active upon a 
 telemetrix_aio shutdown, set this parameter to False.</p>
+<h3 id="ip_address_1">ip_address</h3>
+<p>When using a WiFi connection to your device, you must specify the IP address of the device. 
+If you are using a NodeMCU type device, you can determine the IP address the device is using
+ by connecting a serial terminal set to 115200 baud to the USB connector. When a connection 
+to the router is complete, the IP address of the device is printed to the terminal console, for example:</p>
+<pre><code>Connected to WiFi. IP Address: 192.168.2.220  IP Port: 31335
+</code></pre>
+
+<h3 id="ip_port_1">ip_port</h3>
+<p>The IP port used for the WiFi connection is specified with this parameter. The default is 31335.</p>
 <h2 id="api-examples">API Examples</h2>
 <h3 id="telemetrix_1">Telemetrix</h3>
 <p>Each <a href="https://github.com/MrYsLab/telemetrix/tree/master/examples">example on GitHub</a> 
-   demonstrates instantiating the Telemetrix class.</p>
+   demonstrates instantiating the Telemetrix class. </p>
+<p>WiFi examples are available
+   <a href="https://github.com/MrYsLab/telemetrix/tree/master/examples/wifi">here</a>.</p>
 <h3 id="telemetrixaio_1">TelemetrixAIO</h3>
 <p>Each <a href="https://github.com/MrYsLab/telemetrix-aio/tree/master/examples">example on GitHub</a> 
-   demonstrates instantiating the TelemetrixAIO class.</p>
+   demonstrates instantiating the TelemetrixAIO class. </p>
+<p>WiFi examples are available
+   <a href="https://github.com/MrYsLab/telemetrix-aio/tree/master/examples/wifi">here</a>.</p>
 <p><br>
 <br></p>
 <p>Copyright (C) 2020 Alan Yorinks. All Rights Reserved.</p>
