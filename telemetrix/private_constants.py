@@ -41,6 +41,7 @@ class PrivateConstants:
     STOP_ALL_REPORTS = 15
     SET_ANALOG_SCANNING_INTERVAL = 16
     ENABLE_ALL_REPORTS = 17
+    RESET = 18
 
     # reports
     # debug data from Arduino
@@ -57,7 +58,7 @@ class PrivateConstants:
 
     DEBUG_PRINT = 99
 
-    TELEMETRIX_VERSION = "1.4"
+    TELEMETRIX_VERSION = "1.5"
 
     # reporting control
     REPORTING_DISABLE_ALL = 0

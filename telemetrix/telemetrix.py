@@ -242,6 +242,10 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
         self._send_command(command)
 
+        # Have the server reset its data structures
+        command = [PrivateConstants.RESET]
+        self._send_command(command)
+
     def _find_arduino(self):
         """
         This method will search all potential serial ports for an Arduino
