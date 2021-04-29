@@ -16,8 +16,9 @@ of your choosing.
 
 A [User's Guide](https://mryslab.github.io/telemetrix/) explaining installation and use is available online.
 
-A Python API for may be found [here.](https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html) 
+A Python API for may be found [here.](https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html) 
 
-This project was developed in phases and the directories for those phases were left intact. During the development
+This project was developed in phases, and the directories for those phases were left 
+intact. During the development
 phase, the phases were discussed on the 
 [Bots In Pieces](https://mryslab.github.io/bots-in-pieces/arduino,stm32,firmata/2020/09/20/telemetrix-phase-1.html) blog.
