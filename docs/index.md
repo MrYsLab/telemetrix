@@ -32,8 +32,8 @@ sensor support to Telemetrix. The tutorial covers both telemetrix and telemetrix
 * Applications are programmed using conventional Python 3.
 * All Data change events are reported asynchronously via user registered callback functions. 
 * Each data change event is time-stamped.
-* Online [API Reference Documentation for Telemetrix](https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html).
-* Online [API Reference Documentation for Telemetrix-AIO](https://htmlpreview.github.com/?https://github.com/MrYsLab/telemetrix-aio/blob/master/html/telemetrix_aio/index.html).
+* Online [API Reference Documentation for Telemetrix](https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html).
+* Online [API Reference Documentation for Telemetrix-AIO](https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix-aio/blob/master/html/telemetrix_aio/index.html).
 * A full set of working examples for [Telemetrix](https://github.com/MrYsLab/telemetrix/tree/master/examples) and [Telemetrix-AIO](https://github.com/MrYsLab/telemetrix-aio/tree/master/examples)
 are available for download online. WiFi examples are also provided.
 * Both clients connect to the servers using a serial or WiFi interface, depending upon the server in use.
