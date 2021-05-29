@@ -701,16 +701,20 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.I2C_BEGIN, i2c_port]
         self._send_command(command)
 
-    def set_pin_mode_dht(self, pin, callback=None):
+    def set_pin_mode_dht(self, pin, callback=None, dht_type=22):
         """
 
         :param pin: connection pin
 
         :param callback: callback function
 
-        Error Callback: [Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time]
+        :param dht_type: either 22 for DHT22 or 11 for DHT11
 
-        Valid Data Callback: Callback 0=DHT REPORT, DHT_DATA=1, PIN, Humidity, Temperature Time]
+        Error Callback: [DHT REPORT Type, DHT_ERROR_NUMBER, PIN, DHT_TYPE, Time]
+
+        Valid Data Callback: DHT REPORT Type, DHT_DATA=, PIN, DHT_TYPE, Humidity,
+        Temperature,
+        Time]
 
         """
 
@@ -723,7 +727,10 @@ class Telemetrix(threading.Thread):
             self.dht_callbacks[pin] = callback
             self.dht_count += 1
 
-            command = [PrivateConstants.DHT_NEW, pin]
+            if dht_type != 22 and dht_type != 11:
+                dht_type = 22
+
+            command = [PrivateConstants.DHT_NEW, pin, dht_type]
             self._send_command(command)
         else:
             if self.shutdown_on_exception:
@@ -909,42 +916,50 @@ class Telemetrix(threading.Thread):
         """
         This is the dht report handler method.
 
-        :param data:            data[0] = report sub type - DHT_DATA or DHT_ERROR
+        :param data:            data[0] = report error return
+                                    No Errors = 0
+
+                                    Checksum Error = 1
+
+                                    Timeout Error = 2
+
+                                    Invalid Value = 999
 
                                 data[1] = pin number
 
-                                data[2] = humidity high order byte or error value if DHT_ERROR
+                                data[2] = dht type 11 or 22
 
-                                data[3] = humidity byte 2
+                                data[3] = humidity positivity flag
 
-                                data[4] = humidity byte 3
+                                data[4] = temperature positivity value
 
-                                data[5] = humidity byte 4
+                                data[5] = humidity integer
 
-                                data[6] = temperature high order byte for data
+                                data[6] = humidity fractional value
 
-                                data[7] = temperature byte 2
+                                data[7] = temperature integer
 
-                                data[8] = temperature byte 3
+                                data[8] = temperature fractional value
 
-                                data[9] = temperature byte 4
+
         """
-
         if data[0]:  # DHT_ERROR
             # error report
             # data[0] = report sub type, data[1] = pin, data[2] = error message
             if self.dht_callbacks[data[1]]:
-                # Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time
+                # Callback 0=DHT REPORT, DHT_ERROR, PIN, Time
                 message = [PrivateConstants.DHT_REPORT, data[0], data[1], data[2], time.time()]
                 self.dht_callbacks[data[1]](message)
         else:
             # got valid data DHT_DATA
-            f_humidity = bytearray(data[2:6])
-            f_temperature = bytearray(data[6:])
-            message = [PrivateConstants.DHT_REPORT, data[0], data[1],
-                       (struct.unpack('<f', f_humidity))[0],
-                       (struct.unpack('<f', f_temperature))[0],
-                       time.time()]
+            f_humidity = float(data[5] + data[6] / 100)
+            if data[3]:
+                f_humidity *= -1.0
+            f_temperature = float(data[7] + data[8] / 100)
+            if data[4]:
+                f_temperature *= -1.0
+            message = [PrivateConstants.DHT_REPORT, data[0], data[1], data[2],
+                      f_humidity, f_temperature, time.time()]
 
             self.dht_callbacks[data[1]](message)
 

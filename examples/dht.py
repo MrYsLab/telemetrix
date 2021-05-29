@@ -20,43 +20,50 @@ import time
 from telemetrix import telemetrix
 
 """
-This program monitors a DHT 22 sensor. 
+This program monitors two DHT22 and two DHT11 sensors.
 """
-PIN = 9
+
 
 # indices into callback data for valid data
-REPORT_TYPE = 0
-PIN = 1
-HUMIDITY = 2
-TEMPERATURE = 3
-TIME = 4
+# REPORT_TYPE = 0
+# READ_RESULT = 1
+# PIN = 2
+# DHT_TYPE = 3
+# HUMIDITY = 4
+# TEMPERATURE = 5
+# TIME = 6
 
 # indices into callback data for error report
-REPORT_TYPE = 0
-PIN = 1
-ERROR_VALUE = 2
+# REPORT_TYPE = 0
+# READ_RESULT = 1
+# PIN = 2
+# DHT_TYPE = 3
+# TIME = 4
+
 
 # A callback function to display the distance
 def the_callback(data):
     """
     The callback function to display the change in distance
-    :param data: [report_type = PrivateConstants.DHT, pin number, humidity, temperature timestamp]
+    :param data: [report_type = PrivateConstants.DHT, error = 0, pin number,
+    dht_type, humidity, temperature timestamp]
                  if this is an error report:
-                 [report_type = PrivateConstants.DHT, pin number, error value timestamp]
+                 [report_type = PrivateConstants.DHT, error != 0, pin number, dht_type
+                 timestamp]
     """
     if data[1]:
         # error message
         date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[4]))
         print(f'DHT Error Report:' 
-              f'Pin: {data[2]} Error: {data[3]}  Time: {date}')
+              f'Pin: {data[2]} DHT Type: {data[3]} Error: {data[1]}  Time: {date}')
     else:
-        date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[5]))
+        date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[6]))
         print(f'DHT Valid Data Report:'
-              f'Pin: {data[2]} Humidity: {data[3]} Temperature: {data[4]} Time: {date}')
+              f'Pin: {data[2]} DHT Type: {data[3]} Humidity: {data[4]} Temperature:'
+              f' {data[5]} Time: {date}')
 
 
-
-def dht(my_board, pin, callback):
+def dht(my_board, pin, callback, dht_type):
     """
     Set the pin mode for a DHT 22 device. Results will appear via the
     callback.
@@ -64,23 +71,27 @@ def dht(my_board, pin, callback):
     :param my_board: an pymata express instance
     :param pin: Arduino pin number
     :param callback: The callback function
+    :param dht_type: 22 or 11
     """
 
-    # set the pin mode for the trigger and echo pins
-    my_board.set_pin_mode_dht(pin, callback)
+    # set the pin mode for the DHT device
+    my_board.set_pin_mode_dht(pin, callback, dht_type)
+
+
+board = telemetrix.Telemetrix()
+try:
+    dht(board, 8,  the_callback, 11)
+    dht(board, 9,  the_callback, 22)
+    dht(board, 10, the_callback, 22)
+    dht(board, 11, the_callback, 11)
+
     # wait forever
     while True:
         try:
             time.sleep(.01)
         except KeyboardInterrupt:
-            my_board.shutdown()
+            board.shutdown()
             sys.exit(0)
-
-
-board = telemetrix.Telemetrix()
-try:
-    dht(board, 9,  the_callback)
-    board.shutdown()
 except (KeyboardInterrupt, RuntimeError):
     board.shutdown()
     sys.exit(0)
