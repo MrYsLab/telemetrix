@@ -17,6 +17,7 @@
 
 import sys
 import time
+
 from telemetrix import telemetrix
 
 """
@@ -56,7 +57,7 @@ def the_callback(data):
     if data[1]:
         # error message
         date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[4]))
-        print(f'DHT Error Report:' 
+        print(f'DHT Error Report:'
               f'Pin: {data[2]} DHT Type: {data[3]} Error: {data[1]}  Time: {date}')
     else:
         date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[6]))
@@ -83,8 +84,8 @@ def dht(my_board, pin, callback, dht_type):
 
 board = telemetrix.Telemetrix()
 try:
-    dht(board, 8,  the_callback, 11)
-    dht(board, 9,  the_callback, 22)
+    dht(board, 8, the_callback, 11)
+    dht(board, 9, the_callback, 22)
     dht(board, 10, the_callback, 22)
     dht(board, 11, the_callback, 11)
 
