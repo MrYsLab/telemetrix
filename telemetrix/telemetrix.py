@@ -16,7 +16,6 @@
 
 """
 import socket
-import struct
 import sys
 import threading
 import time
@@ -28,10 +27,11 @@ from serial.serialutil import SerialException
 # noinspection PyPackageRequirements
 from serial.tools import list_ports
 
+# noinspection PyUnresolvedReferences
 from telemetrix.private_constants import PrivateConstants
 
 
-# noinspection PyPep8,PyMethodMayBeStatic
+# noinspection PyPep8,PyMethodMayBeStatic,GrazieInspection,PyBroadException
 class Telemetrix(threading.Thread):
     """
     This class exposes and implements the telemetrix API.
@@ -119,17 +119,27 @@ class Telemetrix(threading.Thread):
         self.report_dispatch = {}
 
         # To add a command to the command dispatch table, append here.
-        self.report_dispatch.update({PrivateConstants.LOOP_COMMAND: self._report_loop_data})
-        self.report_dispatch.update({PrivateConstants.DEBUG_PRINT: self._report_debug_data})
-        self.report_dispatch.update({PrivateConstants.DIGITAL_REPORT: self._digital_message})
-        self.report_dispatch.update({PrivateConstants.ANALOG_REPORT: self._analog_message})
-        self.report_dispatch.update({PrivateConstants.FIRMWARE_REPORT: self._firmware_message})
+        self.report_dispatch.update(
+            {PrivateConstants.LOOP_COMMAND: self._report_loop_data})
+        self.report_dispatch.update(
+            {PrivateConstants.DEBUG_PRINT: self._report_debug_data})
+        self.report_dispatch.update(
+            {PrivateConstants.DIGITAL_REPORT: self._digital_message})
+        self.report_dispatch.update(
+            {PrivateConstants.ANALOG_REPORT: self._analog_message})
+        self.report_dispatch.update(
+            {PrivateConstants.FIRMWARE_REPORT: self._firmware_message})
         self.report_dispatch.update({PrivateConstants.I_AM_HERE_REPORT: self._i_am_here})
-        self.report_dispatch.update({PrivateConstants.SERVO_UNAVAILABLE: self._servo_unavailable})
-        self.report_dispatch.update({PrivateConstants.I2C_READ_REPORT: self._i2c_read_report})
-        self.report_dispatch.update({PrivateConstants.I2C_TOO_FEW_BYTES_RCVD: self._i2c_too_few})
-        self.report_dispatch.update({PrivateConstants.I2C_TOO_MANY_BYTES_RCVD: self._i2c_too_many})
-        self.report_dispatch.update({PrivateConstants.SONAR_DISTANCE: self._sonar_distance_report})
+        self.report_dispatch.update(
+            {PrivateConstants.SERVO_UNAVAILABLE: self._servo_unavailable})
+        self.report_dispatch.update(
+            {PrivateConstants.I2C_READ_REPORT: self._i2c_read_report})
+        self.report_dispatch.update(
+            {PrivateConstants.I2C_TOO_FEW_BYTES_RCVD: self._i2c_too_few})
+        self.report_dispatch.update(
+            {PrivateConstants.I2C_TOO_MANY_BYTES_RCVD: self._i2c_too_many})
+        self.report_dispatch.update(
+            {PrivateConstants.SONAR_DISTANCE: self._sonar_distance_report})
         self.report_dispatch.update({PrivateConstants.DHT_REPORT: self._dht_report})
 
         # dictionaries to store the callbacks for each pin
@@ -201,7 +211,8 @@ class Telemetrix(threading.Thread):
                         self.shutdown()
 
             if self.serial_port:
-                print(f"Arduino compatible device found and connected to {self.serial_port.port}")
+                print(
+                    f"Arduino compatible device found and connected to {self.serial_port.port}")
 
                 self.serial_port.reset_input_buffer()
                 self.serial_port.reset_output_buffer()
@@ -228,7 +239,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(f'Incorrect Arduino ID: {self.reported_arduino_id}')
         print('Valid Arduino ID Found.')
-        # get arduino firmware version and print it
+        # get telemetrix firmware version and print it
         print('\nRetrieving Telemetrix4Arduino firmware ID...')
         self._get_firmware_version()
         if not self.firmware_version:
@@ -238,7 +249,7 @@ class Telemetrix(threading.Thread):
 
         else:
             print(f'Telemetrix4Arduino firmware version: {self.firmware_version[0]}.'
-                  f'{self.firmware_version[1]}')
+                  f'{self.firmware_version[1]}.{self.firmware_version[2]}')
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
         self._send_command(command)
 
@@ -276,8 +287,9 @@ class Telemetrix(threading.Thread):
 
             # clear out any possible data in the input buffer
         # wait for arduino to reset
-        print(f'\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to '
-              'reset...')
+        print(
+            f'\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to '
+            'reset...')
         # temporary for testing
         time.sleep(self.arduino_wait)
 
@@ -296,8 +308,9 @@ class Telemetrix(threading.Thread):
             self.serial_port = serial.Serial(self.com_port, 115200,
                                              timeout=1, writeTimeout=0)
 
-            print(f'\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to '
-                  'reset...')
+            print(
+                f'\nWaiting {self.arduino_wait} seconds(arduino_wait) for Arduino devices to '
+                'reset...')
             self._run_threads()
             time.sleep(self.arduino_wait)
 
@@ -315,7 +328,8 @@ class Telemetrix(threading.Thread):
             if not self.firmware_version:
                 if self.shutdown_on_exception:
                     self.shutdown()
-                raise RuntimeError(f'Telemetrix4Arduino Sketch Firmware Version Not Found')
+                raise RuntimeError(
+                    f'Telemetrix4Arduino Sketch Firmware Version Not Found')
 
             else:
                 print(f'Telemetrix4Arduino firmware version: {self.firmware_version[0]}.'
@@ -331,7 +345,7 @@ class Telemetrix(threading.Thread):
 
         :param pin: arduino pin number
 
-        :param value: pin value (maximum 16 bitrs)
+        :param value: pin value (maximum 16 bits)
 
         """
         value_msb = value >> 8
@@ -356,7 +370,8 @@ class Telemetrix(threading.Thread):
         """
         Disable reporting for all digital and analog input pins
         """
-        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DISABLE_ALL, 0]
+        command = [PrivateConstants.MODIFY_REPORTING,
+                   PrivateConstants.REPORTING_DISABLE_ALL, 0]
         self._send_command(command)
 
     def disable_analog_reporting(self, pin):
@@ -366,7 +381,8 @@ class Telemetrix(threading.Thread):
         :param pin: Analog pin number. For example for A0, the number is 0.
 
         """
-        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_ANALOG_DISABLE, pin]
+        command = [PrivateConstants.MODIFY_REPORTING,
+                   PrivateConstants.REPORTING_ANALOG_DISABLE, pin]
         self._send_command(command)
 
     def disable_digital_reporting(self, pin):
@@ -376,7 +392,8 @@ class Telemetrix(threading.Thread):
         :param pin: Pin number.
 
         """
-        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_DISABLE, pin]
+        command = [PrivateConstants.MODIFY_REPORTING,
+                   PrivateConstants.REPORTING_DIGITAL_DISABLE, pin]
         self._send_command(command)
 
     def enable_analog_reporting(self, pin):
@@ -387,7 +404,8 @@ class Telemetrix(threading.Thread):
 
 
         """
-        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_ANALOG_ENABLE, pin]
+        command = [PrivateConstants.MODIFY_REPORTING,
+                   PrivateConstants.REPORTING_ANALOG_ENABLE, pin]
         self._send_command(command)
 
     def enable_digital_reporting(self, pin):
@@ -397,7 +415,8 @@ class Telemetrix(threading.Thread):
         :param pin: Pin number.
         """
 
-        command = [PrivateConstants.MODIFY_REPORTING, PrivateConstants.REPORTING_DIGITAL_ENABLE, pin]
+        command = [PrivateConstants.MODIFY_REPORTING,
+                   PrivateConstants.REPORTING_DIGITAL_ENABLE, pin]
         self._send_command(command)
 
     def _get_arduino_id(self):
@@ -476,7 +495,8 @@ class Telemetrix(threading.Thread):
 
         """
 
-        self._i2c_read_request(address, register, number_of_bytes, stop_transmission=False,
+        self._i2c_read_request(address, register, number_of_bytes,
+                               stop_transmission=False,
                                callback=callback, i2c_port=i2c_port)
 
     def _i2c_read_request(self, address, register, number_of_bytes,
@@ -501,13 +521,15 @@ class Telemetrix(threading.Thread):
             if not self.i2c_1_active:
                 if self.shutdown_on_exception:
                     self.shutdown()
-                raise RuntimeError('I2C Read: set_pin_mode i2c never called for i2c port 1.')
+                raise RuntimeError(
+                    'I2C Read: set_pin_mode i2c never called for i2c port 1.')
 
         if i2c_port:
             if not self.i2c_2_active:
                 if self.shutdown_on_exception:
                     self.shutdown()
-                raise RuntimeError('I2C Read: set_pin_mode i2c never called for i2c port 2.')
+                raise RuntimeError(
+                    'I2C Read: set_pin_mode i2c never called for i2c port 2.')
 
         if not callback:
             if self.shutdown_on_exception:
@@ -549,13 +571,15 @@ class Telemetrix(threading.Thread):
             if not self.i2c_1_active:
                 if self.shutdown_on_exception:
                     self.shutdown()
-                raise RuntimeError('I2C Write: set_pin_mode i2c never called for i2c port 1.')
+                raise RuntimeError(
+                    'I2C Write: set_pin_mode i2c never called for i2c port 1.')
 
         if i2c_port:
             if not self.i2c_2_active:
                 if self.shutdown_on_exception:
                     self.shutdown()
-                raise RuntimeError('I2C Write: set_pin_mode i2c never called for i2c port 2.')
+                raise RuntimeError(
+                    'I2C Write: set_pin_mode i2c never called for i2c port 2.')
 
         command = [PrivateConstants.I2C_WRITE, len(args), address, i2c_port]
 
@@ -701,16 +725,20 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.I2C_BEGIN, i2c_port]
         self._send_command(command)
 
-    def set_pin_mode_dht(self, pin, callback=None):
+    def set_pin_mode_dht(self, pin, callback=None, dht_type=22):
         """
 
         :param pin: connection pin
 
         :param callback: callback function
 
-        Error Callback: [Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time]
+        :param dht_type: either 22 for DHT22 or 11 for DHT11
 
-        Valid Data Callback: Callback 0=DHT REPORT, DHT_DATA=1, PIN, Humidity, Temperature Time]
+        Error Callback: [DHT REPORT Type, DHT_ERROR_NUMBER, PIN, DHT_TYPE, Time]
+
+        Valid Data Callback: DHT REPORT Type, DHT_DATA=, PIN, DHT_TYPE, Humidity,
+        Temperature,
+        Time]
 
         """
 
@@ -723,12 +751,16 @@ class Telemetrix(threading.Thread):
             self.dht_callbacks[pin] = callback
             self.dht_count += 1
 
-            command = [PrivateConstants.DHT_NEW, pin]
+            if dht_type != 22 and dht_type != 11:
+                dht_type = 22
+
+            command = [PrivateConstants.DHT_NEW, pin, dht_type]
             self._send_command(command)
         else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(f'Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}')
+            raise RuntimeError(
+                f'Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}')
 
     # noinspection PyRedundantParentheses
     def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
@@ -778,7 +810,8 @@ class Telemetrix(threading.Thread):
         else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(f'Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}')
+            raise RuntimeError(
+                f'Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}')
 
     def servo_write(self, pin_number, angle):
         """
@@ -834,16 +867,20 @@ class Telemetrix(threading.Thread):
                                      'pin state:', pin_state))
 
         if pin_state == PrivateConstants.AT_INPUT:
-            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_INPUT, 1]
+            command = [PrivateConstants.SET_PIN_MODE, pin_number,
+                       PrivateConstants.AT_INPUT, 1]
 
         elif pin_state == PrivateConstants.AT_INPUT_PULLUP:
-            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_INPUT_PULLUP, 1]
+            command = [PrivateConstants.SET_PIN_MODE, pin_number,
+                       PrivateConstants.AT_INPUT_PULLUP, 1]
 
         elif pin_state == PrivateConstants.AT_OUTPUT:
-            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_OUTPUT]
+            command = [PrivateConstants.SET_PIN_MODE, pin_number,
+                       PrivateConstants.AT_OUTPUT]
 
         elif pin_state == PrivateConstants.AT_ANALOG:
-            command = [PrivateConstants.SET_PIN_MODE, pin_number, PrivateConstants.AT_ANALOG,
+            command = [PrivateConstants.SET_PIN_MODE, pin_number,
+                       PrivateConstants.AT_ANALOG,
                        differential >> 8, differential & 0xff, 1]
         else:
             if self.shutdown_on_exception:
@@ -909,42 +946,51 @@ class Telemetrix(threading.Thread):
         """
         This is the dht report handler method.
 
-        :param data:            data[0] = report sub type - DHT_DATA or DHT_ERROR
+        :param data:            data[0] = report error return
+                                    No Errors = 0
+
+                                    Checksum Error = 1
+
+                                    Timeout Error = 2
+
+                                    Invalid Value = 999
 
                                 data[1] = pin number
 
-                                data[2] = humidity high order byte or error value if DHT_ERROR
+                                data[2] = dht type 11 or 22
 
-                                data[3] = humidity byte 2
+                                data[3] = humidity positivity flag
 
-                                data[4] = humidity byte 3
+                                data[4] = temperature positivity value
 
-                                data[5] = humidity byte 4
+                                data[5] = humidity integer
 
-                                data[6] = temperature high order byte for data
+                                data[6] = humidity fractional value
 
-                                data[7] = temperature byte 2
+                                data[7] = temperature integer
 
-                                data[8] = temperature byte 3
+                                data[8] = temperature fractional value
 
-                                data[9] = temperature byte 4
+
         """
-
         if data[0]:  # DHT_ERROR
             # error report
             # data[0] = report sub type, data[1] = pin, data[2] = error message
             if self.dht_callbacks[data[1]]:
-                # Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time
-                message = [PrivateConstants.DHT_REPORT, data[0], data[1], data[2], time.time()]
+                # Callback 0=DHT REPORT, DHT_ERROR, PIN, Time
+                message = [PrivateConstants.DHT_REPORT, data[0], data[1], data[2],
+                           time.time()]
                 self.dht_callbacks[data[1]](message)
         else:
             # got valid data DHT_DATA
-            f_humidity = bytearray(data[2:6])
-            f_temperature = bytearray(data[6:])
-            message = [PrivateConstants.DHT_REPORT, data[0], data[1],
-                       (struct.unpack('<f', f_humidity))[0],
-                       (struct.unpack('<f', f_temperature))[0],
-                       time.time()]
+            f_humidity = float(data[5] + data[6] / 100)
+            if data[3]:
+                f_humidity *= -1.0
+            f_temperature = float(data[7] + data[8] / 100)
+            if data[4]:
+                f_temperature *= -1.0
+            message = [PrivateConstants.DHT_REPORT, data[0], data[1], data[2],
+                       f_humidity, f_temperature, time.time()]
 
             self.dht_callbacks[data[1]](message)
 
@@ -967,10 +1013,13 @@ class Telemetrix(threading.Thread):
     def _firmware_message(self, data):
         """
         Telemetrix4Arduino firmware version message
-        :param data: data[0] = major number, data[1] = minor number
+
+        :param data: data[0] = major number, data[1] = minor number.
+
+                               data[2] = patch number
         """
 
-        self.firmware_version = [data[0], data[1]]
+        self.firmware_version = [data[0], data[1], data[2]]
 
     def _i2c_read_report(self, data):
         """
@@ -1005,7 +1054,8 @@ class Telemetrix(threading.Thread):
         """
         if self.shutdown_on_exception:
             self.shutdown()
-        raise RuntimeError(f'i2c too few bytes received from i2c port {data[0]} i2c address {data[1]}')
+        raise RuntimeError(
+            f'i2c too few bytes received from i2c port {data[0]} i2c address {data[1]}')
 
     def _i2c_too_many(self, data):
         """
@@ -1015,7 +1065,8 @@ class Telemetrix(threading.Thread):
         """
         if self.shutdown_on_exception:
             self.shutdown()
-        raise RuntimeError(f'i2c too many bytes received from i2c port {data[0]} i2c address {data[1]}')
+        raise RuntimeError(
+            f'i2c too many bytes received from i2c port {data[0]} i2c address {data[1]}')
 
     def _i_am_here(self, data):
         """
@@ -1075,7 +1126,8 @@ class Telemetrix(threading.Thread):
         """
         if self.shutdown_on_exception:
             self.shutdown()
-        raise RuntimeError(f'Servo Attach For Pin {report[0]} Failed: No Available Servos')
+        raise RuntimeError(
+            f'Servo Attach For Pin {report[0]} Failed: No Available Servos')
 
     def _sonar_distance_report(self, report):
         """
@@ -1143,7 +1195,8 @@ class Telemetrix(threading.Thread):
                 else:
                     if self.shutdown_on_exception:
                         self.shutdown()
-                    raise RuntimeError('A report with a packet length of zero was received.')
+                    raise RuntimeError(
+                        'A report with a packet length of zero was received.')
             else:
                 time.sleep(self.sleep_tune)
 
