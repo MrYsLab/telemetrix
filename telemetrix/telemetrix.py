@@ -16,7 +16,6 @@
 
 """
 import socket
-import struct
 import sys
 import threading
 import time
@@ -28,10 +27,11 @@ from serial.serialutil import SerialException
 # noinspection PyPackageRequirements
 from serial.tools import list_ports
 
+# noinspection PyUnresolvedReferences
 from telemetrix.private_constants import PrivateConstants
 
 
-# noinspection PyPep8,PyMethodMayBeStatic
+# noinspection PyPep8,PyMethodMayBeStatic,GrazieInspection,PyBroadException
 class Telemetrix(threading.Thread):
     """
     This class exposes and implements the telemetrix API.
@@ -228,7 +228,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(f'Incorrect Arduino ID: {self.reported_arduino_id}')
         print('Valid Arduino ID Found.')
-        # get arduino firmware version and print it
+        # get telemetrix firmware version and print it
         print('\nRetrieving Telemetrix4Arduino firmware ID...')
         self._get_firmware_version()
         if not self.firmware_version:
@@ -238,7 +238,7 @@ class Telemetrix(threading.Thread):
 
         else:
             print(f'Telemetrix4Arduino firmware version: {self.firmware_version[0]}.'
-                  f'{self.firmware_version[1]}')
+                  f'{self.firmware_version[1]}.{self.firmware_version[2]}')
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
         self._send_command(command)
 
@@ -331,7 +331,7 @@ class Telemetrix(threading.Thread):
 
         :param pin: arduino pin number
 
-        :param value: pin value (maximum 16 bitrs)
+        :param value: pin value (maximum 16 bits)
 
         """
         value_msb = value >> 8
@@ -982,10 +982,13 @@ class Telemetrix(threading.Thread):
     def _firmware_message(self, data):
         """
         Telemetrix4Arduino firmware version message
-        :param data: data[0] = major number, data[1] = minor number
+
+        :param data: data[0] = major number, data[1] = minor number.
+
+                               data[2] = patch number
         """
 
-        self.firmware_version = [data[0], data[1]]
+        self.firmware_version = [data[0], data[1], data[2]]
 
     def _i2c_read_report(self, data):
         """

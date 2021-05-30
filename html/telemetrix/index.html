@@ -59,7 +59,6 @@ USA</p>
 
 &#34;&#34;&#34;
 import socket
-import struct
 import sys
 import threading
 import time
@@ -71,10 +70,11 @@ from serial.serialutil import SerialException
 # noinspection PyPackageRequirements
 from serial.tools import list_ports
 
+# noinspection PyUnresolvedReferences
 from telemetrix.private_constants import PrivateConstants
 
 
-# noinspection PyPep8,PyMethodMayBeStatic
+# noinspection PyPep8,PyMethodMayBeStatic,GrazieInspection,PyBroadException
 class Telemetrix(threading.Thread):
     &#34;&#34;&#34;
     This class exposes and implements the telemetrix API.
@@ -271,7 +271,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
         print(&#39;Valid Arduino ID Found.&#39;)
-        # get arduino firmware version and print it
+        # get telemetrix firmware version and print it
         print(&#39;\nRetrieving Telemetrix4Arduino firmware ID...&#39;)
         self._get_firmware_version()
         if not self.firmware_version:
@@ -281,7 +281,7 @@ class Telemetrix(threading.Thread):
 
         else:
             print(f&#39;Telemetrix4Arduino firmware version: {self.firmware_version[0]}.&#39;
-                  f&#39;{self.firmware_version[1]}&#39;)
+                  f&#39;{self.firmware_version[1]}.{self.firmware_version[2]}&#39;)
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
         self._send_command(command)
 
@@ -374,7 +374,7 @@ class Telemetrix(threading.Thread):
 
         :param pin: arduino pin number
 
-        :param value: pin value (maximum 16 bitrs)
+        :param value: pin value (maximum 16 bits)
 
         &#34;&#34;&#34;
         value_msb = value &gt;&gt; 8
@@ -1025,10 +1025,13 @@ class Telemetrix(threading.Thread):
     def _firmware_message(self, data):
         &#34;&#34;&#34;
         Telemetrix4Arduino firmware version message
-        :param data: data[0] = major number, data[1] = minor number
+
+        :param data: data[0] = major number, data[1] = minor number.
+
+                               data[2] = patch number
         &#34;&#34;&#34;
 
-        self.firmware_version = [data[0], data[1]]
+        self.firmware_version = [data[0], data[1], data[2]]
 
     def _i2c_read_report(self, data):
         &#34;&#34;&#34;
@@ -1482,7 +1485,7 @@ receiving a KeyboardInterrupt exception</p>
                 self.shutdown()
             raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
         print(&#39;Valid Arduino ID Found.&#39;)
-        # get arduino firmware version and print it
+        # get telemetrix firmware version and print it
         print(&#39;\nRetrieving Telemetrix4Arduino firmware ID...&#39;)
         self._get_firmware_version()
         if not self.firmware_version:
@@ -1492,7 +1495,7 @@ receiving a KeyboardInterrupt exception</p>
 
         else:
             print(f&#39;Telemetrix4Arduino firmware version: {self.firmware_version[0]}.&#39;
-                  f&#39;{self.firmware_version[1]}&#39;)
+                  f&#39;{self.firmware_version[1]}.{self.firmware_version[2]}&#39;)
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
         self._send_command(command)
 
@@ -1585,7 +1588,7 @@ receiving a KeyboardInterrupt exception</p>
 
         :param pin: arduino pin number
 
-        :param value: pin value (maximum 16 bitrs)
+        :param value: pin value (maximum 16 bits)
 
         &#34;&#34;&#34;
         value_msb = value &gt;&gt; 8
@@ -2236,10 +2239,13 @@ receiving a KeyboardInterrupt exception</p>
     def _firmware_message(self, data):
         &#34;&#34;&#34;
         Telemetrix4Arduino firmware version message
-        :param data: data[0] = major number, data[1] = minor number
+
+        :param data: data[0] = major number, data[1] = minor number.
+
+                               data[2] = patch number
         &#34;&#34;&#34;
 
-        self.firmware_version = [data[0], data[1]]
+        self.firmware_version = [data[0], data[1], data[2]]
 
     def _i2c_read_report(self, data):
         &#34;&#34;&#34;
@@ -2473,7 +2479,7 @@ receiving a KeyboardInterrupt exception</p>
 <dd>
 <div class="desc"><p>Set the specified pin to the specified value.</p>
 <p>:param pin: arduino pin number</p>
-<p>:param value: pin value (maximum 16 bitrs)</p></div>
+<p>:param value: pin value (maximum 16 bits)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2484,7 +2490,7 @@ receiving a KeyboardInterrupt exception</p>
 
     :param pin: arduino pin number
 
-    :param value: pin value (maximum 16 bitrs)
+    :param value: pin value (maximum 16 bits)
 
     &#34;&#34;&#34;
     value_msb = value &gt;&gt; 8

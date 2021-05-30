@@ -42,15 +42,17 @@ This program monitors two DHT22 and two DHT11 sensors.
 
 
 # A callback function to display the distance
+# noinspection GrazieInspection
 def the_callback(data):
+    # noinspection GrazieInspection
     """
-    The callback function to display the change in distance
-    :param data: [report_type = PrivateConstants.DHT, error = 0, pin number,
-    dht_type, humidity, temperature timestamp]
-                 if this is an error report:
-                 [report_type = PrivateConstants.DHT, error != 0, pin number, dht_type
-                 timestamp]
-    """
+        The callback function to display the change in distance
+        :param data: [report_type = PrivateConstants.DHT, error = 0, pin number,
+        dht_type, humidity, temperature timestamp]
+                     if this is an error report:
+                     [report_type = PrivateConstants.DHT, error != 0, pin number, dht_type
+                     timestamp]
+        """
     if data[1]:
         # error message
         date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[4]))
@@ -64,15 +66,16 @@ def the_callback(data):
 
 
 def dht(my_board, pin, callback, dht_type):
+    # noinspection GrazieInspection
     """
-    Set the pin mode for a DHT 22 device. Results will appear via the
-    callback.
+        Set the pin mode for a DHT 22 device. Results will appear via the
+        callback.
 
-    :param my_board: an pymata express instance
-    :param pin: Arduino pin number
-    :param callback: The callback function
-    :param dht_type: 22 or 11
-    """
+        :param my_board: an pymata express instance
+        :param pin: Arduino pin number
+        :param callback: The callback function
+        :param dht_type: 22 or 11
+        """
 
     # set the pin mode for the DHT device
     my_board.set_pin_mode_dht(pin, callback, dht_type)
