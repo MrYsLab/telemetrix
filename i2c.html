@@ -14,7 +14,7 @@
     
     
       
-        <title>Telemetrix and Telemtrix-AIO User's Guide</title>
+        <title>I2C Reads And Writes - Telemetrix and Telemtrix-AIO User's Guide</title>
       
     
     
@@ -59,7 +59,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#summary-of-major-features" class="md-skip">
+        <a href="#communicating-with-i2c-devices" class="md-skip">
           Skip to content
         </a>
       
@@ -89,7 +89,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Introduction
+              I2C Reads And Writes
             
           </span>
         </div>
@@ -167,21 +167,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="index.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
         Introduction
       </a>
-      
     </li>
   
 
@@ -321,12 +311,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
       <label class="md-nav__link" for="__nav_4">
         The Python APIs
@@ -390,11 +382,91 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="i2c.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          I2C Reads And Writes
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="i2c.html" class="md-nav__link md-nav__link--active">
         I2C Reads And Writes
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#read-commands" class="md-nav__link">
+    Read Commands
+  </a>
+  
+    <nav class="md-nav" aria-label="Read Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#i2c_read" class="md-nav__link">
+    i2c_read
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i2c_read_restart_transmission" class="md-nav__link">
+    i2c_read_restart_transmission
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#write-command" class="md-nav__link">
+    Write Command
+  </a>
+  
+    <nav class="md-nav" aria-label="Write Command">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#i2c_write" class="md-nav__link">
+    i2c_write
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -493,6 +565,61 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#read-commands" class="md-nav__link">
+    Read Commands
+  </a>
+  
+    <nav class="md-nav" aria-label="Read Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#i2c_read" class="md-nav__link">
+    i2c_read
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i2c_read_restart_transmission" class="md-nav__link">
+    i2c_read_restart_transmission
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#write-command" class="md-nav__link">
+    Write Command
+  </a>
+  
+    <nav class="md-nav" aria-label="Write Command">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#i2c_write" class="md-nav__link">
+    i2c_write
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -504,206 +631,82 @@
               
                 
                 
-                <div style="text-align:center;color:#990033; font-family:times, serif; font-size:3.5em"><i>The Telemetrix Project</i></div>
-<div style="text-align:center;color:#990033; font-family:times, serif; font-size:2.5em"><i>A User's Guide </i></div>
-<p><br></p>
-<p><em>Telemetry</em> is a system for collecting data on a remote device and then 
-automatically transmitting the collected data back to local receiving equipment for processing.</p>
-<p>The Telemetrix Project is a telemetry system explicitly designed for Arduino 
-Core-based MCUs, using Python on the local client and an Arduino Core 
-sketch on the Microcontroller Unit (MCU). Two clients are offered, 
-<a href="https://github.com/MrYsLab/telemetrix"><em>telemetrix</em></a>, which uses standard Python threading techniques for concurrency, 
-and <a href="https://github.com/MrYsLab/telemetrix-aio"><em>telemetrix-aio</em></a> for those who prefer to work 
-within a Python asyncio environment. Both clients support both serial and WiFi communications.</p>
-<p>The servers, <a href="https://github.com/MrYsLab/Telemetrix4Arduino">Telemetrix4Arduino</a>, and 
-<a href="https://github.com/MrYsLab/Telemetrix4Esp8266">Telemetrix4ESP8266</a>, are written using standard Arduino
- C++. It is in an Arduino library format,
-but all the operational code for each server is located in a single .ino file, simplifying adding an extension to the servers.</p>
-<p>Telemetrix was designed with extensibility in mind. Adding new functionality is
-straight forward. Debugging tools are integrated into the system to aid in extending its functionality.</p>
-<p>This guide includes a tutorial explaining the steps taken to add DHT (temperature and humidity) 
-sensor support to Telemetrix. The tutorial covers both telemetrix and telemetrix-aio.
-<br></p>
-<h1 id="summary-of-major-features">Summary Of Major Features</h1>
-<ul>
-<li>Applications are programmed using conventional Python 3.</li>
-<li>All Data change events are reported asynchronously via user registered callback functions. </li>
-<li>Each data change event is time-stamped.</li>
-<li>Online <a href="https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html">API Reference Documentation for Telemetrix</a>.</li>
-<li>Online <a href="https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix-aio/blob/master/html/telemetrix_aio/index.html">API Reference Documentation for Telemetrix-AIO</a>.</li>
-<li>A full set of working examples for <a href="https://github.com/MrYsLab/telemetrix/tree/master/examples">Telemetrix</a> and <a href="https://github.com/MrYsLab/telemetrix-aio/tree/master/examples">Telemetrix-AIO</a>
-are available for download online. WiFi examples are also provided.</li>
-<li>Both clients connect to the servers using a serial or WiFi interface, depending upon the server in use.</li>
-<li>Integrated debugging methods are included to aid in adding new features.</li>
-</ul>
-<h1 id="intuitive-and-easy-to-use-apis">Intuitive And Easy To use APIs</h1>
-<p>For example, to receive asynchronous digital pin state data change notifications, you do the following:</p>
-<ul>
-<li>
-<p><strong>Set a pin mode for the pin and register an associated callback function for the pin</strong>. 
-    Your callback function is written to accept  a single parameter: </p>
-<pre><code>def the_callback(data):
+                <h1 id="communicating-with-i2c-devices">Communicating With I2C Devices</h1>
+<p>Both telemetrix and telemetrix-aio have the capability to support two i2c buses.
+The default is always enabled. To enable the secondary bus, edit the Telemetrix4Arduino.ino
+file, and uncomment the following line:</p>
+<pre><code>// uncomment out the next line to create a 2nd i2c port
+//#define SECOND_I2C_PORT
 
-    # Your code here
+#ifdef SECOND_I2C_PORT
+// Change the pins to match SDA and SCL for your board
+#define SECOND_I2C_PORT_SDA PB3
+#define SECOND_I2C_PORT_SCL PB10
 </code></pre>
-<p>When the telemetrix client calls the callback function, it populates the <em>data</em>
-parameter with a list describing the data change event.</p>
-<p>For example, for a digital data change, the list would contain the following:</p>
-<p>[pin_type=digital input, pin_number, pin_value, time stamp]</p>
-<p>Each input pin type returns a unique list, as described in the API.</p>
-</li>
-<li>
-<p><strong>Have your application sit in a loop, waiting for notifications.</strong></p>
-</li>
-</ul>
-<h1 id="working-examples">Working Examples</h1>
-<p>Here is a Telemetrix example that monitors digital pin 12 for state changes:</p>
-<pre><code class="language-python">import sys
-import time
+<p>Make sure that the pin designations for the secondary port match those for your board.</p>
+<p><strong>NOTE :</strong> Examples for i2c read and write may be found in these examples.</p>
+<p>telemetrix primary port:  <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/i2c_adxl345_accelerometer.py">i2c_adxl345_accelerometer.py</a></p>
+<p>telemetrix secondary port:  <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/i2c_adxl345_accelerometer2.py">i2c_adxl345_accelerometer2.py</a> </p>
+<p>telemetrix-aio primary port:  <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/i2c_adxl345_accelerometer.py">i2c_adxl345_accelerometer.py</a></p>
+<p>telemetrix-aio secondary port:  <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/i2c_adxl345_accelerometer2.py">i2c_adxl345_accelerometer2.py</a> </p>
+<h2 id="read-commands">Read Commands</h2>
+<h3 id="i2c_read">i2c_read</h3>
+<pre><code class="language-python"> def i2c_read(self, address, register, number_of_bytes, callback=None, i2c_port=0)
 
-from telemetrix import telemetrix
+    Read the specified number of bytes from the specified register for the i2c device.
 
-&quot;&quot;&quot;
-Monitor a digital input pin
-&quot;&quot;&quot;
+    :param address: i2c device address
 
-&quot;&quot;&quot;
-Setup a pin for digital input and monitor its changes
-&quot;&quot;&quot;
+    :param register: i2c register (or None if no register selection is needed)
 
-# Setup a pin for analog input and monitor its changes
-DIGITAL_PIN = 12  # arduino pin number
+    :param number_of_bytes: number of bytes to be read
 
-# Callback data indices
-CB_PIN_MODE = 0
-CB_PIN = 1
-CB_VALUE = 2
-CB_TIME = 3
+    :param callback: Required callback function to report i2c data as a result of read command
 
+    :param i2c_port: 0 = default, 1 = secondary
 
-def the_callback(data):
-    &quot;&quot;&quot;
-    A callback function to report data changes.
-    This will print the pin number, its reported value and
-    the date and time when the change occurred
-
-    :param data: [pin, current reported value, pin_mode, timestamp]
-    &quot;&quot;&quot;
-    date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[CB_TIME]))
-    print(f'Pin Mode: {data[CB_PIN_MODE]} Pin: {data[CB_PIN]} Value: {data[CB_VALUE]} Time Stamp: {date}')
-
-
-def digital_in(my_board, pin):
-    &quot;&quot;&quot;
-     This function establishes the pin as a
-     digital input. Any changes on this pin will
-     be reported through the call back function.
-
-     :param my_board: a pymata4 instance
-     :param pin: Arduino pin number
-     &quot;&quot;&quot;
-
-    # set the pin mode
-    my_board.set_pin_mode_digital_input(pin, callback=the_callback)
-
-    print('Enter Control-C to quit.')
-    # my_board.enable_digital_reporting(12)
-    try:
-        while True:
-            time.sleep(.0001)
-    except KeyboardInterrupt:
-        board.shutdown()
-        sys.exit(0)
-
-
-board = telemetrix.Telemetrix()
-
-try:
-    digital_in(board, DIGITAL_PIN)
-except KeyboardInterrupt:
-    board.shutdown()
-    sys.exit(0)
-
+    callback returns a data list: [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
 </code></pre>
-<p>And a Telemetrix-AIO version  of the same example:</p>
-<pre><code class="language-python">import asyncio
-import sys
-import time
+<p><strong>Examples:</strong></p>
+<p>See NOTE above.</p>
+<h3 id="i2c_read_restart_transmission">i2c_read_restart_transmission</h3>
+<pre><code class="language-python">  def i2c_read_restart_transmission(self, address, register, number_of_bytes, callback=None, i2c_port=0)
 
-from telemetrix_aio import telemetrix_aio
+    Read the specified number of bytes from the specified register for the i2c device. This restarts the transmission after the read. It is required for some i2c devices such as the MMA8452Q accelerometer.
 
-&quot;&quot;&quot;
-Monitor a digital input pin
-&quot;&quot;&quot;
+    :param address: i2c device address
 
-&quot;&quot;&quot;
-Setup a pin for digital input and monitor its changes
-&quot;&quot;&quot;
+    :param register: i2c register (or None if no register selection is needed)
 
-# Setup a pin for analog input and monitor its changes
-DIGITAL_PIN = 12  # arduino pin number
+    :param number_of_bytes: number of bytes to be read
 
-# Callback data indices
-CB_PIN_MODE = 0
-CB_PIN = 1
-CB_VALUE = 2
-CB_TIME = 3
+    :param callback: Required callback function to report i2c data as a result of read command
 
+    :param i2c_port: 0 = default 1 = secondary
 
-async def the_callback(data):
-    &quot;&quot;&quot;
-    A callback function to report data changes.
-    This will print the pin number, its reported value and
-    the date and time when the change occurred
+    callback returns a data list:
 
-    :param data: [pin_mode, pin, current reported value, timestamp]
-    &quot;&quot;&quot;
-    date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[CB_TIME]))
-    print(f'Pin: {data[CB_PIN]} Value: {data[CB_VALUE]} Time Stamp: {date}')
-
-
-async def digital_in(my_board, pin):
-    &quot;&quot;&quot;
-     This function establishes the pin as a
-     digital input. Any changes on this pin will
-     be reported through the call back function.
-
-     :param my_board: a pymata_express instance
-     :param pin: Arduino pin number
-     &quot;&quot;&quot;
-
-    # set the pin mode
-    await my_board.set_pin_mode_digital_input(pin, callback=the_callback)
-
-    while True:
-        try:
-            await asyncio.sleep(.001)
-        except KeyboardInterrupt:
-            await board.shutdown()
-            sys.exit(0)
-
-# get the event loop
-loop = asyncio.get_event_loop()
-
-# instantiate pymata_express
-board = telemetrix_aio.TelemetrixAIO()
-
-try:
-    # start the main function
-    loop.run_until_complete(digital_in(board, 12))
-except (KeyboardInterrupt, RuntimeError) as e:
-    loop.run_until_complete(board.shutdown())
-    sys.exit(0)
-
+    [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
 </code></pre>
-<p>Sample console output as input change events occur:</p>
-<pre><code class="language-bash">Pin: 12 Value: 0 Time Stamp: 2020-03-10 13:26:22
-Pin: 12 Value: 1 Time Stamp: 2020-03-10 13:26:27
+<p><strong>Examples:</strong></p>
+<p>See NOTE above.</p>
+<h2 id="write-command">Write Command</h2>
+<h3 id="i2c_write">i2c_write</h3>
+<pre><code class="language-python"> def i2c_write(self, address, args, i2c_port=0)
+
+    Write data to an i2c device.
+
+    :param address: i2c device address
+
+    :param i2c_port: 0= port 1, 1 = port 2
+
+    :param args: A variable number of bytes to be sent to the device passed in as a list
 </code></pre>
-<p><br>
+<p><strong>Examples:</strong></p>
+<p>See NOTE above.
+<br>
 <br></p>
 <p>Copyright (C) 2020 Alan Yorinks. All Rights Reserved.</p>
-<p><strong>Last updated 11 June 2021 </strong></p>
                 
               
               
@@ -722,15 +725,30 @@ Pin: 12 Value: 1 Time Stamp: 2020-03-10 13:26:27
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
+        
+        <a href="device_writes.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Writing Values To Pins And Selected Devices" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Writing Values To Pins And Selected Devices
+            </div>
+          </div>
+        </a>
+      
       
         
-        <a href="contents.html" class="md-footer__link md-footer__link--next" aria-label="Next: What Is Contained In This Guide?" rel="next">
+        <a href="management.html" class="md-footer__link md-footer__link--next" aria-label="Next: Shutting Down" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              What Is Contained In This Guide?
+              Shutting Down
             </div>
           </div>
           <div class="md-footer__button md-icon">

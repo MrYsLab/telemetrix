@@ -1,0 +1,1032 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.7">
+    
+    
+      
+        <title>Setting Pin Modes - Telemetrix and Telemtrix-AIO User's Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.ca7ac06f.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.f1a3b89f.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL(".",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#introduction" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="Telemetrix and Telemtrix-AIO User&#39;s Guide" class="md-header__button md-logo" aria-label="Telemetrix and Telemtrix-AIO User's Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Telemetrix and Telemtrix-AIO User's Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Setting Pin Modes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="Telemetrix and Telemtrix-AIO User&#39;s Guide" class="md-nav__button md-logo" aria-label="Telemetrix and Telemtrix-AIO User's Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Telemetrix and Telemtrix-AIO User's Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="contents.html" class="md-nav__link">
+        What Is Contained In This Guide?
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        System and Installation Requirements
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="System and Installation Requirements" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          System and Installation Requirements
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="python_3_verify.html" class="md-nav__link">
+        Verifying Python 3 Version
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="python_install.html" class="md-nav__link">
+        Python 3 Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="install_telemetrix.html" class="md-nav__link">
+        Installing Telemetrix
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="install_telemetrix-aio.html" class="md-nav__link">
+        Installing Telemetrix-AIO
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="telemetrix4arduino.html" class="md-nav__link">
+        Installing Telemetrix4Arduino
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="telemetrix4esp8266.html" class="md-nav__link">
+        Installing And Using Telemetrix4Esp8266
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="upgrade.html" class="md-nav__link">
+        Upgrading To The Latest Version Python Clients
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      <label class="md-nav__link" for="__nav_4">
+        The Python APIs
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="The Python APIs" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          The Python APIs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="init.html" class="md-nav__link">
+        The __init__ Method
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Setting Pin Modes
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="pin_modes.html" class="md-nav__link md-nav__link--active">
+        Setting Pin Modes
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mapping-analog-pin-numbers-to-digital-pin-numbers" class="md-nav__link">
+    Mapping Analog Pin Numbers To Digital Pin Numbers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-pin-modes" class="md-nav__link">
+    Setting Pin Modes
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting Pin Modes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_analog_input" class="md-nav__link">
+    set_pin_mode_analog_input
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_analog_output" class="md-nav__link">
+    set_pin_mode_analog_output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_dht" class="md-nav__link">
+    set_pin_mode_dht
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_digital_input" class="md-nav__link">
+    set_pin_mode_digital_input
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_digital_input_pullup" class="md-nav__link">
+    set_pin_mode_digital_input_pullup
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_digital_output" class="md-nav__link">
+    set_pin_mode_digital_output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_i2c" class="md-nav__link">
+    set_pin_mode_i2c
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_servo" class="md-nav__link">
+    set_pin_mode_servo
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#servo_detach" class="md-nav__link">
+    servo_detach
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_sonar" class="md-nav__link">
+    set_pin_mode_sonar
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="enable_disable.html" class="md-nav__link">
+        Enabling/Disabling Analog And Digital Reporting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="device_writes.html" class="md-nav__link">
+        Writing Values To Pins And Selected Devices
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="i2c.html" class="md-nav__link">
+        I2C Reads And Writes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="management.html" class="md-nav__link">
+        Shutting Down
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="debug.html" class="md-nav__link">
+        Debugging
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dht.html" class="md-nav__link">
+        Extending Telemetrix
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="about.html" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="license.html" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mapping-analog-pin-numbers-to-digital-pin-numbers" class="md-nav__link">
+    Mapping Analog Pin Numbers To Digital Pin Numbers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-pin-modes" class="md-nav__link">
+    Setting Pin Modes
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting Pin Modes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_analog_input" class="md-nav__link">
+    set_pin_mode_analog_input
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_analog_output" class="md-nav__link">
+    set_pin_mode_analog_output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_dht" class="md-nav__link">
+    set_pin_mode_dht
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_digital_input" class="md-nav__link">
+    set_pin_mode_digital_input
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_digital_input_pullup" class="md-nav__link">
+    set_pin_mode_digital_input_pullup
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_digital_output" class="md-nav__link">
+    set_pin_mode_digital_output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_i2c" class="md-nav__link">
+    set_pin_mode_i2c
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_servo" class="md-nav__link">
+    set_pin_mode_servo
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#servo_detach" class="md-nav__link">
+    servo_detach
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_pin_mode_sonar" class="md-nav__link">
+    set_pin_mode_sonar
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="introduction">Introduction</h1>
+<p>A pin on an Arduino-core device can be configured to operate in one of several modes.</p>
+<p>For example, 
+a digital pin may be configured for input, output, and some digital pins may be 
+used for analog output (PWM) operation.</p>
+<p>Analog input pins
+are even more flexible.
+They may be configured for analog input, digital input, or digital output operation.</p>
+<h4 id="mapping-analog-pin-numbers-to-digital-pin-numbers">Mapping Analog Pin Numbers To Digital Pin Numbers</h4>
+<p>When configuring an analog input pin as a digital input, you must use the pin's digital pin number equivalent. 
+For example, if you wish to use pin A0 as a digital pin on an Arduino Uno, 
+the digital pin number equivalent is 14.  In general, to find the digital equivalent of pin A0 for your specific
+Arduino board type, the algorithm is:</p>
+<p>digital_pin_number = analog_pin_number + number of digital pins</p>
+<p>Looking at the Uno:
+A0 = 14, A1 = 15, and so forth.</p>
+<p>Looking at a Mega2560 which has 54 digital pins:
+A0 = 54, A1 = 55, etc.</p>
+<p>However, this not always the case, so please consult the documentation for the board in use.</p>
+<p>Both telemetrix and telemetrix-aio require that a pin's 
+mode be explicitly set by calling one of the mode-setting methods before using a pin.</p>
+<p>In this section, the methods to set pin modes are presented. For each API method, a link to an example is
+provided. The API parameters for both telemetrix and telemetrix-aio are identical for setting pin modes, except
+telemetrix-aio method definitions are prefixed with the Python <em>async</em> keyword.</p>
+<h2 id="setting-pin-modes">Setting Pin Modes</h2>
+<h3 id="set_pin_mode_analog_input">set_pin_mode_analog_input</h3>
+<pre><code class="language-python"> def set_pin_mode_analog_input(self, pin_number, callback=None, differential=0)
+
+    Set a pin as an analog input.
+
+    :param pin_number: arduino pin number
+
+    :param callback: callback function
+
+    :param differential: When comparing the previous value and the current value, if the
+                         difference exceeds the differential. This value needs to be equaled 
+                         or exceeded for a callback report to be generated.
+
+    callback returns a data list:
+
+    [pin_type, pin_number, pin_value, raw_time_stamp]
+
+    The pin_type for analog input pins = 2
+</code></pre>
+<p><strong>Examples:</strong></p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/analog_input.py">analog_input.py</a></li>
+<li>telemtrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/analog_input.py">analog_input.py</a></li>
+</ol>
+<p><strong>Notes:</strong> </p>
+<ol>
+<li>Both telemetrix and telemetrix-aio refer to analog pins using the numeric portion of the pin number only. 
+For example, pin A3 is referred to as pin 3.</li>
+<li>Data reporting via callbacks for this pin begins immediately after this method is called. </li>
+</ol>
+<h3 id="set_pin_mode_analog_output">set_pin_mode_analog_output</h3>
+<p>This mode is used to place a digital pin into PWM output mode. Arduino refers to this mode of operation as
+analog output mode.</p>
+<pre><code class="language-python"> def set_pin_mode_analog_output(self, pin_number)
+
+    Set a pin as an analog input.
+
+    :param pin_number: arduino pin number
+
+    :param callback: callback function
+
+
+    callback returns a data list:
+
+    [pin_type, pin_number, pin_value, raw_time_stamp]
+
+    The pin_type for analog input pins = 2
+</code></pre>
+<p><strong>Examples:</strong></p>
+<ol>
+<li>telemetrix:  <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/fade.py">fade.py</a></li>
+<li>telemetrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/fade.py">fade.py</a></li>
+</ol>
+<p><strong>Notes:</strong> </p>
+<p>Only specific digital pins support this mode. Check with the Arduino documentation
+for your board to determine which pins support PWM.</p>
+<h3 id="set_pin_mode_dht">set_pin_mode_dht</h3>
+<p>When this method is called, a check for a valid DHT device is made. If an error
+ is found an error report is generated.</p>
+<pre><code> def set_pin_mode_dht(self, pin, callback=None)
+
+    This method sets a pin as a DHT22 pin
+
+    :param pin: dht22 pin
+
+    :param callback: callback function
+
+    Error Callback: [Callback 0=DHT REPORT, DHT_ERROR=0, PIN, Error Number, Time]
+
+    Valid Data Callback: Callback 0=DHT REPORT, DHT_DATA=1, PIN, Humidity, Temperature Time]
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/dht.py">dht.py</a></li>
+<li>telemetric-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/dht.py">dht.py</a></li>
+</ol>
+<h3 id="set_pin_mode_digital_input">set_pin_mode_digital_input</h3>
+<pre><code class="language-python"> def set_pin_mode_digital_input(self, pin_number, callback=None)
+
+    Set a pin as a digital input.
+
+    :param pin_number: arduino pin number
+
+    :param callback: callback function
+
+    callback returns a data list:
+
+    [pin_type, pin_number, pin_value, raw_time_stamp]
+
+    The pin_type for digital input pins = 0
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/digital_input.py">digital_input.py</a></li>
+<li>telemetrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/digital_input.py">digital_input.py</a></li>
+</ol>
+<p><strong>Notes:</strong> </p>
+<p>Data reporting via callbacks for this pin begins immediately after this method is called. </p>
+<h3 id="set_pin_mode_digital_input_pullup">set_pin_mode_digital_input_pullup</h3>
+<pre><code class="language-python"> def set_pin_mode_digital_input_pullup(self, pin_number, callback=None)
+
+    Set a pin as a digital input with pullup enabled.
+
+    :param pin_number: arduino pin number
+
+    :param callback: callback function
+
+    callback returns a data list:
+
+    [pin_type, pin_number, pin_value, raw_time_stamp]
+
+    The pin_type for digital input pins with pullups enabled = 11
+
+</code></pre>
+<p><strong>Example:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/digital_input_pullup.py">digital_input_pullup.py</a></li>
+<li>telemetrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/digital_input_pullup.py">digital_input_pullup.py</a>
+<strong>Notes:</strong> </li>
+</ol>
+<p>Data reporting via callbacks for this pin begins immediately after this method is called. </p>
+<h3 id="set_pin_mode_digital_output">set_pin_mode_digital_output</h3>
+<pre><code class="language-python"> def set_pin_mode_digital_output(self, pin_number)
+
+    Set a pin as a digital output pin.
+
+    :param pin_number: arduino pin number
+
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/blink.py">blink.py</a></li>
+<li>telemetrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/blink.py">blink.py</a></li>
+</ol>
+<h3 id="set_pin_mode_i2c">set_pin_mode_i2c</h3>
+<pre><code class="language-python">ddef set_pin_mode_i2c(self, i2c_port=0):
+    &quot;&quot;&quot;
+    Establish the standard Arduino i2c pins for i2c utilization.
+
+    :param i2c_port: 0 = i2c1, 1 = i2c2
+                     Some Arduino-core boards support a secondary i2c port.
+                     This parameter selects the port. Both ports may
+                     be active.
+                     The secondary port needs to be enabled by enabling
+                     a #ifdef in the Telemetrix4Arduino sketch.
+
+
+    NOTES: 1. THIS METHOD MUST BE CALLED BEFORE ANY I2C REQUEST IS MADE
+           2. Callbacks are set within the individual i2c read methods of this
+          API.
+
+          See i2c_read, or i2c_read_restart_transmission.
+
+    &quot;&quot;&quot;
+</code></pre>
+<p><strong>Examples:</strong></p>
+<ol>
+<li>telemetrix: primary i2c port <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/i2c_adxl345_accelerometer.py">i2c_adxl345_accelerometer.py</a></li>
+<li>telemetrix: secondary i2c port <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/i2c_adxl345_accelerometer2.py">i2c_adxl345_accelerometer2.py</a></li>
+<li>telemetrix-aio : primary i2c port <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/i2c_adxl345_accelerometer.py">i2c_adxl345_accelerometer.py</a></li>
+<li>telemetrix-aio : secondary i2c port <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/i2c_adxl345_accelerometer2.py">i2c_adxl345_accelerometer2.py</a></li>
+</ol>
+<h3 id="set_pin_mode_servo">set_pin_mode_servo</h3>
+<pre><code class="language-python">  def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400)
+
+    Attach a pin to a servo motor
+
+    :param pin_number: pin
+
+    :param min_pulse: minimum pulse width
+
+    :param max_pulse: maximum pulse width
+</code></pre>
+<p><strong>Examples:</strong></p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/servo.py">servo.py</a></li>
+<li>telemetrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/servo.py">servo.py</a></li>
+</ol>
+<h3 id="servo_detach">servo_detach</h3>
+<pre><code class="language-python">  def servo_detach(self, pin_number)
+
+    Detach a servo for reuse
+
+    :param pin_number: attached pin
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/servo.py">servo</a></li>
+<li>telemetrix-aio: <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/servo.py">servo</a></li>
+</ol>
+<h3 id="set_pin_mode_sonar">set_pin_mode_sonar</h3>
+<pre><code class="language-python">  def set_pin_mode_sonar(self, trigger_pin, echo_pin, callback=None)
+
+    :param trigger_pin:
+
+    :param echo_pin:
+
+    :param callback: callback
+
+    callback data: [PrivateConstants.SONAR_DISTANCE, trigger_pin, distance_value, time_stamp]
+
+</code></pre>
+<p><strong>Examples:</strong></p>
+<ol>
+<li>telemetrix:  <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/hc-sr04_distance_sensor.py">hc-sr04_distance_sensor.py</a></li>
+<li>telemetrix-aio:  <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/hc-sr04_distance_sensor.py">hc-sr04_distance_sensor.py</a></li>
+</ol>
+<p><br>
+<br></p>
+<p>Copyright (C) 2020 Alan Yorinks. All Rights Reserved.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="init.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: The __init__ Method" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              The __init__ Method
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="enable_disable.html" class="md-footer__link md-footer__link--next" aria-label="Next: Enabling/Disabling Analog And Digital Reporting" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Enabling/Disabling Analog And Digital Reporting
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.76f349be.min.js"></script>
+      
+    
+  </body>
+</html>
