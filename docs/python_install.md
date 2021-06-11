@@ -1,7 +1,7 @@
 ## INSTALLING PYTHON 
 ### Windows Users
 
-You must use Python 3.8.3 or greater
+You must use Python 3.7 or greater
 
 To install Python 3, go to the
 <a href="https://www.python.org/" target="_blank">Python home page,</a>
