@@ -427,7 +427,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.ARE_U_THERE]
         self._send_command(command)
         # provide time for the reply
-        time.sleep(.5)
+        time.sleep(2)
 
     def _get_firmware_version(self):
         """
