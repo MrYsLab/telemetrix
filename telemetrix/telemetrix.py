@@ -84,6 +84,7 @@ class Telemetrix(threading.Thread):
         self.ip_port = ip_port
 
         if not self.ip_address:
+            print('starting the serial receiver thread')
             self.the_data_receive_thread = threading.Thread(target=self._serial_receiver)
         else:
             self.the_data_receive_thread = threading.Thread(target=self._tcp_receiver)
@@ -187,7 +188,9 @@ class Telemetrix(threading.Thread):
         # flag to indicate if i2c was previously enabled
         self.i2c_enabled = False
 
+        print('starting reporter thread')
         self.the_reporter_thread.start()
+        print('starting data_receiver thread')
         self.the_data_receive_thread.start()
 
         print(f"Telemetrix:  Version {PrivateConstants.TELEMETRIX_VERSION}\n\n"
@@ -427,7 +430,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.ARE_U_THERE]
         self._send_command(command)
         # provide time for the reply
-        time.sleep(2)
+        time.sleep(.5)
 
     def _get_firmware_version(self):
         """
@@ -1162,6 +1165,7 @@ class Telemetrix(threading.Thread):
         processed.
         """
         self.run_event.wait()
+        print('reporter thread started')
 
         while self._is_running() and not self.shutdown_flag:
             if len(self.the_deque):
@@ -1181,7 +1185,7 @@ class Telemetrix(threading.Thread):
                     # get the report type and look up its dispatch method
                     # here we pop the report type off of response_data
                     report_type = response_data.pop(0)
-                    # print(report_type)
+                    print(f'report type= {report_type}')
 
                     # retrieve the report handler from the dispatch table
                     dispatch_entry = self.report_dispatch.get(report_type)
@@ -1210,7 +1214,7 @@ class Telemetrix(threading.Thread):
         # Don't start this thread if using a tcp/ip transport
         if self.ip_address:
             return
-
+        print(f'serial received started. shutdown flag = {self.shutdown_flag}')
         while self._is_running() and not self.shutdown_flag:
             # we can get an OSError: [Errno9] Bad file descriptor when shutting down
             # just ignore it
