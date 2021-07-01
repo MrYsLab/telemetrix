@@ -4,10 +4,12 @@
 
 
 <p>1. Open the Arduino IDE and select Tools/Manage Libraries.</p>
-<img src="../images/manage_libraries.png">
+
+![](./images/manage_libraries.png)
 
 <p>2. Enter "Telemtrix4Arduino in the search box.</p>
-<img src="../images/telemetrix4arduino2.png">
+
+![](./images/telemetrix4arduino2.png)
 
 <p>3. Click on the Install button. You will be prompted to allow the installation
 of additional libraries. Accept the installation for all.</p>
@@ -15,7 +17,7 @@ of additional libraries. Accept the installation for all.</p>
 <p>4. Upload Telemetrix4Arduino to your Arduino-Core board by selecting File/Examples/Telemetrix4Arduino/Telemetrix4Arduino
 and then clicking the upload button on the IDE.</p>
 
-<img src="../images/install_t4a.png">
+![](./images/install_t4a.png)
 
 ## Setting The Telemetrix4Arduino Instance ID
 
@@ -26,8 +28,8 @@ If you only have a single Arduino connected at a time, you do not need to do any
 if you wish to run multiple Arduinos, you will need to assign a unique ID number to each
 Arduino. The ID number is then supplied as an input parameter when your application
  is instantiated.
- 
-<img src="../images/add_zip3.png">
+
+![](./images/add_zip3.png)
 
 Note that if you wish to change the instance_id for the server, you must edit the sketch code and upload the changes to the Arduino.
 
