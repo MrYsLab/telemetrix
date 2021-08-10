@@ -1332,8 +1332,6 @@ class Telemetrix(threading.Thread):
                     # noinspection PyArgumentList
                     dispatch_entry(response_data)
                     continue
-
-
                 else:
                     if self.shutdown_on_exception:
                         self.shutdown()
