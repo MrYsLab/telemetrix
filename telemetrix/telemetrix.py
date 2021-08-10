@@ -1317,12 +1317,12 @@ class Telemetrix(threading.Thread):
                         data = self.the_deque.popleft()
                         response_data.append(data)
 
-                    print(response_data)
+                    # print(response_data)
 
                     # get the report type and look up its dispatch method
                     # here we pop the report type off of response_data
                     report_type = response_data.pop(0)
-                    print(report_type)
+                    # print(report_type)
 
                     # retrieve the report handler from the dispatch table
                     dispatch_entry = self.report_dispatch.get(report_type)
@@ -1330,11 +1330,9 @@ class Telemetrix(threading.Thread):
                     # if there is additional data for the report,
                     # it will be contained in response_data
                     # noinspection PyArgumentList
-                    try:
-                        dispatch_entry(response_data)
-                        continue
-                    except TypeError:
-                        print('q')
+                    dispatch_entry(response_data)
+                    continue
+
 
                 else:
                     if self.shutdown_on_exception:
