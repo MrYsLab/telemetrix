@@ -141,6 +141,8 @@ class Telemetrix(threading.Thread):
         self.report_dispatch.update(
             {PrivateConstants.SONAR_DISTANCE: self._sonar_distance_report})
         self.report_dispatch.update({PrivateConstants.DHT_REPORT: self._dht_report})
+        self.report_dispatch.update(
+            {PrivateConstants.SPI_REPORT: self._spi_report})
 
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
@@ -152,6 +154,10 @@ class Telemetrix(threading.Thread):
 
         self.i2c_1_active = False
         self.i2c_2_active = False
+
+        self.spi_callback = None
+
+        self.cs_pins_enabled = []
 
         # the trigger pin will be the key to retrieve
         # the callback for a specific HC-SR04
@@ -813,6 +819,39 @@ class Telemetrix(threading.Thread):
             raise RuntimeError(
                 f'Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}')
 
+    def set_pin_mode_spi(self, chip_select_list=None):
+        """
+        Specify the list of chip select pins.
+
+        Standard Arduino MISO, MOSI and CLK pins are used for the board in use.
+
+        Chip Select is any digital output capable pin.
+
+        :param chip_select_list: this is a list of pins to be used for chip select.
+                           The pins will be configured as output, and set to high
+                           ready to be used for chip select.
+                           NOTE: You must specify the chips select pins here!
+
+
+        command message: [command, number of cs pins, [cs pins...]]
+        """
+
+        if type(chip_select_list) != list:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('chip_select_list must be in the form of a list')
+        if not chip_select_list:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('Chip select pins were not specified')
+
+        command = [PrivateConstants.SPI_INIT, len(chip_select_list)]
+
+        for pin in chip_select_list:
+            command.append(pin)
+            self.cs_pins_enabled.append(pin)
+        self._send_command(command)
+
     def servo_write(self, pin_number, angle):
         """
 
@@ -920,6 +959,100 @@ class Telemetrix(threading.Thread):
                     pass
         except Exception:
             raise RuntimeError('Shutdown failed - could not send stop streaming message')
+
+    def spi_cs_control(self, chip_select_pin, select):
+        """
+        Control an SPI chip select line
+        :param chip_select_pin: pin connected to CS
+
+        :param select: 0=select, 1=deselect
+        """
+
+        if chip_select_pin not in self.cs_pins_enabled:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f'spi_cs_control: chip select pin never enabled.')
+        command = [PrivateConstants.SPI_CS_CONTROL, chip_select_pin, select]
+        self._send_command(command)
+
+    def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
+                          call_back=None):
+        """
+        Read the specified number of bytes from the specified SPI port and
+        call the callback function with the reported data.
+
+        :param register_selection: Register to be selected for read.
+
+        :param number_of_bytes_to_read: Number of bytes to read
+
+        :param call_back: Required callback function to report spi data as a
+                   result of read command
+
+
+        callback returns a data list:
+        [SPI_READ_REPORT, count of data bytes read, data bytes, time-stamp]
+
+        SPI_READ_REPORT = 13
+
+        """
+
+        if not call_back:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('spi_read_blocking: A Callback must be specified')
+
+        self.spi_callback = call_back
+
+        command = [PrivateConstants.SPI_READ_BLOCKING, number_of_bytes_to_read,
+                   register_selection]
+
+        self._send_command(command)
+
+    def spi_set_format(self, clock_divisor, bit_order, data_mode):
+        """
+        Configure how the SPI serializes and de-serializes data on the wire.
+
+        See Arduino SPI reference materials for details.
+
+        :param clock_divisor:
+
+        :param bit_order:   LSBFIRST = 0
+
+                            MSBFIRST = 1 (default)
+
+        :param data_mode:   SPI_MODE0 = 0x00 (default)
+
+                            SPI_MODE1  = 0x04
+
+                            SPI_MODE2 = 0x08
+
+                            SPI_MODE3 = 0x0C
+
+        """
+
+        command = [PrivateConstants.SPI_SET_FORMAT, clock_divisor, bit_order,
+                   data_mode]
+        self._send_command(command)
+
+    def spi_write_blocking(self, bytes_to_write):
+        """
+        Write a list of bytes to the SPI device.
+
+        :param bytes_to_write: A list of bytes to write. This must be in the form of a
+        list.
+
+        """
+        if type(bytes_to_write) is not list:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('spi_write_blocking: bytes_to_write must be a list.')
+
+        command = [PrivateConstants.SPI_WRITE_BLOCKING, len(bytes_to_write)]
+
+        for data in bytes_to_write:
+            command.append(data)
+
+        self._send_command(command)
 
     '''
     report message handlers
@@ -1075,6 +1208,14 @@ class Telemetrix(threading.Thread):
         """
         self.reported_arduino_id = data[0]
 
+    def _spi_report(self, report):
+
+        cb_list = [PrivateConstants.SPI_REPORT, report[0]] + report[1:]
+
+        cb_list.append(time.time())
+
+        self.spi_callback(cb_list)
+
     def _report_debug_data(self, data):
         """
         Print debug data sent from Arduino
@@ -1176,12 +1317,12 @@ class Telemetrix(threading.Thread):
                         data = self.the_deque.popleft()
                         response_data.append(data)
 
-                    # print(response_data)
+                    print(response_data)
 
                     # get the report type and look up its dispatch method
                     # here we pop the report type off of response_data
                     report_type = response_data.pop(0)
-                    # print(report_type)
+                    print(report_type)
 
                     # retrieve the report handler from the dispatch table
                     dispatch_entry = self.report_dispatch.get(report_type)
@@ -1189,8 +1330,11 @@ class Telemetrix(threading.Thread):
                     # if there is additional data for the report,
                     # it will be contained in response_data
                     # noinspection PyArgumentList
-                    dispatch_entry(response_data)
-                    continue
+                    try:
+                        dispatch_entry(response_data)
+                        continue
+                    except TypeError:
+                        print('q')
 
                 else:
                     if self.shutdown_on_exception:

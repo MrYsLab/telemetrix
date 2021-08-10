@@ -42,6 +42,11 @@ class PrivateConstants:
     SET_ANALOG_SCANNING_INTERVAL = 16
     ENABLE_ALL_REPORTS = 17
     RESET = 18
+    SPI_INIT = 19
+    SPI_WRITE_BLOCKING = 20
+    SPI_READ_BLOCKING = 21
+    SPI_SET_FORMAT = 22
+    SPI_CS_CONTROL = 23
 
     # reports
     # debug data from Arduino
@@ -55,10 +60,11 @@ class PrivateConstants:
     I2C_READ_REPORT = 10
     SONAR_DISTANCE = 11
     DHT_REPORT = 12
+    SPI_REPORT = 13
 
     DEBUG_PRINT = 99
 
-    TELEMETRIX_VERSION = "1.6"
+    TELEMETRIX_VERSION = "1.7"
 
     # reporting control
     REPORTING_DISABLE_ALL = 0
