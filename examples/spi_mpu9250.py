@@ -30,7 +30,7 @@ import time
 from telemetrix import telemetrix
 
 # Instantiate the TelemetrixRpiPico class accepting all default parameters.
-board = telemetrix.Telemetrix(ip_address='192.168.2.174')
+board = telemetrix.Telemetrix()
 
 
 # Convenience values for the pins.
