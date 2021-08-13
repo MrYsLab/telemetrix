@@ -63,6 +63,6 @@ class OneWireTemp:
                 print('Valid CRC')
 
 
-ow = OneWireTemp(8)
+ow = OneWireTemp(10)
 while True:
     time.sleep(1)
