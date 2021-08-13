@@ -1095,14 +1095,19 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.ONE_WIRE_INIT, pin]
         self._send_command(command)
 
-    def onewire_reset(self):
+    def onewire_reset(self, callback=None):
         """
         Reset the onewire device
+
+        :param callback: optional  function to report reset result
         """
         if not self.onewire_enabled:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(f'onewire_reset: OneWire interface is not enabled.')
+        if callback:
+            self.onewire_callback = callback
+
         command = [PrivateConstants.ONE_WIRE_RESET]
         self._send_command(command)
 
@@ -1116,7 +1121,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(f'onewire_select: OneWire interface is not enabled.')
 
-        if type(device_address) is not bytearray:
+        if type(device_address) is not list:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('onewire_select: device address must be an array of 8 '
