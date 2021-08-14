@@ -1037,11 +1037,15 @@ class Telemetrix(threading.Thread):
 
         :param clock_divisor:
 
-        :param bit_order:   LSBFIRST = 0
+        :param bit_order:
+
+                            LSBFIRST = 0
 
                             MSBFIRST = 1 (default)
 
-        :param data_mode:   SPI_MODE0 = 0x00 (default)
+        :param data_mode:
+
+                            SPI_MODE0 = 0x00 (default)
 
                             SPI_MODE1  = 0x04
 
@@ -1064,8 +1068,8 @@ class Telemetrix(threading.Thread):
         """
         Write a list of bytes to the SPI device.
 
-        :param bytes_to_write: A list of bytes to write. This must be in the form of a
-        list.
+        :param bytes_to_write: A list of bytes to write. This must
+                                be in the form of a list.
 
         """
 
@@ -1100,6 +1104,10 @@ class Telemetrix(threading.Thread):
         Reset the onewire device
 
         :param callback: required  function to report reset result
+
+        callback returns a list:
+        [ReportType = 14, Report Subtype = 25, reset result byte,
+                        timestamp]
         """
         if not self.onewire_enabled:
             if self.shutdown_on_exception:
@@ -1157,9 +1165,11 @@ class Telemetrix(threading.Thread):
 
     def onewire_write(self, data, power=0):
         """
-        Write a to the onewire device. If 'power' is one then the wire is held high at
-        the end for parasitically powered devices. You are responsible
-        for eventually de-powering it by calling another read or write.
+        Write a byte to the onewire device. If 'power' is one
+        then the wire is held high at the end for
+        parasitically powered devices. You
+        are responsible for eventually de-powering it by calling
+        another read or write.
 
         :param data: byte to write.
         :param power: power control (see above)
@@ -1439,9 +1449,6 @@ class Telemetrix(threading.Thread):
         """
         self.reported_arduino_id = data[0]
 
-    def _one_wire_report(self, report):
-        print(report)
-
     def _spi_report(self, report):
 
         cb_list = [PrivateConstants.SPI_REPORT, report[0]] + report[1:]
@@ -1452,6 +1459,7 @@ class Telemetrix(threading.Thread):
 
     def _onewire_report(self, report):
         cb_list = [PrivateConstants.ONE_WIRE_REPORT, report[0]] + report[1:]
+        cb_list.append(time.time())
         self.onewire_callback(cb_list)
 
     def _report_debug_data(self, data):

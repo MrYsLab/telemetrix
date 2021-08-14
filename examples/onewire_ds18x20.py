@@ -142,7 +142,7 @@ class OneWireTemp:
         # Call the specific handler to service the callback
         # subtype.
 
-        # Report format: [ReportType = 14, Report Subtype, Report Data...]
+        # Report format: [ReportType = 14, Report Subtype, Report Data..., timestamp]
 
         # print(report)
 
@@ -155,7 +155,8 @@ class OneWireTemp:
         """
         Search report handler
 
-        :param report: [ReportType = 14, Report Subtype = 31, 8 bytes of device address]
+        :param report: [ReportType = 14, Report Subtype = 31, 8 bytes of device address,
+                        timestamp]
         """
         self.address = [report[x] for x in range(2, 10)]
         print('Device Address = ', " ", end="")
@@ -167,7 +168,8 @@ class OneWireTemp:
     def crc_cb(self, report):
         """
         Crc result handler
-        :param report: [ReportType = 14, Report Subtype = 21, calculated CRC byte]
+        :param report: [ReportType = 14, Report Subtype = 21, calculated CRC byte,
+                        timestamp]
         :return:
         """
         # print(f'CRC = {hex(report[2])}')
@@ -179,7 +181,8 @@ class OneWireTemp:
     def reset_cb(self, report):
         """
         Reset callback
-        :param report: [ReportType = 14, Report Subtype = 25, reset result byte]
+        :param report: [ReportType = 14, Report Subtype = 25, reset result byte,
+                        timestamp]
         """
         # not used - just ignore it
         pass
@@ -190,7 +193,8 @@ class OneWireTemp:
         Append each byte received to the temperature data list
         When 9 bytes are received, check the data's CRC.
 
-        :param report: [ReportType = 14, Report Subtype = 29, 9 temperature bytes]
+        :param report: [ReportType = 14, Report Subtype = 29, 9 temperature bytes,
+                        timestamp]
 
         """
         self.temperature_data.append(report[2])
