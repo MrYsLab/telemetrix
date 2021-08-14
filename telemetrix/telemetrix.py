@@ -1099,14 +1099,18 @@ class Telemetrix(threading.Thread):
         """
         Reset the onewire device
 
-        :param callback: optional  function to report reset result
+        :param callback: required  function to report reset result
         """
         if not self.onewire_enabled:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(f'onewire_reset: OneWire interface is not enabled.')
-        if callback:
-            self.onewire_callback = callback
+        if not callback:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('onewire_reset: A Callback must be specified')
+
+        self.onewire_callback = callback
 
         command = [PrivateConstants.ONE_WIRE_RESET]
         self._send_command(command)
@@ -1449,7 +1453,6 @@ class Telemetrix(threading.Thread):
     def _onewire_report(self, report):
         cb_list = [PrivateConstants.ONE_WIRE_REPORT, report[0]] + report[1:]
         self.onewire_callback(cb_list)
-
 
     def _report_debug_data(self, data):
         """
