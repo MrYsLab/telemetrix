@@ -1,11 +1,11 @@
 """
- Copyright (c) 2020 Alan Yorinks All rights reserved.
+ Copyright (c) 2021 Alan Yorinks All rights reserved.
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
  Version 3 as published by the Free Software Foundation; either
  or (at your option) any later version.
- This library is distributed in the hope that it will be useful,f
+ This library is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  General Public License for more details.
@@ -1221,7 +1221,8 @@ class Telemetrix(threading.Thread):
         if not self.onewire_enabled:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(f'onewire_reset_serach: OneWire interface is not enabled.')
+            raise RuntimeError(f'onewire_reset_search: OneWire interface is not '
+                               f'enabled.')
         else:
             command = [PrivateConstants.ONE_WIRE_RESET_SEARCH]
             self._send_command(command)
