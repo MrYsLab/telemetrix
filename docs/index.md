@@ -3,6 +3,10 @@
 <div style="text-align:center;color:#990033; font-family:times, serif; font-size:3.5em"><i>The Telemetrix Project</i></div>
 <div style="text-align:center;color:#990033; font-family:times, serif; font-size:2.5em"><i>A User's Guide </i></div>
 <br>
+<div style="text-align:center;color:#990033; font-family:times, serif;font-size:2em"><i>Using Telemetrix With Arduino, ESP8266, and STM32 Devlopment Boards </i></div>
+
+
+<br>
 
 
 *Telemetry* is a system for collecting data on a remote device and then 
@@ -17,14 +21,14 @@ within a Python asyncio environment. Both clients support both serial and WiFi c
 
 The servers, [Telemetrix4Arduino](https://github.com/MrYsLab/Telemetrix4Arduino), and 
 [Telemetrix4ESP8266](https://github.com/MrYsLab/Telemetrix4Esp8266), are written using standard Arduino
- C++. It is in an Arduino library format,
-but all the operational code for each server is located in a single .ino file, simplifying adding an extension to the servers.
+ C++. Both may be installed via the Arduino IDE library manager. Telemetrix4Arduino is 
+used for both Arduino and STM32 boards, and uses a serial/USB cable for transport. 
+Telemetrix4ESP8266 uses a WiFi interface for the transport and is tailored 
+specifically for the ESP8266.
 
 Telemetrix was designed with extensibility in mind. Adding new functionality is
 straight forward. Debugging tools are integrated into the system to aid in extending its functionality.
 
-This guide includes a tutorial explaining the steps taken to add DHT (temperature and humidity) 
-sensor support to Telemetrix. The tutorial covers both telemetrix and telemetrix-aio.
 <br>
 
 # Summary Of Major Features
