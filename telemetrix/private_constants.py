@@ -1,5 +1,5 @@
 """
- Copyright (c) 2015-2019 Alan Yorinks All rights reserved.
+ Copyright (c) 2015-2021 Alan Yorinks All rights reserved.
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -42,6 +42,20 @@ class PrivateConstants:
     SET_ANALOG_SCANNING_INTERVAL = 16
     ENABLE_ALL_REPORTS = 17
     RESET = 18
+    SPI_INIT = 19
+    SPI_WRITE_BLOCKING = 20
+    SPI_READ_BLOCKING = 21
+    SPI_SET_FORMAT = 22
+    SPI_CS_CONTROL = 23
+    ONE_WIRE_INIT = 24
+    ONE_WIRE_RESET = 25
+    ONE_WIRE_SELECT = 26
+    ONE_WIRE_SKIP = 27
+    ONE_WIRE_WRITE = 28
+    ONE_WIRE_READ = 29
+    ONE_WIRE_RESET_SEARCH = 30
+    ONE_WIRE_SEARCH = 31
+    ONE_WIRE_CRC8 = 32
 
     # reports
     # debug data from Arduino
@@ -55,10 +69,12 @@ class PrivateConstants:
     I2C_READ_REPORT = 10
     SONAR_DISTANCE = 11
     DHT_REPORT = 12
+    SPI_REPORT = 13
+    ONE_WIRE_REPORT = 14
 
     DEBUG_PRINT = 99
 
-    TELEMETRIX_VERSION = "1.6"
+    TELEMETRIX_VERSION = "1.7"
 
     # reporting control
     REPORTING_DISABLE_ALL = 0
