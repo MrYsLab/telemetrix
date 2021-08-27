@@ -10,12 +10,15 @@ nav:
           - Installing Telemetrix4Arduino: telemetrix4arduino.md
           - Installing And Using Telemetrix4Esp8266: telemetrix4esp8266.md
           - Upgrading To The Latest Version Python Clients: upgrade.md
+    - Specifying Pin Numbers: pins.md
     - The Python APIs:
         - The __init__ Method: init.md
         - Setting Pin Modes: pin_modes.md
         - Enabling/Disabling Analog And Digital Reporting: enable_disable.md
         - Writing Values To Pins And Selected Devices:  device_writes.md
         - I2C Reads And Writes: i2c.md
+        - OneWire Commands: onewire.md
+        - SPI Commands: spi.md
         - Shutting Down: management.md
         - Debugging: debug.md
     - Extending Telemetrix: dht.md

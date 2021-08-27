@@ -7,7 +7,10 @@
     * [Installing the Telemetrix4Arduino sketch.](./telemetrix4arduino.md)
     * [Installing the Telemetrix4Esp8266 sketch.](./telemetrix4esp8266.md)
 
+* [Specifying GPIO pins.](./pins.md)
+
 * A discussion of the [API methods](./init.md), including links to working examples.
+
 * A [tutorial on how to extend Telemetrix and Telemetrix-AIO](./dht.md) using
 the [DHTNew](https://github.com/RobTillaart/DHTNew) library for DHT type temperature sensors.
 

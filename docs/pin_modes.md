@@ -1,33 +1,6 @@
 # Introduction
-A pin on an Arduino-core device can be configured to operate in one of several modes.
 
-For example, 
-a digital pin may be configured for input, output, and some digital pins may be 
-used for analog output (PWM) operation.
-
-Analog input pins
-are even more flexible.
-They may be configured for analog input, digital input, or digital output operation.
-
-#### Mapping Analog Pin Numbers To Digital Pin Numbers
-When configuring an analog input pin as a digital input, you must use the pin's digital pin number equivalent. 
-For example, if you wish to use pin A0 as a digital pin on an Arduino Uno, 
-the digital pin number equivalent is 14.  In general, to find the digital equivalent of pin A0 for your specific
-Arduino board type, the algorithm is:
-
-digital_pin_number = analog_pin_number + number of digital pins
-
-Looking at the Uno:
-A0 = 14, A1 = 15, and so forth.
-
-Looking at a Mega2560 which has 54 digital pins:
-A0 = 54, A1 = 55, etc.
-
-However, this not always the case, so please consult the documentation for the board in use.
-
-Both telemetrix and telemetrix-aio require that a pin's 
-mode be explicitly set by calling one of the mode-setting methods before using a pin.
-
+Before any GPIO pin may be used, its mode of use must be set.
 
 In this section, the methods to set pin modes are presented. For each API method, a link to an example is
 provided. The API parameters for both telemetrix and telemetrix-aio are identical for setting pin modes, except
@@ -217,8 +190,22 @@ ddef set_pin_mode_i2c(self, i2c_port=0):
 
 1. telemetrix: primary i2c port [i2c_adxl345_accelerometer.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/i2c_adxl345_accelerometer.py)
 2. telemetrix: secondary i2c port [i2c_adxl345_accelerometer2.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/i2c_adxl345_accelerometer2.py)
-2. telemetrix-aio : primary i2c port [i2c_adxl345_accelerometer.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/i2c_adxl345_accelerometer.py)
-2. telemetrix-aio : secondary i2c port [i2c_adxl345_accelerometer2.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/i2c_adxl345_accelerometer2.py)
+3. telemetrix-aio : primary i2c port [i2c_adxl345_accelerometer.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/i2c_adxl345_accelerometer.py)
+4. telemetrix-aio : secondary i2c port [i2c_adxl345_accelerometer2.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/i2c_adxl345_accelerometer2.py)
+
+### set_pin_mode_one_wire
+```python
+def set_pin_mode_one_wire(self, pin):
+    """
+    Initialize the one wire serial bus.
+
+    :param pin: Data pin connected to the OneWire device
+    """
+```
+**Examples:**
+
+1. telemetrix: [onewire_ds18x20.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/onewire_ds18x20.py)
+2. telemetrix-aio: [onewire_ds18x20.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/onewire_ds18x20.py)
 
 ### set_pin_mode_servo
 ```python
@@ -272,9 +259,29 @@ ddef set_pin_mode_i2c(self, i2c_port=0):
 1. telemetrix:  [hc-sr04_distance_sensor.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/hc-sr04_distance_sensor.py)
 2. telemetrix-aio:  [hc-sr04_distance_sensor.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/hc-sr04_distance_sensor.py)
 
+### set_pin_mode_spi
+
+```python
+def set_pin_mode_spi(self, chip_select_list=None):
+    """
+    Specify the list of chip select pins.
+
+    Standard Arduino MISO, MOSI and CLK pins are used for the board in use.
+
+    Chip Select is any digital output capable pin.
+
+    :param chip_select_list: this is a list of pins to be used for chip select.
+                       The pins will be configured as output, and set to high
+                       ready to be used for chip select.
+                       NOTE: You must specify the chips select pins here!
 
 
+    command message: [command, number of cs pins, [cs pins...]]
+    """
+```
 
+1. telemetrix: [spi_mpu9250.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/spi_mpu9250.py)
+2. telemetrix-aio : [spi_mpu9250.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/spi_mpu9250.py)
 <br>
 <br>
 
