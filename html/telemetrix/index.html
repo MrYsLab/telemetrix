@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>telemetrix.telemetrix API documentation</title>
-<meta name="description" content="Copyright (c) 2020 Alan Yorinks All rights reserved …" />
+<meta name="description" content="Copyright (c) 2021 Alan Yorinks All rights reserved …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,12 +22,12 @@
 <h1 class="title">Module <code>telemetrix.telemetrix</code></h1>
 </header>
 <section id="section-intro">
-<p>Copyright (c) 2020 Alan Yorinks All rights reserved.</p>
+<p>Copyright (c) 2021 Alan Yorinks All rights reserved.</p>
 <p>This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
 Version 3 as published by the Free Software Foundation; either
 or (at your option) any later version.
-This library is distributed in the hope that it will be useful,f
+This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU
@@ -42,13 +42,13 @@ USA</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
- Copyright (c) 2020 Alan Yorinks All rights reserved.
+ Copyright (c) 2021 Alan Yorinks All rights reserved.
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
  Version 3 as published by the Free Software Foundation; either
  or (at your option) any later version.
- This library is distributed in the hope that it will be useful,f
+ This library is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  General Public License for more details.
@@ -1136,7 +1136,8 @@ class Telemetrix(threading.Thread):
     def set_pin_mode_one_wire(self, pin):
         &#34;&#34;&#34;
         Initialize the one wire serial bus.
-        :param pin: Data pin used with the OneWire device
+
+        :param pin: Data pin connected to the OneWire device
         &#34;&#34;&#34;
         self.onewire_enabled = True
         command = [PrivateConstants.ONE_WIRE_INIT, pin]
@@ -1264,7 +1265,8 @@ class Telemetrix(threading.Thread):
         if not self.onewire_enabled:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(f&#39;onewire_reset_serach: OneWire interface is not enabled.&#39;)
+            raise RuntimeError(f&#39;onewire_reset_search: OneWire interface is not &#39;
+                               f&#39;enabled.&#39;)
         else:
             command = [PrivateConstants.ONE_WIRE_RESET_SEARCH]
             self._send_command(command)
@@ -2770,7 +2772,8 @@ receiving a KeyboardInterrupt exception</p>
     def set_pin_mode_one_wire(self, pin):
         &#34;&#34;&#34;
         Initialize the one wire serial bus.
-        :param pin: Data pin used with the OneWire device
+
+        :param pin: Data pin connected to the OneWire device
         &#34;&#34;&#34;
         self.onewire_enabled = True
         command = [PrivateConstants.ONE_WIRE_INIT, pin]
@@ -2898,7 +2901,8 @@ receiving a KeyboardInterrupt exception</p>
         if not self.onewire_enabled:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(f&#39;onewire_reset_serach: OneWire interface is not enabled.&#39;)
+            raise RuntimeError(f&#39;onewire_reset_search: OneWire interface is not &#39;
+                               f&#39;enabled.&#39;)
         else:
             command = [PrivateConstants.ONE_WIRE_RESET_SEARCH]
             self._send_command(command)
@@ -3801,7 +3805,8 @@ timestamp]</p></div>
     if not self.onewire_enabled:
         if self.shutdown_on_exception:
             self.shutdown()
-        raise RuntimeError(f&#39;onewire_reset_serach: OneWire interface is not enabled.&#39;)
+        raise RuntimeError(f&#39;onewire_reset_search: OneWire interface is not &#39;
+                           f&#39;enabled.&#39;)
     else:
         command = [PrivateConstants.ONE_WIRE_RESET_SEARCH]
         self._send_command(command)</code></pre>
@@ -4277,8 +4282,8 @@ API.</p>
 <span>def <span class="ident">set_pin_mode_one_wire</span></span>(<span>self, pin)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initialize the one wire serial bus.
-:param pin: Data pin used with the OneWire device</p></div>
+<div class="desc"><p>Initialize the one wire serial bus.</p>
+<p>:param pin: Data pin connected to the OneWire device</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -4286,7 +4291,8 @@ API.</p>
 <pre><code class="python">def set_pin_mode_one_wire(self, pin):
     &#34;&#34;&#34;
     Initialize the one wire serial bus.
-    :param pin: Data pin used with the OneWire device
+
+    :param pin: Data pin connected to the OneWire device
     &#34;&#34;&#34;
     self.onewire_enabled = True
     command = [PrivateConstants.ONE_WIRE_INIT, pin]

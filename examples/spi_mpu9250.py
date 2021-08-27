@@ -30,7 +30,7 @@ import time
 from telemetrix import telemetrix
 
 # Instantiate the TelemetrixRpiPico class accepting all default parameters.
-board = telemetrix.Telemetrix(ip_address='192.168.2.174')
+board = telemetrix.Telemetrix()
 
 
 # Convenience values for the pins.
@@ -57,7 +57,6 @@ def the_device_callback(report):
     Verify the device ID
     :param report: [SPI_REPORT, read register, Number of bytes, device_id]
     """
-    # print(f'device_callback {report}')
     if report[3] == 0x71:
         print('MPU9250 Device ID confirmed.')
     else:
@@ -71,7 +70,6 @@ def accel_callback(report):
     :param report: [SPI_REPORT, Register, Number of bytes, AX-msb, AX-lsb
     AY-msb, AY-lsb, AX-msb, AX-lsb]
     """
-    # print(f'accel_callback {report}')
     print(f"AX = {int.from_bytes(report[3:5], byteorder='big', signed=True)}  "
           f"AY = {int.from_bytes(report[5:7], byteorder='big', signed=True)}  "
           f"AZ = {int.from_bytes(report[7:9], byteorder='big', signed=True)}  ")
@@ -85,7 +83,6 @@ def gyro_callback(report):
         :param report: [SPI_REPORT, Register, Number of bytes, GX-msb, GX-lsb
         GY-msb, GY-lsb, GX-msb, GX-lsb]
         """
-    # print(f'gyro_callback {report}')
 
     print(f"GX = {int.from_bytes(report[3:5], byteorder='big', signed=True)}  "
           f"GY = {int.from_bytes(report[5:7], byteorder='big', signed=True)}  "
