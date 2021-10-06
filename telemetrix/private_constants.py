@@ -56,6 +56,8 @@ class PrivateConstants:
     ONE_WIRE_RESET_SEARCH = 30
     ONE_WIRE_SEARCH = 31
     ONE_WIRE_CRC8 = 32
+    SET_PIN_MODE_STEPPER = 33
+    STEPPER_MOVE_TO = 34
 
     # reports
     # debug data from Arduino

@@ -203,6 +203,32 @@ class Telemetrix(threading.Thread):
         # flag to indicate if onewire is initialized
         self.onewire_enabled = False
 
+        # stepper motor variables
+
+        # updated when a new motor is added
+        self.next_stepper_assigned = 0
+
+        # valid list of stepper motor interface types
+        self.valid_stepper_interfaces = [1, 2, 3, 4, 6, 8]
+
+        # maximum number of steppers supported
+        self.max_number_of_steppers = 4
+
+        # number of steppers created - not to exceed the maximum
+        self.number_of_steppers = 0
+
+        # dictionary to hold stepper motor information
+        self.stepper_info = {'instance': None, 'run_complete_callback': None,
+                             'distance_to_go_callback': None,
+                             'current_position_callback': None,
+                             'is_running_callback': None}
+
+        # build a list of stepper motor info items
+        self.stepper_info_list = []
+        # a list of dictionaries to hold stepper information
+        for motor in range(self.max_number_of_steppers):
+            self.stepper_info_list.append(self.stepper_info)
+
         self.the_reporter_thread.start()
         self.the_data_receive_thread.start()
 
@@ -864,6 +890,69 @@ class Telemetrix(threading.Thread):
             self.cs_pins_enabled.append(pin)
         self._send_command(command)
 
+    def set_pin_mode_stepper(self, interface=1, pin1=2, pin2=3, pin3=4,
+                             pin4=5, enable=True):
+        """
+        Stepper motor support is implemented as a proxy for the
+        the AccelStepper library for the Arduino.
+
+        https://github.com/waspinator/AccelStepper
+
+        Instantiate a stepper motor.
+
+        Initialize the interface and pins for a stepper motor.
+
+        :param interface: Motor Interface Type:
+
+                            1 = Stepper Driver, 2 driver pins required
+
+	                        2 = FULL2WIRE  2 wire stepper, 2 motor pins required
+
+	                        3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
+	                            3 motor pins required
+
+                            4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
+                                required
+
+                            6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
+                                3 motor pins required
+
+                            8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
+
+        :param pin1: Arduino digital pin number for motor pin 1
+
+        :param pin2: Arduino digital pin number for motor pin 2
+
+        :param pin3: Arduino digital pin number for motor pin 3
+
+        :param pin4: Arduino digital pin number for motor pin 4
+
+        :param enable: If this is true, the output pins at construction time.
+
+        :return: Motor Reference number
+        """
+        if self.number_of_steppers == self.max_number_of_steppers:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('Maximum number of steppers has already been assigned')
+
+        if interface not in self.valid_stepper_interfaces:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('Invalid stepper interface')
+
+        self.number_of_steppers += 1
+
+        # build message and send message to server
+        command = [PrivateConstants.SET_PIN_MODE_STEPPER, interface, pin1,
+                   pin2, pin3, pin4, enable]
+        self._send_command(command)
+
+        # return motor id
+        motor_id = self.next_stepper_assigned = 0
+        self.next_stepper_assigned += 1
+        return motor_id
+
     def servo_write(self, pin_number, angle):
         """
 
@@ -886,6 +975,37 @@ class Telemetrix(threading.Thread):
         """
         command = [PrivateConstants.SERVO_DETACH, pin_number]
         self._send_command(command)
+
+    def stepper_move_to(self, motor_id, position):
+        """
+        Set an absolution target position. If position is positive, the movement is
+        clockwise, else it is counter-clockwise.
+
+        The run() function (below) will try to move the motor (at most one step per call)
+        from the current position to the target position set by the most
+        recent call to this function. Caution: moveTo() also recalculates the
+        speed for the next step.
+        If you are trying to use constant speed movements, you should call setSpeed()
+        after calling moveTo().
+
+        :param motor_id: motor id: 0 - 3
+
+        :param position: target position. This is a maximum of 32 bits.
+        """
+
+        if motor_id not in range(0, 4):
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('stepper_move_to: Invalid motor_id.')
+
+        position_bytes = list(position.to_bytes(4, 'big'))
+
+        command = [PrivateConstants.STEPPER_MOVE_TO, motor_id]
+        for value in position_bytes:
+            command.append(value)
+        self._send_command(command)
+
+
 
     def _set_pin_mode(self, pin_number, pin_state, differential=0, callback=None):
 
