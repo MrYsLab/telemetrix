@@ -961,20 +961,20 @@ class Telemetrix(threading.Thread):
 
         :param interface: Motor Interface Type:
 
-                            1 = Stepper Driver, 2 driver pins required
+                1 = Stepper Driver, 2 driver pins required
 
-                                2 = FULL2WIRE  2 wire stepper, 2 motor pins required
+                2 = FULL2WIRE  2 wire stepper, 2 motor pins required
 
-                                3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
-                                    3 motor pins required
+                3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
+                    3 motor pins required
 
-                            4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
-                                required
+                4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
+                    required
 
-                            6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
-                                3 motor pins required
+                6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
+                    3 motor pins required
 
-                            8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
+                8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
 
         :param pin1: Arduino digital pin number for motor pin 1
 
@@ -1278,6 +1278,7 @@ class Telemetrix(threading.Thread):
         :param distance_to_go_callback: required callback function to receive report
 
         :return: The distance to go is returned via the callback as a list:
+
         [REPORT_TYPE=15, motor_id, distance in steps]
 
         A positive distance is clockwise from the current position.
@@ -1305,6 +1306,7 @@ class Telemetrix(threading.Thread):
         :param target_callback: required callback function to receive report
 
         :return: The distance to go is returned via the callback as a list:
+
         [REPORT_TYPE=16, motor_id, target position in steps]
 
         Positive is clockwise from the 0 position.
@@ -1333,6 +1335,7 @@ class Telemetrix(threading.Thread):
         :param current_position_callback: required callback function to receive report
 
         :return: The current motor position returned via the callback as a list:
+
         [REPORT_TYPE=17, motor_id, current position in steps]
 
         Positive is clockwise from the 0 position.
@@ -1442,7 +1445,6 @@ class Telemetrix(threading.Thread):
         the pin to enabled.
 
         :param motor_id: 0 - 3
-        :return:
         &#34;&#34;&#34;
         if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
             if self.shutdown_on_exception:
@@ -1569,6 +1571,7 @@ class Telemetrix(threading.Thread):
         :param callback: required callback function to receive report
 
         :return: The current running state returned via the callback as a list:
+
         [REPORT_TYPE=18, motor_id, True or False for running state]
         &#34;&#34;&#34;
         if not callback:
@@ -3348,20 +3351,20 @@ receiving a KeyboardInterrupt exception</p>
 
         :param interface: Motor Interface Type:
 
-                            1 = Stepper Driver, 2 driver pins required
+                1 = Stepper Driver, 2 driver pins required
 
-                                2 = FULL2WIRE  2 wire stepper, 2 motor pins required
+                2 = FULL2WIRE  2 wire stepper, 2 motor pins required
 
-                                3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
-                                    3 motor pins required
+                3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
+                    3 motor pins required
 
-                            4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
-                                required
+                4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
+                    required
 
-                            6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
-                                3 motor pins required
+                6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
+                    3 motor pins required
 
-                            8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
+                8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
 
         :param pin1: Arduino digital pin number for motor pin 1
 
@@ -3665,6 +3668,7 @@ receiving a KeyboardInterrupt exception</p>
         :param distance_to_go_callback: required callback function to receive report
 
         :return: The distance to go is returned via the callback as a list:
+
         [REPORT_TYPE=15, motor_id, distance in steps]
 
         A positive distance is clockwise from the current position.
@@ -3692,6 +3696,7 @@ receiving a KeyboardInterrupt exception</p>
         :param target_callback: required callback function to receive report
 
         :return: The distance to go is returned via the callback as a list:
+
         [REPORT_TYPE=16, motor_id, target position in steps]
 
         Positive is clockwise from the 0 position.
@@ -3720,6 +3725,7 @@ receiving a KeyboardInterrupt exception</p>
         :param current_position_callback: required callback function to receive report
 
         :return: The current motor position returned via the callback as a list:
+
         [REPORT_TYPE=17, motor_id, current position in steps]
 
         Positive is clockwise from the 0 position.
@@ -3829,7 +3835,6 @@ receiving a KeyboardInterrupt exception</p>
         the pin to enabled.
 
         :param motor_id: 0 - 3
-        :return:
         &#34;&#34;&#34;
         if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
             if self.shutdown_on_exception:
@@ -3956,6 +3961,7 @@ receiving a KeyboardInterrupt exception</p>
         :param callback: required callback function to receive report
 
         :return: The current running state returned via the callback as a list:
+
         [REPORT_TYPE=18, motor_id, True or False for running state]
         &#34;&#34;&#34;
         if not callback:
@@ -5939,20 +5945,20 @@ the AccelStepper library for the Arduino.</p>
 <p>Instantiate a stepper motor.</p>
 <p>Initialize the interface and pins for a stepper motor.</p>
 <p>:param interface: Motor Interface Type:</p>
-<pre><code>                1 = Stepper Driver, 2 driver pins required
+<pre><code>    1 = Stepper Driver, 2 driver pins required
 
-                    2 = FULL2WIRE  2 wire stepper, 2 motor pins required
+    2 = FULL2WIRE  2 wire stepper, 2 motor pins required
 
-                    3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
-                        3 motor pins required
+    3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
+        3 motor pins required
 
-                4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
-                    required
+    4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
+        required
 
-                6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
-                    3 motor pins required
+    6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
+        3 motor pins required
 
-                8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
+    8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
 </code></pre>
 <p>:param pin1: Arduino digital pin number for motor pin 1</p>
 <p>:param pin2: Arduino digital pin number for motor pin 2</p>
@@ -5978,20 +5984,20 @@ the AccelStepper library for the Arduino.</p>
 
     :param interface: Motor Interface Type:
 
-                        1 = Stepper Driver, 2 driver pins required
+            1 = Stepper Driver, 2 driver pins required
 
-                            2 = FULL2WIRE  2 wire stepper, 2 motor pins required
+            2 = FULL2WIRE  2 wire stepper, 2 motor pins required
 
-                            3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
-                                3 motor pins required
+            3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
+                3 motor pins required
 
-                        4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
-                            required
+            4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
+                required
 
-                        6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
-                            3 motor pins required
+            6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
+                3 motor pins required
 
-                        8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
+            8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
 
     :param pin1: Arduino digital pin number for motor pin 1
 
@@ -6307,8 +6313,7 @@ the pin to disabled.</p>
 mode.</p>
 <p>If the enable Pin is defined, sets it to OUTPUT mode and sets
 the pin to enabled.</p>
-<p>:param motor_id: 0 - 3
-:return:</p></div>
+<p>:param motor_id: 0 - 3</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -6322,7 +6327,6 @@ the pin to enabled.</p>
     the pin to enabled.
 
     :param motor_id: 0 - 3
-    :return:
     &#34;&#34;&#34;
     if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
         if self.shutdown_on_exception:
@@ -6370,8 +6374,8 @@ that was previously set by stepper_set_acceleration();</p>
 <div class="desc"><p>Request the current motor position from the server.</p>
 <p>:param motor_id: 0 - 3</p>
 <p>:param current_position_callback: required callback function to receive report</p>
-<p>:return: The current motor position returned via the callback as a list:
-[REPORT_TYPE=17, motor_id, current position in steps]</p>
+<p>:return: The current motor position returned via the callback as a list:</p>
+<p>[REPORT_TYPE=17, motor_id, current position in steps]</p>
 <p>Positive is clockwise from the 0 position.</p></div>
 <details class="source">
 <summary>
@@ -6386,6 +6390,7 @@ that was previously set by stepper_set_acceleration();</p>
     :param current_position_callback: required callback function to receive report
 
     :return: The current motor position returned via the callback as a list:
+
     [REPORT_TYPE=17, motor_id, current position in steps]
 
     Positive is clockwise from the 0 position.
@@ -6413,8 +6418,8 @@ that was previously set by stepper_set_acceleration();</p>
 from the server.</p>
 <p>:param motor_id: 0 - 3</p>
 <p>:param distance_to_go_callback: required callback function to receive report</p>
-<p>:return: The distance to go is returned via the callback as a list:
-[REPORT_TYPE=15, motor_id, distance in steps]</p>
+<p>:return: The distance to go is returned via the callback as a list:</p>
+<p>[REPORT_TYPE=15, motor_id, distance in steps]</p>
 <p>A positive distance is clockwise from the current position.</p></div>
 <details class="source">
 <summary>
@@ -6430,6 +6435,7 @@ from the server.</p>
     :param distance_to_go_callback: required callback function to receive report
 
     :return: The distance to go is returned via the callback as a list:
+
     [REPORT_TYPE=15, motor_id, distance in steps]
 
     A positive distance is clockwise from the current position.
@@ -6516,8 +6522,8 @@ that was previously set by stepper_set_speed();</p>
 <div class="desc"><p>Request the most recently set target position from the server.</p>
 <p>:param motor_id: 0 - 3</p>
 <p>:param target_callback: required callback function to receive report</p>
-<p>:return: The distance to go is returned via the callback as a list:
-[REPORT_TYPE=16, motor_id, target position in steps]</p>
+<p>:return: The distance to go is returned via the callback as a list:</p>
+<p>[REPORT_TYPE=16, motor_id, target position in steps]</p>
 <p>Positive is clockwise from the 0 position.</p></div>
 <details class="source">
 <summary>
@@ -6532,6 +6538,7 @@ that was previously set by stepper_set_speed();</p>
     :param target_callback: required callback function to receive report
 
     :return: The distance to go is returned via the callback as a list:
+
     [REPORT_TYPE=16, motor_id, target position in steps]
 
     Positive is clockwise from the 0 position.
@@ -6560,8 +6567,8 @@ that was previously set by stepper_set_speed();</p>
 <p>Callback return True if the speed is not zero or not at the target position.</p>
 <p>:param motor_id: 0-4</p>
 <p>:param callback: required callback function to receive report</p>
-<p>:return: The current running state returned via the callback as a list:
-[REPORT_TYPE=18, motor_id, True or False for running state]</p></div>
+<p>:return: The current running state returned via the callback as a list:</p>
+<p>[REPORT_TYPE=18, motor_id, True or False for running state]</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -6577,6 +6584,7 @@ that was previously set by stepper_set_speed();</p>
     :param callback: required callback function to receive report
 
     :return: The current running state returned via the callback as a list:
+
     [REPORT_TYPE=18, motor_id, True or False for running state]
     &#34;&#34;&#34;
     if not callback:

@@ -918,20 +918,20 @@ class Telemetrix(threading.Thread):
 
         :param interface: Motor Interface Type:
 
-                            1 = Stepper Driver, 2 driver pins required
+                1 = Stepper Driver, 2 driver pins required
 
-	                        2 = FULL2WIRE  2 wire stepper, 2 motor pins required
+                2 = FULL2WIRE  2 wire stepper, 2 motor pins required
 
-	                        3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
-	                            3 motor pins required
+                3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
+                    3 motor pins required
 
-                            4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
-                                required
+                4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
+                    required
 
-                            6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
-                                3 motor pins required
+                6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
+                    3 motor pins required
 
-                            8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
+                8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
 
         :param pin1: Arduino digital pin number for motor pin 1
 
@@ -1235,6 +1235,7 @@ class Telemetrix(threading.Thread):
         :param distance_to_go_callback: required callback function to receive report
 
         :return: The distance to go is returned via the callback as a list:
+
         [REPORT_TYPE=15, motor_id, distance in steps]
 
         A positive distance is clockwise from the current position.
@@ -1262,6 +1263,7 @@ class Telemetrix(threading.Thread):
         :param target_callback: required callback function to receive report
 
         :return: The distance to go is returned via the callback as a list:
+
         [REPORT_TYPE=16, motor_id, target position in steps]
 
         Positive is clockwise from the 0 position.
@@ -1290,6 +1292,7 @@ class Telemetrix(threading.Thread):
         :param current_position_callback: required callback function to receive report
 
         :return: The current motor position returned via the callback as a list:
+
         [REPORT_TYPE=17, motor_id, current position in steps]
 
         Positive is clockwise from the 0 position.
@@ -1399,7 +1402,6 @@ class Telemetrix(threading.Thread):
         the pin to enabled.
 
         :param motor_id: 0 - 3
-        :return:
         """
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
@@ -1526,6 +1528,7 @@ class Telemetrix(threading.Thread):
         :param callback: required callback function to receive report
 
         :return: The current running state returned via the callback as a list:
+
         [REPORT_TYPE=18, motor_id, True or False for running state]
         """
         if not callback:
