@@ -31,7 +31,7 @@ from serial.tools import list_ports
 from telemetrix.private_constants import PrivateConstants
 
 
-# noinspection PyPep8,PyMethodMayBeStatic,GrazieInspection,PyBroadException
+# noinspection PyPep8,PyMethodMayBeStatic,GrazieInspection,PyBroadException,PyCallingNonCallable
 class Telemetrix(threading.Thread):
     """
     This class exposes and implements the telemetrix API.
@@ -1519,7 +1519,7 @@ class Telemetrix(threading.Thread):
         """
         Checks to see if the motor is currently running to a target.
 
-        Callback returnr True if the speed is not zero or not at the target position.
+        Callback return True if the speed is not zero or not at the target position.
 
         :param motor_id: 0-4
 
@@ -2190,35 +2190,100 @@ class Telemetrix(threading.Thread):
 
     def _stepper_distance_to_go_report(self, report):
         """
+        Report stepper distance to go.
 
-        :param report:
-        :return:
+        :param report: data[0] = motor_id, data[1] = steps MSB, data[2] = steps byte 1,
+                                 data[3] = steps bytes 2, data[4] = steps LSB
+
+        callback report format: [PrivateConstants.STEPPER_DISTANCE_TO_GO, motor_id
+                                 steps, time_stamp]
         """
-        raise NotImplementedError
+
+        # get callback
+        cb = self.stepper_info_list[report[0]['distance_to_go_callback']]
+
+        # isolate the steps bytes and covert list to bytes
+        steps = bytes(report[1:])
+
+        # get value from steps
+        num_steps = int.from_bytes(steps, byteorder='big', signed=True)
+
+        cb_list = [PrivateConstants.STEPPER_DISTANCE_TO_GO, report[0], num_steps,
+                   time.time()]
+
+        cb(cb_list)
 
     def _stepper_target_position_report(self, report):
         """
+        Report stepper target position to go.
 
-        :param report:
-        :return:
+        :param report: data[0] = motor_id, data[1] = target position MSB,
+                       data[2] = target position byte MSB+1
+                       data[3] = target position byte MSB+2
+                       data[4] = target position LSB
+
+        callback report format: [PrivateConstants.STEPPER_TARGET_POSITION, motor_id
+                                 target_position, time_stamp]
         """
-        raise NotImplementedError
+
+        # get callback
+        cb = self.stepper_info_list[report[0]['target_position_callback']]
+
+        # isolate the steps bytes and covert list to bytes
+        target = bytes(report[1:])
+
+        # get value from steps
+        target_position = int.from_bytes(target, byteorder='big', signed=True)
+
+        cb_list = [PrivateConstants.STEPPER_TARGET_POSITION, report[0], target_position,
+                   time.time()]
+
+        cb(cb_list)
 
     def _stepper_current_position_report(self, report):
         """
+        Report stepper current position.
 
-        :param report:
-        :return:
+        :param report: data[0] = motor_id, data[1] = current position MSB,
+                       data[2] = current position byte MSB+1
+                       data[3] = current position byte MSB+2
+                       data[4] = current position LSB
+
+        callback report format: [PrivateConstants.STEPPER_CURRENT_POSITION, motor_id
+                                 current_position, time_stamp]
         """
-        raise NotImplementedError
+
+        # get callback
+        cb = self.stepper_info_list[report[0]['current_position_callback']]
+
+        # isolate the steps bytes and covert list to bytes
+        position = bytes(report[1:])
+
+        # get value from steps
+        current_position = int.from_bytes(position, byteorder='big', signed=True)
+
+        cb_list = [PrivateConstants.STEPPER_CURRENT_POSITION, report[0], current_position,
+                   time.time()]
+
+        cb(cb_list)
 
     def _stepper_is_running_report(self, report):
         """
+        Report if the motor is currently running
 
-        :param report:
-        :return:
+        :param report: data[0] = motor_id, True if motor is running or False if it is not.
+
+        callback report format: [PrivateConstants.STEPPER_RUNNING_REPORT, motor_id,
+                                 running, time_stamp]
         """
-        raise NotImplementedError
+
+        # get callback
+        cb = self.stepper_info_list[report[0]['is_running_callback']]
+
+        cb_list = [PrivateConstants.STEPPER_CURRENT_POSITION, report[0], report[1],
+                   time.time()]
+
+        cb(cb_list)
 
     def _run_threads(self):
         self.run_event.set()
