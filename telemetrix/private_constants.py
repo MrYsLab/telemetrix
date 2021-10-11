@@ -75,7 +75,6 @@ class PrivateConstants:
     STEPPER_SET_4_PINS_INVERTED = 49
     STEPPER_IS_RUNNING = 50
 
-
     # reports
     # debug data from Arduino
     DIGITAL_REPORT = DIGITAL_WRITE
