@@ -286,6 +286,12 @@ class Telemetrix(threading.Thread):
         for motor in range(self.max_number_of_steppers):
             self.stepper_info_list.append(self.stepper_info)
 
+        # flag to indicate if a multi-stepper was already added
+        self.multi_stepper_added = False
+
+        # number of motors managed by multi-stepper
+        self.multi_stepper_num_motors = 0
+
         self.the_reporter_thread.start()
         self.the_data_receive_thread.start()
 
@@ -1586,6 +1592,66 @@ class Telemetrix(threading.Thread):
             raise RuntimeError(&#39;stepper_is_running: Invalid motor_id.&#39;)
 
         command = [PrivateConstants.STEPPER_IS_RUNNING, motor_id]
+        self._send_command(command)
+
+    def stepper_add_multi_stepper(self, *motors):
+        &#34;&#34;&#34;
+        Enable a multi-stepper on the server.
+
+        Only a single multi-stepper is allowed with up to 4 motors.
+
+        :param motors: The motor ids to add: ex: stepper_add_multi_stepper(1, 2, 3)
+
+        &#34;&#34;&#34;
+        if self.multi_stepper_added:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;stepper_add_multi_stepper: Multi-stepper has already &#39;
+                               &#39;been added.&#39;)
+
+        for motor in motors:
+            if not self.stepper_info_list[motor][&#39;instance&#39;]:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;stepper_add_multi_stepper: Invalid motor_id in list.&#39;)
+
+        self.multi_stepper_added = True
+
+        self.multi_stepper_num_motors = len(motors)
+
+        command = [PrivateConstants.STEPPER_ADD_MULTI_STEPPER]
+        for motor in motors:
+            command.append[motor]
+        self._send_command(command)
+
+    def stepper_multi_run(self):
+        &#34;&#34;&#34;
+        Calls runSpeed() on all the managed steppers
+        that have not achieved their target position.
+        &#34;&#34;&#34;
+        command = [PrivateConstants.STEPPER_MULTI_RUN]
+        self._send_command(command)
+
+    def stepper_multi_move_to(self, *targets):
+        &#34;&#34;&#34;
+        Set the target positions of all managed steppers .
+
+        New speeds will be computed for each stepper so they will all arrive at their
+        respective targets at very close to the same time.
+
+        :param targets: a variable number of target values, one value for each
+                        managed motor.
+
+                        For example, if two motors were added to the multi-stepper:
+                        stepper_multi_move_to(100, 200)
+
+        &#34;&#34;&#34;
+
+        command = [PrivateConstants.STEPPER_MULTI_MOVE_TO, self.multi_stepper_num_motors]
+        for target in targets:
+            the_target = list(target.to_bytes(4, &#39;big&#39;))
+            for b in the_target:
+                command.append(b)
         self._send_command(command)
 
     def _set_pin_mode(self, pin_number, pin_state, differential=0, callback=None):
@@ -2676,6 +2742,12 @@ receiving a KeyboardInterrupt exception</p>
         for motor in range(self.max_number_of_steppers):
             self.stepper_info_list.append(self.stepper_info)
 
+        # flag to indicate if a multi-stepper was already added
+        self.multi_stepper_added = False
+
+        # number of motors managed by multi-stepper
+        self.multi_stepper_num_motors = 0
+
         self.the_reporter_thread.start()
         self.the_data_receive_thread.start()
 
@@ -3976,6 +4048,66 @@ receiving a KeyboardInterrupt exception</p>
             raise RuntimeError(&#39;stepper_is_running: Invalid motor_id.&#39;)
 
         command = [PrivateConstants.STEPPER_IS_RUNNING, motor_id]
+        self._send_command(command)
+
+    def stepper_add_multi_stepper(self, *motors):
+        &#34;&#34;&#34;
+        Enable a multi-stepper on the server.
+
+        Only a single multi-stepper is allowed with up to 4 motors.
+
+        :param motors: The motor ids to add: ex: stepper_add_multi_stepper(1, 2, 3)
+
+        &#34;&#34;&#34;
+        if self.multi_stepper_added:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;stepper_add_multi_stepper: Multi-stepper has already &#39;
+                               &#39;been added.&#39;)
+
+        for motor in motors:
+            if not self.stepper_info_list[motor][&#39;instance&#39;]:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;stepper_add_multi_stepper: Invalid motor_id in list.&#39;)
+
+        self.multi_stepper_added = True
+
+        self.multi_stepper_num_motors = len(motors)
+
+        command = [PrivateConstants.STEPPER_ADD_MULTI_STEPPER]
+        for motor in motors:
+            command.append[motor]
+        self._send_command(command)
+
+    def stepper_multi_run(self):
+        &#34;&#34;&#34;
+        Calls runSpeed() on all the managed steppers
+        that have not achieved their target position.
+        &#34;&#34;&#34;
+        command = [PrivateConstants.STEPPER_MULTI_RUN]
+        self._send_command(command)
+
+    def stepper_multi_move_to(self, *targets):
+        &#34;&#34;&#34;
+        Set the target positions of all managed steppers .
+
+        New speeds will be computed for each stepper so they will all arrive at their
+        respective targets at very close to the same time.
+
+        :param targets: a variable number of target values, one value for each
+                        managed motor.
+
+                        For example, if two motors were added to the multi-stepper:
+                        stepper_multi_move_to(100, 200)
+
+        &#34;&#34;&#34;
+
+        command = [PrivateConstants.STEPPER_MULTI_MOVE_TO, self.multi_stepper_num_motors]
+        for target in targets:
+            the_target = list(target.to_bytes(4, &#39;big&#39;))
+            for b in the_target:
+                command.append(b)
         self._send_command(command)
 
     def _set_pin_mode(self, pin_number, pin_state, differential=0, callback=None):
@@ -6263,6 +6395,48 @@ be in the form of a list.</p></div>
     self._send_command(command)</code></pre>
 </details>
 </dd>
+<dt id="telemetrix.telemetrix.Telemetrix.stepper_add_multi_stepper"><code class="name flex">
+<span>def <span class="ident">stepper_add_multi_stepper</span></span>(<span>self, *motors)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enable a multi-stepper on the server.</p>
+<p>Only a single multi-stepper is allowed with up to 4 motors.</p>
+<p>:param motors: The motor ids to add: ex: stepper_add_multi_stepper(1, 2, 3)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def stepper_add_multi_stepper(self, *motors):
+    &#34;&#34;&#34;
+    Enable a multi-stepper on the server.
+
+    Only a single multi-stepper is allowed with up to 4 motors.
+
+    :param motors: The motor ids to add: ex: stepper_add_multi_stepper(1, 2, 3)
+
+    &#34;&#34;&#34;
+    if self.multi_stepper_added:
+        if self.shutdown_on_exception:
+            self.shutdown()
+        raise RuntimeError(&#39;stepper_add_multi_stepper: Multi-stepper has already &#39;
+                           &#39;been added.&#39;)
+
+    for motor in motors:
+        if not self.stepper_info_list[motor][&#39;instance&#39;]:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;stepper_add_multi_stepper: Invalid motor_id in list.&#39;)
+
+    self.multi_stepper_added = True
+
+    self.multi_stepper_num_motors = len(motors)
+
+    command = [PrivateConstants.STEPPER_ADD_MULTI_STEPPER]
+    for motor in motors:
+        command.append[motor]
+    self._send_command(command)</code></pre>
+</details>
+</dd>
 <dt id="telemetrix.telemetrix.Telemetrix.stepper_disable_outputs"><code class="name flex">
 <span>def <span class="ident">stepper_disable_outputs</span></span>(<span>self, motor_id)</span>
 </code></dt>
@@ -6683,6 +6857,64 @@ after calling moveTo().</p>
     command = [PrivateConstants.STEPPER_MOVE_TO, motor_id]
     for value in position_bytes:
         command.append(value)
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.stepper_multi_move_to"><code class="name flex">
+<span>def <span class="ident">stepper_multi_move_to</span></span>(<span>self, *targets)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the target positions of all managed steppers .</p>
+<p>New speeds will be computed for each stepper so they will all arrive at their
+respective targets at very close to the same time.</p>
+<p>:param targets: a variable number of target values, one value for each
+managed motor.</p>
+<pre><code>            For example, if two motors were added to the multi-stepper:
+            stepper_multi_move_to(100, 200)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def stepper_multi_move_to(self, *targets):
+    &#34;&#34;&#34;
+    Set the target positions of all managed steppers .
+
+    New speeds will be computed for each stepper so they will all arrive at their
+    respective targets at very close to the same time.
+
+    :param targets: a variable number of target values, one value for each
+                    managed motor.
+
+                    For example, if two motors were added to the multi-stepper:
+                    stepper_multi_move_to(100, 200)
+
+    &#34;&#34;&#34;
+
+    command = [PrivateConstants.STEPPER_MULTI_MOVE_TO, self.multi_stepper_num_motors]
+    for target in targets:
+        the_target = list(target.to_bytes(4, &#39;big&#39;))
+        for b in the_target:
+            command.append(b)
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.stepper_multi_run"><code class="name flex">
+<span>def <span class="ident">stepper_multi_run</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calls runSpeed() on all the managed steppers
+that have not achieved their target position.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def stepper_multi_run(self):
+    &#34;&#34;&#34;
+    Calls runSpeed() on all the managed steppers
+    that have not achieved their target position.
+    &#34;&#34;&#34;
+    command = [PrivateConstants.STEPPER_MULTI_RUN]
     self._send_command(command)</code></pre>
 </details>
 </dd>
@@ -7225,6 +7457,7 @@ acceleration parameters.</p>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.spi_read_blocking" href="#telemetrix.telemetrix.Telemetrix.spi_read_blocking">spi_read_blocking</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.spi_set_format" href="#telemetrix.telemetrix.Telemetrix.spi_set_format">spi_set_format</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.spi_write_blocking" href="#telemetrix.telemetrix.Telemetrix.spi_write_blocking">spi_write_blocking</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_add_multi_stepper" href="#telemetrix.telemetrix.Telemetrix.stepper_add_multi_stepper">stepper_add_multi_stepper</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_disable_outputs" href="#telemetrix.telemetrix.Telemetrix.stepper_disable_outputs">stepper_disable_outputs</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_enable_outputs" href="#telemetrix.telemetrix.Telemetrix.stepper_enable_outputs">stepper_enable_outputs</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_get_acceleration" href="#telemetrix.telemetrix.Telemetrix.stepper_get_acceleration">stepper_get_acceleration</a></code></li>
@@ -7236,6 +7469,8 @@ acceleration parameters.</p>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_is_running" href="#telemetrix.telemetrix.Telemetrix.stepper_is_running">stepper_is_running</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_move" href="#telemetrix.telemetrix.Telemetrix.stepper_move">stepper_move</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_move_to" href="#telemetrix.telemetrix.Telemetrix.stepper_move_to">stepper_move_to</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_multi_move_to" href="#telemetrix.telemetrix.Telemetrix.stepper_multi_move_to">stepper_multi_move_to</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_multi_run" href="#telemetrix.telemetrix.Telemetrix.stepper_multi_run">stepper_multi_run</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_run" href="#telemetrix.telemetrix.Telemetrix.stepper_run">stepper_run</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_run_speed" href="#telemetrix.telemetrix.Telemetrix.stepper_run_speed">stepper_run_speed</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_run_speed_to_position" href="#telemetrix.telemetrix.Telemetrix.stepper_run_speed_to_position">stepper_run_speed_to_position</a></code></li>
