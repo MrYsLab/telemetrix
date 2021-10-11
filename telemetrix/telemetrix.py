@@ -963,15 +963,16 @@ class Telemetrix(threading.Thread):
 
         self.number_of_steppers += 1
 
+        motor_id = self.next_stepper_assigned
+        self.next_stepper_assigned += 1
+        self.stepper_info_list[motor_id]['instance'] = True
+
         # build message and send message to server
-        command = [PrivateConstants.SET_PIN_MODE_STEPPER, interface, pin1,
+        command = [PrivateConstants.SET_PIN_MODE_STEPPER, motor_id, interface, pin1,
                    pin2, pin3, pin4, enable]
         self._send_command(command)
 
         # return motor id
-        motor_id = self.next_stepper_assigned = 0
-        self.next_stepper_assigned += 1
-        self.stepper_info_list[motor_id]['instance'] = True
         return motor_id
 
     def servo_write(self, pin_number, angle):
@@ -1019,7 +1020,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError('stepper_move_to: Invalid motor_id.')
 
-        position_bytes = list(position.to_bytes(4, 'big'))
+        position_bytes = list(position.to_bytes(4, 'big', signed=True))
 
         command = [PrivateConstants.STEPPER_MOVE_TO, motor_id]
         for value in position_bytes:
@@ -1041,7 +1042,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError('stepper_move: Invalid motor_id.')
 
-        position_bytes = list(relative_position.to_bytes(4, 'big'))
+        position_bytes = list(relative_position.to_bytes(4, 'big', signed=True))
 
         command = [PrivateConstants.STEPPER_MOVE, motor_id]
         for value in position_bytes:
@@ -1335,7 +1336,7 @@ class Telemetrix(threading.Thread):
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_set_current_position: Invalid motor_id.')
-        position_bytes = list(position.to_bytes(4, 'big'))
+        position_bytes = list(position.to_bytes(4, 'big',  signed=True))
 
         command = [PrivateConstants.STEPPER_SET_CURRENT_POSITION, motor_id]
         for value in position_bytes:
@@ -1578,7 +1579,7 @@ class Telemetrix(threading.Thread):
 
         command = [PrivateConstants.STEPPER_ADD_MULTI_STEPPER]
         for motor in motors:
-            command.append[motor]
+            command.append(motor)
         self._send_command(command)
 
     def stepper_multi_run(self):
@@ -1606,7 +1607,7 @@ class Telemetrix(threading.Thread):
 
         command = [PrivateConstants.STEPPER_MULTI_MOVE_TO, self.multi_stepper_num_motors]
         for target in targets:
-            the_target = list(target.to_bytes(4, 'big'))
+            the_target = list(target.to_bytes(4, 'big',  signed=True))
             for b in the_target:
                 command.append(b)
         self._send_command(command)
