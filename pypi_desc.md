@@ -18,3 +18,17 @@ A Python API for may be found [here.](hhttps://htmlpreview.github.io/?https://gi
 This project was developed in phases and the directories for those phases were left intact. During the development
 phase, the phases were discussed on the 
 [Bots In Pieces](https://mryslab.github.io/bots-in-pieces/arduino,stm32,firmata/2020/09/20/telemetrix-phase-1.html) blog.
+
+The following functionality is implemented in this release:
+
+* Analog Input
+* Digital Input, Digital Input Pullup
+* PWM output
+* Loopback (for client/server link debugging)
+* I2C Support
+* SPI Support
+* OneWire Support
+* Servo Support
+* HC-SR04 Type Sonar Distance Sensor Support
+* DHT 11 and 22 Humidity/Temperature Sensor Support
+* Stepper Motor Support For Up To 4 Motors
