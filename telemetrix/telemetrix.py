@@ -1121,7 +1121,9 @@ class Telemetrix(threading.Thread):
     def stepper_get_max_speed(self, motor_id):
         """
         Returns the maximum speed configured for this stepper
-        that was previously set by stepper_set_max_speed();
+        that was previously set by stepper_set_max_speed()
+
+        Value is stored in the client, so no callback is required.
 
         :param motor_id: 0 - 3
 
@@ -1170,7 +1172,9 @@ class Telemetrix(threading.Thread):
     def stepper_get_acceleration(self, motor_id):
         """
         Returns the maximum acceleration for this stepper
-        that was previously set by stepper_set_acceleration();
+        that was previously set by stepper_set_acceleration()
+
+        Value is stored in the client, so no callback is required.
 
         :param motor_id:  0 - 3
 
@@ -1220,6 +1224,8 @@ class Telemetrix(threading.Thread):
         """
         Returns the  most recently set speed.
         that was previously set by stepper_set_speed();
+
+        Value is stored in the client, so no callback is required.
 
         :param motor_id:  0 - 3
 
