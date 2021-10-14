@@ -1583,7 +1583,7 @@ class Telemetrix(threading.Thread):
 
         self.multi_stepper_num_motors = len(motors)
 
-        command = [PrivateConstants.STEPPER_ADD_MULTI_STEPPER]
+        command = [PrivateConstants.STEPPER_ADD_MULTI_STEPPER, len(motors)]
         for motor in motors:
             command.append(motor)
         self._send_command(command)
