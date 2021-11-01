@@ -155,8 +155,11 @@ class Telemetrix(threading.Thread):
             {PrivateConstants.STEPPER_CURRENT_POSITION:
                  self._stepper_current_position_report})
         self.report_dispatch.update(
-            {PrivateConstants.STEPPER_IS_RUNNING:
+            {PrivateConstants.STEPPER_RUNNING_REPORT:
                  self._stepper_is_running_report})
+        self.report_dispatch.update(
+            {PrivateConstants.STEPPER_RUN_COMPLETE_REPORT:
+                 self._stepper_run_complete_report})
 
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
@@ -235,7 +238,8 @@ class Telemetrix(threading.Thread):
                              'distance_to_go_callback': None,
                              'target_position_callback': None,
                              'current_position_callback': None,
-                             'is_running_callback': None}
+                             'is_running_callback': None,
+                             'motion_complete_callback': None}
 
         # build a list of stepper motor info items
         self.stepper_info_list = []
@@ -1049,24 +1053,33 @@ class Telemetrix(threading.Thread):
             command.append(value)
         self._send_command(command)
 
-    def stepper_run(self, motor_id):
+    def stepper_run(self, motor_id, completion_callback=None):
         """
         This method steps the selected motor based on the current speed.
 
         Once called, the server will continuously attempt to step the motor.
 
         :param motor_id: 0 - 3
+
+        :param completion_callback: call back function to receive motion complete
+                                    notification
         """
+        if not completion_callback:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('stepper_run: A motion complete callback must be '
+                               'specified.')
 
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_run: Invalid motor_id.')
 
+        self.stepper_info_list[motor_id]['motion_complete_callback'] = completion_callback
         command = [PrivateConstants.STEPPER_RUN, motor_id]
         self._send_command(command)
 
-    def stepper_run_speed(self, motor_id):
+    def stepper_run_speed(self, motor_id, completion_callback=None):
         """
         This method steps the selected motor based at a constant speed as set by the most
         recent call to stepper_set_max_speed().
@@ -1074,13 +1087,21 @@ class Telemetrix(threading.Thread):
         Once called, the server will continuously attempt to step the motor.
 
         :param motor_id: 0 - 3
-        """
 
+        :param completion_callback: call back function to receive motion complete
+                                    notification
+        """
+        if not completion_callback:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('stepper_run_speed: A motion complete callback must be '
+                               'specified.')
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_run_speed: Invalid motor_id.')
 
+        self.stepper_info_list[motor_id]['motion_complete_callback'] = completion_callback
         command = [PrivateConstants.STEPPER_RUN_SPEED, motor_id]
         self._send_command(command)
 
@@ -1349,7 +1370,7 @@ class Telemetrix(threading.Thread):
             command.append(value)
         self._send_command(command)
 
-    def stepper_run_speed_to_position(self, motor_id):
+    def stepper_run_speed_to_position(self, motor_id, completion_callback=None):
         """
         Runs the motor at the currently selected speed until the target position is
         reached.
@@ -1357,12 +1378,22 @@ class Telemetrix(threading.Thread):
         Does not implement accelerations.
 
         :param motor_id: 0 - 3
+
+        :param completion_callback: call back function to receive motion complete
+                                    notification
         """
+        if not completion_callback:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('stepper_run_speed_to_position: A motion complete '
+                               'callback must be '
+                               'specified.')
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_run_speed_to_position: Invalid motor_id.')
 
+        self.stepper_info_list[motor_id]['motion_complete_callback'] = completion_callback
         command = [PrivateConstants.STEPPER_RUN_SPEED_TO_POSITION, motor_id]
         self._send_command(command)
 
@@ -2357,6 +2388,24 @@ class Telemetrix(threading.Thread):
         cb = self.stepper_info_list[report[0]['is_running_callback']]
 
         cb_list = [PrivateConstants.STEPPER_CURRENT_POSITION, report[0], report[1],
+                   time.time()]
+
+        cb(cb_list)
+
+    def _stepper_run_complete_report(self, report):
+        """
+        The motor completed it motion
+
+        :param report: data[0] = motor_id
+
+        callback report format: [PrivateConstants.STEPPER_RUN_COMPLETE_REPORT, motor_id,
+                                 time_stamp]
+        """
+
+        # get callback
+        cb = self.stepper_info_list[report[0]['is_running_callback']]
+
+        cb_list = [PrivateConstants.STEPPER_RUN_COMPLETE_REPORT, report[0],
                    time.time()]
 
         cb(cb_list)
