@@ -257,7 +257,7 @@ class Telemetrix(threading.Thread):
         self.the_data_receive_thread.start()
 
         print(f"Telemetrix:  Version {PrivateConstants.TELEMETRIX_VERSION}\n\n"
-              f"Copyright (c) 2020 Alan Yorinks All Rights Reserved.\n")
+              f"Copyright (c) 2021 Alan Yorinks All Rights Reserved.\n")
 
         # using the serial link
         if not self.ip_address:
@@ -359,9 +359,12 @@ class Telemetrix(threading.Thread):
         # temporary for testing
         time.sleep(self.arduino_wait)
 
-        # check for correct arduino device
-        self.serial_port.reset_input_buffer()
-        self.serial_port.reset_output_buffer()
+        try:
+            # check for correct arduino device
+            self.serial_port.reset_input_buffer()
+            self.serial_port.reset_output_buffer()
+        except AttributeError:
+            raise RuntimeError(f'Is your board plugged in?')
 
     def _manual_open(self):
         """
@@ -1090,6 +1093,8 @@ class Telemetrix(threading.Thread):
 
         :param completion_callback: call back function to receive motion complete
                                     notification
+
+        If you are running in continuous mode, then the callback is never called.
         """
         if not completion_callback:
             if self.shutdown_on_exception:
@@ -1132,7 +1137,7 @@ class Telemetrix(threading.Thread):
             raise RuntimeError('stepper_set_max_speed: Speed range is 1 - 1000.')
 
         self.stepper_info_list[motor_id]['max_speed'] = max_speed
-        max_speed_msb = max_speed >> 8
+        max_speed_msb = (max_speed & 0xff00) >> 8
         max_speed_lsb = max_speed & 0xff
 
         command = [PrivateConstants.STEPPER_SET_MAX_SPEED, motor_id, max_speed_msb,
@@ -1725,6 +1730,8 @@ class Telemetrix(threading.Thread):
             else:
                 try:
                     self.serial_port.reset_input_buffer()
+                    self.serial_port.reset_output_buffer()
+
                     self.serial_port.close()
 
                 except (RuntimeError, SerialException, OSError):
@@ -2307,7 +2314,7 @@ class Telemetrix(threading.Thread):
         """
 
         # get callback
-        cb = self.stepper_info_list[report[0]['distance_to_go_callback']]
+        cb = self.stepper_info_list[report[0]]['distance_to_go_callback']
 
         # isolate the steps bytes and covert list to bytes
         steps = bytes(report[1:])
@@ -2334,7 +2341,7 @@ class Telemetrix(threading.Thread):
         """
 
         # get callback
-        cb = self.stepper_info_list[report[0]['target_position_callback']]
+        cb = self.stepper_info_list[report[0]]['target_position_callback']
 
         # isolate the steps bytes and covert list to bytes
         target = bytes(report[1:])
@@ -2361,7 +2368,7 @@ class Telemetrix(threading.Thread):
         """
 
         # get callback
-        cb = self.stepper_info_list[report[0]['current_position_callback']]
+        cb = self.stepper_info_list[report[0]]['current_position_callback']
 
         # isolate the steps bytes and covert list to bytes
         position = bytes(report[1:])
@@ -2385,7 +2392,7 @@ class Telemetrix(threading.Thread):
         """
 
         # get callback
-        cb = self.stepper_info_list[report[0]['is_running_callback']]
+        cb = self.stepper_info_list[report[0]]['is_running_callback']
 
         cb_list = [PrivateConstants.STEPPER_CURRENT_POSITION, report[0], report[1],
                    time.time()]
@@ -2403,7 +2410,7 @@ class Telemetrix(threading.Thread):
         """
 
         # get callback
-        cb = self.stepper_info_list[report[0]['is_running_callback']]
+        cb = self.stepper_info_list[report[0]]['motion_complete_callback']
 
         cb_list = [PrivateConstants.STEPPER_RUN_COMPLETE_REPORT, report[0],
                    time.time()]
