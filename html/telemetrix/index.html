@@ -204,6 +204,13 @@ class Telemetrix(threading.Thread):
             {PrivateConstants.STEPPER_RUN_COMPLETE_REPORT:
                  self._stepper_run_complete_report})
 
+        self.report_dispatch.update(
+            {PrivateConstants.STEPPER_DISTANCE_TO_GO:
+                 self._stepper_distance_to_go_report})
+        self.report_dispatch.update(
+            {PrivateConstants.STEPPER_TARGET_POSITION:
+                 self._stepper_target_position_report})
+
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
 
@@ -282,7 +289,8 @@ class Telemetrix(threading.Thread):
                              &#39;target_position_callback&#39;: None,
                              &#39;current_position_callback&#39;: None,
                              &#39;is_running_callback&#39;: None,
-                             &#39;motion_complete_callback&#39;: None}
+                             &#39;motion_complete_callback&#39;: None,
+                             &#39;acceleration_callback&#39;: None}
 
         # build a list of stepper motor info items
         self.stepper_info_list = []
@@ -300,7 +308,7 @@ class Telemetrix(threading.Thread):
         self.the_data_receive_thread.start()
 
         print(f&#34;Telemetrix:  Version {PrivateConstants.TELEMETRIX_VERSION}\n\n&#34;
-              f&#34;Copyright (c) 2020 Alan Yorinks All Rights Reserved.\n&#34;)
+              f&#34;Copyright (c) 2021 Alan Yorinks All Rights Reserved.\n&#34;)
 
         # using the serial link
         if not self.ip_address:
@@ -1136,6 +1144,8 @@ class Telemetrix(threading.Thread):
 
         :param completion_callback: call back function to receive motion complete
                                     notification
+
+        If you are running in continuous mode, then the callback is never called.
         &#34;&#34;&#34;
         if not completion_callback:
             if self.shutdown_on_exception:
@@ -1172,7 +1182,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_max_speed: Invalid motor_id.&#39;)
 
-        if not 1 &lt; max_speed &lt; 1000:
+        if not 1 &lt; max_speed &lt;= 1000:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_max_speed: Speed range is 1 - 1000.&#39;)
@@ -1221,7 +1231,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_acceleration: Invalid motor_id.&#39;)
 
-        if not 1 &lt; acceleration &lt; 1000:
+        if not 1 &lt; acceleration &lt;= 1000:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_acceleration: Acceleration range is 1 - &#39;
@@ -1235,24 +1245,6 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.STEPPER_SET_ACCELERATION, motor_id, max_accel_msb,
                    max_accel_lsb]
         self._send_command(command)
-
-    def stepper_get_acceleration(self, motor_id):
-        &#34;&#34;&#34;
-        Returns the maximum acceleration for this stepper
-        that was previously set by stepper_set_acceleration()
-
-        Value is stored in the client, so no callback is required.
-
-        :param motor_id:  0 - 3
-
-        :return: The currently configured acceleration.
-        &#34;&#34;&#34;
-        if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;stepper_get_acceleration: Invalid motor_id.&#39;)
-
-        return self.stepper_info_list[motor_id][&#39;acceleration&#39;]
 
     def stepper_set_speed(self, motor_id, speed):
         &#34;&#34;&#34;
@@ -1273,7 +1265,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_speed: Invalid motor_id.&#39;)
 
-        if not 0 &lt; speed &lt; 1000:
+        if not 0 &lt; speed &lt;= 1000:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_speed: Speed range is 0 - &#39;
@@ -1296,7 +1288,6 @@ class Telemetrix(threading.Thread):
 
         :param motor_id:  0 - 3
 
-        :return: The currently configured speed.
         &#34;&#34;&#34;
         if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
             if self.shutdown_on_exception:
@@ -1330,8 +1321,9 @@ class Telemetrix(threading.Thread):
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_get_distance_to_go: Invalid motor_id.&#39;)
-
-        command = [PrivateConstants.STEPPER_DISTANCE_TO_GO, motor_id]
+        self.stepper_info_list[motor_id][
+            &#39;distance_to_go_callback&#39;] = distance_to_go_callback
+        command = [PrivateConstants.STEPPER_GET_DISTANCE_TO_GO, motor_id]
         self._send_command(command)
 
     def stepper_get_target_position(self, motor_id, target_callback):
@@ -1360,7 +1352,10 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(&#39;stepper_get_target_position: Invalid motor_id.&#39;)
 
-        command = [PrivateConstants.STEPPER_TARGET_POSITION, motor_id]
+        self.stepper_info_list[motor_id][
+            &#39;target_position_callback&#39;] = target_callback
+
+        command = [PrivateConstants.STEPPER_GET_TARGET_POSITION, motor_id]
         self._send_command(command)
 
     def stepper_get_current_position(self, motor_id, current_position_callback):
@@ -1388,7 +1383,9 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(&#39;stepper_get_current_position: Invalid motor_id.&#39;)
 
-        command = [PrivateConstants.STEPPER_CURRENT_POSITION, motor_id]
+        self.stepper_info_list[motor_id][&#39;current_position_callback&#39;] = current_position_callback
+
+        command = [PrivateConstants.STEPPER_GET_CURRENT_POSITION, motor_id]
         self._send_command(command)
 
     def stepper_set_current_position(self, motor_id, position):
@@ -1771,6 +1768,8 @@ class Telemetrix(threading.Thread):
             else:
                 try:
                     self.serial_port.reset_input_buffer()
+                    self.serial_port.reset_output_buffer()
+
                     self.serial_port.close()
 
                 except (RuntimeError, SerialException, OSError):
@@ -2353,7 +2352,7 @@ class Telemetrix(threading.Thread):
         &#34;&#34;&#34;
 
         # get callback
-        cb = self.stepper_info_list[report[0][&#39;distance_to_go_callback&#39;]]
+        cb = self.stepper_info_list[report[0]][&#39;distance_to_go_callback&#39;]
 
         # isolate the steps bytes and covert list to bytes
         steps = bytes(report[1:])
@@ -2380,7 +2379,7 @@ class Telemetrix(threading.Thread):
         &#34;&#34;&#34;
 
         # get callback
-        cb = self.stepper_info_list[report[0][&#39;target_position_callback&#39;]]
+        cb = self.stepper_info_list[report[0]][&#39;target_position_callback&#39;]
 
         # isolate the steps bytes and covert list to bytes
         target = bytes(report[1:])
@@ -2407,7 +2406,7 @@ class Telemetrix(threading.Thread):
         &#34;&#34;&#34;
 
         # get callback
-        cb = self.stepper_info_list[report[0][&#39;current_position_callback&#39;]]
+        cb = self.stepper_info_list[report[0]][&#39;current_position_callback&#39;]
 
         # isolate the steps bytes and covert list to bytes
         position = bytes(report[1:])
@@ -2431,7 +2430,7 @@ class Telemetrix(threading.Thread):
         &#34;&#34;&#34;
 
         # get callback
-        cb = self.stepper_info_list[report[0][&#39;is_running_callback&#39;]]
+        cb = self.stepper_info_list[report[0]][&#39;is_running_callback&#39;]
 
         cb_list = [PrivateConstants.STEPPER_CURRENT_POSITION, report[0], report[1],
                    time.time()]
@@ -2449,7 +2448,7 @@ class Telemetrix(threading.Thread):
         &#34;&#34;&#34;
 
         # get callback
-        cb = self.stepper_info_list[report[0][&#39;is_running_callback&#39;]]
+        cb = self.stepper_info_list[report[0]][&#39;motion_complete_callback&#39;]
 
         cb_list = [PrivateConstants.STEPPER_RUN_COMPLETE_REPORT, report[0],
                    time.time()]
@@ -2491,7 +2490,7 @@ class Telemetrix(threading.Thread):
                     # get the report type and look up its dispatch method
                     # here we pop the report type off of response_data
                     report_type = response_data.pop(0)
-                    print(report_type)
+                    # print(report_type)
 
                     # retrieve the report handler from the dispatch table
                     dispatch_entry = self.report_dispatch.get(report_type)
@@ -2719,6 +2718,13 @@ receiving a KeyboardInterrupt exception</p>
             {PrivateConstants.STEPPER_RUN_COMPLETE_REPORT:
                  self._stepper_run_complete_report})
 
+        self.report_dispatch.update(
+            {PrivateConstants.STEPPER_DISTANCE_TO_GO:
+                 self._stepper_distance_to_go_report})
+        self.report_dispatch.update(
+            {PrivateConstants.STEPPER_TARGET_POSITION:
+                 self._stepper_target_position_report})
+
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
 
@@ -2797,7 +2803,8 @@ receiving a KeyboardInterrupt exception</p>
                              &#39;target_position_callback&#39;: None,
                              &#39;current_position_callback&#39;: None,
                              &#39;is_running_callback&#39;: None,
-                             &#39;motion_complete_callback&#39;: None}
+                             &#39;motion_complete_callback&#39;: None,
+                             &#39;acceleration_callback&#39;: None}
 
         # build a list of stepper motor info items
         self.stepper_info_list = []
@@ -2815,7 +2822,7 @@ receiving a KeyboardInterrupt exception</p>
         self.the_data_receive_thread.start()
 
         print(f&#34;Telemetrix:  Version {PrivateConstants.TELEMETRIX_VERSION}\n\n&#34;
-              f&#34;Copyright (c) 2020 Alan Yorinks All Rights Reserved.\n&#34;)
+              f&#34;Copyright (c) 2021 Alan Yorinks All Rights Reserved.\n&#34;)
 
         # using the serial link
         if not self.ip_address:
@@ -3651,6 +3658,8 @@ receiving a KeyboardInterrupt exception</p>
 
         :param completion_callback: call back function to receive motion complete
                                     notification
+
+        If you are running in continuous mode, then the callback is never called.
         &#34;&#34;&#34;
         if not completion_callback:
             if self.shutdown_on_exception:
@@ -3687,7 +3696,7 @@ receiving a KeyboardInterrupt exception</p>
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_max_speed: Invalid motor_id.&#39;)
 
-        if not 1 &lt; max_speed &lt; 1000:
+        if not 1 &lt; max_speed &lt;= 1000:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_max_speed: Speed range is 1 - 1000.&#39;)
@@ -3736,7 +3745,7 @@ receiving a KeyboardInterrupt exception</p>
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_acceleration: Invalid motor_id.&#39;)
 
-        if not 1 &lt; acceleration &lt; 1000:
+        if not 1 &lt; acceleration &lt;= 1000:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_acceleration: Acceleration range is 1 - &#39;
@@ -3750,24 +3759,6 @@ receiving a KeyboardInterrupt exception</p>
         command = [PrivateConstants.STEPPER_SET_ACCELERATION, motor_id, max_accel_msb,
                    max_accel_lsb]
         self._send_command(command)
-
-    def stepper_get_acceleration(self, motor_id):
-        &#34;&#34;&#34;
-        Returns the maximum acceleration for this stepper
-        that was previously set by stepper_set_acceleration()
-
-        Value is stored in the client, so no callback is required.
-
-        :param motor_id:  0 - 3
-
-        :return: The currently configured acceleration.
-        &#34;&#34;&#34;
-        if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;stepper_get_acceleration: Invalid motor_id.&#39;)
-
-        return self.stepper_info_list[motor_id][&#39;acceleration&#39;]
 
     def stepper_set_speed(self, motor_id, speed):
         &#34;&#34;&#34;
@@ -3788,7 +3779,7 @@ receiving a KeyboardInterrupt exception</p>
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_speed: Invalid motor_id.&#39;)
 
-        if not 0 &lt; speed &lt; 1000:
+        if not 0 &lt; speed &lt;= 1000:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_set_speed: Speed range is 0 - &#39;
@@ -3811,7 +3802,6 @@ receiving a KeyboardInterrupt exception</p>
 
         :param motor_id:  0 - 3
 
-        :return: The currently configured speed.
         &#34;&#34;&#34;
         if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
             if self.shutdown_on_exception:
@@ -3845,8 +3835,9 @@ receiving a KeyboardInterrupt exception</p>
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_get_distance_to_go: Invalid motor_id.&#39;)
-
-        command = [PrivateConstants.STEPPER_DISTANCE_TO_GO, motor_id]
+        self.stepper_info_list[motor_id][
+            &#39;distance_to_go_callback&#39;] = distance_to_go_callback
+        command = [PrivateConstants.STEPPER_GET_DISTANCE_TO_GO, motor_id]
         self._send_command(command)
 
     def stepper_get_target_position(self, motor_id, target_callback):
@@ -3875,7 +3866,10 @@ receiving a KeyboardInterrupt exception</p>
                 self.shutdown()
             raise RuntimeError(&#39;stepper_get_target_position: Invalid motor_id.&#39;)
 
-        command = [PrivateConstants.STEPPER_TARGET_POSITION, motor_id]
+        self.stepper_info_list[motor_id][
+            &#39;target_position_callback&#39;] = target_callback
+
+        command = [PrivateConstants.STEPPER_GET_TARGET_POSITION, motor_id]
         self._send_command(command)
 
     def stepper_get_current_position(self, motor_id, current_position_callback):
@@ -3903,7 +3897,9 @@ receiving a KeyboardInterrupt exception</p>
                 self.shutdown()
             raise RuntimeError(&#39;stepper_get_current_position: Invalid motor_id.&#39;)
 
-        command = [PrivateConstants.STEPPER_CURRENT_POSITION, motor_id]
+        self.stepper_info_list[motor_id][&#39;current_position_callback&#39;] = current_position_callback
+
+        command = [PrivateConstants.STEPPER_GET_CURRENT_POSITION, motor_id]
         self._send_command(command)
 
     def stepper_set_current_position(self, motor_id, position):
@@ -4286,6 +4282,8 @@ receiving a KeyboardInterrupt exception</p>
             else:
                 try:
                     self.serial_port.reset_input_buffer()
+                    self.serial_port.reset_output_buffer()
+
                     self.serial_port.close()
 
                 except (RuntimeError, SerialException, OSError):
@@ -4868,7 +4866,7 @@ receiving a KeyboardInterrupt exception</p>
         &#34;&#34;&#34;
 
         # get callback
-        cb = self.stepper_info_list[report[0][&#39;distance_to_go_callback&#39;]]
+        cb = self.stepper_info_list[report[0]][&#39;distance_to_go_callback&#39;]
 
         # isolate the steps bytes and covert list to bytes
         steps = bytes(report[1:])
@@ -4895,7 +4893,7 @@ receiving a KeyboardInterrupt exception</p>
         &#34;&#34;&#34;
 
         # get callback
-        cb = self.stepper_info_list[report[0][&#39;target_position_callback&#39;]]
+        cb = self.stepper_info_list[report[0]][&#39;target_position_callback&#39;]
 
         # isolate the steps bytes and covert list to bytes
         target = bytes(report[1:])
@@ -4922,7 +4920,7 @@ receiving a KeyboardInterrupt exception</p>
         &#34;&#34;&#34;
 
         # get callback
-        cb = self.stepper_info_list[report[0][&#39;current_position_callback&#39;]]
+        cb = self.stepper_info_list[report[0]][&#39;current_position_callback&#39;]
 
         # isolate the steps bytes and covert list to bytes
         position = bytes(report[1:])
@@ -4946,7 +4944,7 @@ receiving a KeyboardInterrupt exception</p>
         &#34;&#34;&#34;
 
         # get callback
-        cb = self.stepper_info_list[report[0][&#39;is_running_callback&#39;]]
+        cb = self.stepper_info_list[report[0]][&#39;is_running_callback&#39;]
 
         cb_list = [PrivateConstants.STEPPER_CURRENT_POSITION, report[0], report[1],
                    time.time()]
@@ -4964,7 +4962,7 @@ receiving a KeyboardInterrupt exception</p>
         &#34;&#34;&#34;
 
         # get callback
-        cb = self.stepper_info_list[report[0][&#39;is_running_callback&#39;]]
+        cb = self.stepper_info_list[report[0]][&#39;motion_complete_callback&#39;]
 
         cb_list = [PrivateConstants.STEPPER_RUN_COMPLETE_REPORT, report[0],
                    time.time()]
@@ -5006,7 +5004,7 @@ receiving a KeyboardInterrupt exception</p>
                     # get the report type and look up its dispatch method
                     # here we pop the report type off of response_data
                     report_type = response_data.pop(0)
-                    print(report_type)
+                    # print(report_type)
 
                     # retrieve the report handler from the dispatch table
                     dispatch_entry = self.report_dispatch.get(report_type)
@@ -6319,6 +6317,8 @@ If any exceptions are thrown, they are ignored.</p></div>
         else:
             try:
                 self.serial_port.reset_input_buffer()
+                self.serial_port.reset_output_buffer()
+
                 self.serial_port.close()
 
             except (RuntimeError, SerialException, OSError):
@@ -6630,39 +6630,6 @@ the pin to enabled.</p>
     self._send_command(command)</code></pre>
 </details>
 </dd>
-<dt id="telemetrix.telemetrix.Telemetrix.stepper_get_acceleration"><code class="name flex">
-<span>def <span class="ident">stepper_get_acceleration</span></span>(<span>self, motor_id)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns the maximum acceleration for this stepper
-that was previously set by stepper_set_acceleration()</p>
-<p>Value is stored in the client, so no callback is required.</p>
-<p>:param motor_id:
-0 - 3</p>
-<p>:return: The currently configured acceleration.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def stepper_get_acceleration(self, motor_id):
-    &#34;&#34;&#34;
-    Returns the maximum acceleration for this stepper
-    that was previously set by stepper_set_acceleration()
-
-    Value is stored in the client, so no callback is required.
-
-    :param motor_id:  0 - 3
-
-    :return: The currently configured acceleration.
-    &#34;&#34;&#34;
-    if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
-        if self.shutdown_on_exception:
-            self.shutdown()
-        raise RuntimeError(&#39;stepper_get_acceleration: Invalid motor_id.&#39;)
-
-    return self.stepper_info_list[motor_id][&#39;acceleration&#39;]</code></pre>
-</details>
-</dd>
 <dt id="telemetrix.telemetrix.Telemetrix.stepper_get_current_position"><code class="name flex">
 <span>def <span class="ident">stepper_get_current_position</span></span>(<span>self, motor_id, current_position_callback)</span>
 </code></dt>
@@ -6702,7 +6669,9 @@ that was previously set by stepper_set_acceleration()</p>
             self.shutdown()
         raise RuntimeError(&#39;stepper_get_current_position: Invalid motor_id.&#39;)
 
-    command = [PrivateConstants.STEPPER_CURRENT_POSITION, motor_id]
+    self.stepper_info_list[motor_id][&#39;current_position_callback&#39;] = current_position_callback
+
+    command = [PrivateConstants.STEPPER_GET_CURRENT_POSITION, motor_id]
     self._send_command(command)</code></pre>
 </details>
 </dd>
@@ -6746,8 +6715,9 @@ from the server.</p>
         if self.shutdown_on_exception:
             self.shutdown()
         raise RuntimeError(&#39;stepper_get_distance_to_go: Invalid motor_id.&#39;)
-
-    command = [PrivateConstants.STEPPER_DISTANCE_TO_GO, motor_id]
+    self.stepper_info_list[motor_id][
+        &#39;distance_to_go_callback&#39;] = distance_to_go_callback
+    command = [PrivateConstants.STEPPER_GET_DISTANCE_TO_GO, motor_id]
     self._send_command(command)</code></pre>
 </details>
 </dd>
@@ -6792,8 +6762,7 @@ most recently set speed.
 that was previously set by stepper_set_speed();</p>
 <p>Value is stored in the client, so no callback is required.</p>
 <p>:param motor_id:
-0 - 3</p>
-<p>:return: The currently configured speed.</p></div>
+0 - 3</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -6807,7 +6776,6 @@ that was previously set by stepper_set_speed();</p>
 
     :param motor_id:  0 - 3
 
-    :return: The currently configured speed.
     &#34;&#34;&#34;
     if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
         if self.shutdown_on_exception:
@@ -6857,7 +6825,10 @@ that was previously set by stepper_set_speed();</p>
             self.shutdown()
         raise RuntimeError(&#39;stepper_get_target_position: Invalid motor_id.&#39;)
 
-    command = [PrivateConstants.STEPPER_TARGET_POSITION, motor_id]
+    self.stepper_info_list[motor_id][
+        &#39;target_position_callback&#39;] = target_callback
+
+    command = [PrivateConstants.STEPPER_GET_TARGET_POSITION, motor_id]
     self._send_command(command)</code></pre>
 </details>
 </dd>
@@ -7095,7 +7066,8 @@ recent call to stepper_set_max_speed().</p>
 <p>Once called, the server will continuously attempt to step the motor.</p>
 <p>:param motor_id: 0 - 3</p>
 <p>:param completion_callback: call back function to receive motion complete
-notification</p></div>
+notification</p>
+<p>If you are running in continuous mode, then the callback is never called.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -7111,6 +7083,8 @@ notification</p></div>
 
     :param completion_callback: call back function to receive motion complete
                                 notification
+
+    If you are running in continuous mode, then the callback is never called.
     &#34;&#34;&#34;
     if not completion_callback:
         if self.shutdown_on_exception:
@@ -7282,7 +7256,7 @@ Dont call more often than needed.</p></div>
             self.shutdown()
         raise RuntimeError(&#39;stepper_set_acceleration: Invalid motor_id.&#39;)
 
-    if not 1 &lt; acceleration &lt; 1000:
+    if not 1 &lt; acceleration &lt;= 1000:
         if self.shutdown_on_exception:
             self.shutdown()
         raise RuntimeError(&#39;stepper_set_acceleration: Acceleration range is 1 - &#39;
@@ -7419,7 +7393,7 @@ result in non-linear accelerations and decelerations.</p>
             self.shutdown()
         raise RuntimeError(&#39;stepper_set_max_speed: Invalid motor_id.&#39;)
 
-    if not 1 &lt; max_speed &lt; 1000:
+    if not 1 &lt; max_speed &lt;= 1000:
         if self.shutdown_on_exception:
             self.shutdown()
         raise RuntimeError(&#39;stepper_set_max_speed: Speed range is 1 - 1000.&#39;)
@@ -7513,7 +7487,7 @@ stepper_set_max_speed().</p></div>
             self.shutdown()
         raise RuntimeError(&#39;stepper_set_speed: Invalid motor_id.&#39;)
 
-    if not 0 &lt; speed &lt; 1000:
+    if not 0 &lt; speed &lt;= 1000:
         if self.shutdown_on_exception:
             self.shutdown()
         raise RuntimeError(&#39;stepper_set_speed: Speed range is 0 - &#39;
@@ -7621,7 +7595,6 @@ acceleration parameters.</p>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_add_multi_stepper" href="#telemetrix.telemetrix.Telemetrix.stepper_add_multi_stepper">stepper_add_multi_stepper</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_disable_outputs" href="#telemetrix.telemetrix.Telemetrix.stepper_disable_outputs">stepper_disable_outputs</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_enable_outputs" href="#telemetrix.telemetrix.Telemetrix.stepper_enable_outputs">stepper_enable_outputs</a></code></li>
-<li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_get_acceleration" href="#telemetrix.telemetrix.Telemetrix.stepper_get_acceleration">stepper_get_acceleration</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_get_current_position" href="#telemetrix.telemetrix.Telemetrix.stepper_get_current_position">stepper_get_current_position</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_get_distance_to_go" href="#telemetrix.telemetrix.Telemetrix.stepper_get_distance_to_go">stepper_get_distance_to_go</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.stepper_get_max_speed" href="#telemetrix.telemetrix.Telemetrix.stepper_get_max_speed">stepper_get_max_speed</a></code></li>
