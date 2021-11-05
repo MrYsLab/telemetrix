@@ -161,6 +161,13 @@ class Telemetrix(threading.Thread):
             {PrivateConstants.STEPPER_RUN_COMPLETE_REPORT:
                  self._stepper_run_complete_report})
 
+        self.report_dispatch.update(
+            {PrivateConstants.STEPPER_DISTANCE_TO_GO:
+                 self._stepper_distance_to_go_report})
+        self.report_dispatch.update(
+            {PrivateConstants.STEPPER_TARGET_POSITION:
+                 self._stepper_target_position_report})
+
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
 
@@ -239,7 +246,8 @@ class Telemetrix(threading.Thread):
                              'target_position_callback': None,
                              'current_position_callback': None,
                              'is_running_callback': None,
-                             'motion_complete_callback': None}
+                             'motion_complete_callback': None,
+                             'acceleration_callback': None}
 
         # build a list of stepper motor info items
         self.stepper_info_list = []
@@ -1131,7 +1139,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError('stepper_set_max_speed: Invalid motor_id.')
 
-        if not 1 < max_speed < 1000:
+        if not 1 < max_speed <= 1000:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_set_max_speed: Speed range is 1 - 1000.')
@@ -1180,7 +1188,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError('stepper_set_acceleration: Invalid motor_id.')
 
-        if not 1 < acceleration < 1000:
+        if not 1 < acceleration <= 1000:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_set_acceleration: Acceleration range is 1 - '
@@ -1194,24 +1202,6 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.STEPPER_SET_ACCELERATION, motor_id, max_accel_msb,
                    max_accel_lsb]
         self._send_command(command)
-
-    def stepper_get_acceleration(self, motor_id):
-        """
-        Returns the maximum acceleration for this stepper
-        that was previously set by stepper_set_acceleration()
-
-        Value is stored in the client, so no callback is required.
-
-        :param motor_id:  0 - 3
-
-        :return: The currently configured acceleration.
-        """
-        if not self.stepper_info_list[motor_id]['instance']:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('stepper_get_acceleration: Invalid motor_id.')
-
-        return self.stepper_info_list[motor_id]['acceleration']
 
     def stepper_set_speed(self, motor_id, speed):
         """
@@ -1232,7 +1222,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError('stepper_set_speed: Invalid motor_id.')
 
-        if not 0 < speed < 1000:
+        if not 0 < speed <= 1000:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_set_speed: Speed range is 0 - '
@@ -1255,7 +1245,6 @@ class Telemetrix(threading.Thread):
 
         :param motor_id:  0 - 3
 
-        :return: The currently configured speed.
         """
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
@@ -1289,8 +1278,9 @@ class Telemetrix(threading.Thread):
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_get_distance_to_go: Invalid motor_id.')
-
-        command = [PrivateConstants.STEPPER_DISTANCE_TO_GO, motor_id]
+        self.stepper_info_list[motor_id][
+            'distance_to_go_callback'] = distance_to_go_callback
+        command = [PrivateConstants.STEPPER_GET_DISTANCE_TO_GO, motor_id]
         self._send_command(command)
 
     def stepper_get_target_position(self, motor_id, target_callback):
@@ -1319,7 +1309,10 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError('stepper_get_target_position: Invalid motor_id.')
 
-        command = [PrivateConstants.STEPPER_TARGET_POSITION, motor_id]
+        self.stepper_info_list[motor_id][
+            'target_position_callback'] = target_callback
+
+        command = [PrivateConstants.STEPPER_GET_TARGET_POSITION, motor_id]
         self._send_command(command)
 
     def stepper_get_current_position(self, motor_id, current_position_callback):
@@ -1347,7 +1340,9 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError('stepper_get_current_position: Invalid motor_id.')
 
-        command = [PrivateConstants.STEPPER_CURRENT_POSITION, motor_id]
+        self.stepper_info_list[motor_id]['current_position_callback'] = current_position_callback
+
+        command = [PrivateConstants.STEPPER_GET_CURRENT_POSITION, motor_id]
         self._send_command(command)
 
     def stepper_set_current_position(self, motor_id, position):
