@@ -167,6 +167,9 @@ class Telemetrix(threading.Thread):
         self.report_dispatch.update(
             {PrivateConstants.STEPPER_TARGET_POSITION:
                  self._stepper_target_position_report})
+        self.report_dispatch.update(
+            {PrivateConstants.FEATURES:
+                 self._features_report})
 
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
@@ -215,6 +218,9 @@ class Telemetrix(threading.Thread):
 
         # reported arduino instance id
         self.reported_arduino_id = []
+
+        # reported features
+        self.reported_features = 0
 
         # flag to indicate if i2c was previously enabled
         self.i2c_enabled = False
@@ -306,13 +312,13 @@ class Telemetrix(threading.Thread):
         print(f'Waiting for Arduino to reset')
         print(f'Reset Complete')
 
-        print('Retrieving Arduino ID...')
-        self._get_arduino_id()
-        if self.reported_arduino_id != self.arduino_instance_id:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(f'Incorrect Arduino ID: {self.reported_arduino_id}')
-        print('Valid Arduino ID Found.')
+        # print('Retrieving Arduino ID...')
+        # self._get_arduino_id()
+        # if self.reported_arduino_id != self.arduino_instance_id:
+        #     if self.shutdown_on_exception:
+        #         self.shutdown()
+        #     raise RuntimeError(f'Incorrect Arduino ID: {self.reported_arduino_id}')
+        # print('Valid Arduino ID Found.')
         # get telemetrix firmware version and print it
         print('\nRetrieving Telemetrix4Arduino firmware ID...')
         self._get_firmware_version()
@@ -326,6 +332,11 @@ class Telemetrix(threading.Thread):
                   f'{self.firmware_version[1]}.{self.firmware_version[2]}')
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
         self._send_command(command)
+
+        # get the features list
+        command = [PrivateConstants.GET_FEATURES]
+        self._send_command(command)
+        time.sleep(.2)
 
         # Have the server reset its data structures
         command = [PrivateConstants.RESET]
@@ -366,13 +377,22 @@ class Telemetrix(threading.Thread):
             'reset...')
         # temporary for testing
         time.sleep(self.arduino_wait)
+        self._run_threads()
 
-        try:
-            # check for correct arduino device
-            self.serial_port.reset_input_buffer()
-            self.serial_port.reset_output_buffer()
-        except AttributeError:
-            raise RuntimeError(f'Is your board plugged in?')
+        for serial_port in serial_ports:
+            self.serial_port = serial_port
+
+            self._get_arduino_id()
+            if self.reported_arduino_id != self.arduino_instance_id:
+                continue
+            else:
+                print('Valid Arduino ID Found.')
+                self.serial_port.reset_input_buffer()
+                self.serial_port.reset_output_buffer()
+                return
+        if self.shutdown_on_exception:
+            self.shutdown()
+        raise RuntimeError(f'Incorrect Arduino ID: {self.reported_arduino_id}')
 
     def _manual_open(self):
         """
@@ -818,26 +838,30 @@ class Telemetrix(threading.Thread):
         Time]
 
         """
+        if self.reported_features & PrivateConstants.DHT_FEATURE:
+            if not callback:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError('set_pin_mode_dht: A Callback must be specified')
 
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('set_pin_mode_dht: A Callback must be specified')
+            if self.dht_count < PrivateConstants.MAX_DHTS - 1:
+                self.dht_callbacks[pin] = callback
+                self.dht_count += 1
 
-        if self.dht_count < PrivateConstants.MAX_DHTS - 1:
-            self.dht_callbacks[pin] = callback
-            self.dht_count += 1
+                if dht_type != 22 and dht_type != 11:
+                    dht_type = 22
 
-            if dht_type != 22 and dht_type != 11:
-                dht_type = 22
-
-            command = [PrivateConstants.DHT_NEW, pin, dht_type]
-            self._send_command(command)
+                command = [PrivateConstants.DHT_NEW, pin, dht_type]
+                self._send_command(command)
+            else:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(
+                    f'Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}')
         else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(
-                f'Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}')
+            raise RuntimeError(f'The DHT feature is disabled in the server.')
 
     # noinspection PyRedundantParentheses
     def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
@@ -852,12 +876,18 @@ class Telemetrix(threading.Thread):
         :param max_pulse: maximum pulse width
 
         """
-        minv = (min_pulse).to_bytes(2, byteorder="big")
-        maxv = (max_pulse).to_bytes(2, byteorder="big")
+        if self.reported_features & PrivateConstants.SERVO_FEATURE:
 
-        command = [PrivateConstants.SERVO_ATTACH, pin_number,
-                   minv[0], minv[1], maxv[0], maxv[1]]
-        self._send_command(command)
+            minv = (min_pulse).to_bytes(2, byteorder="big")
+            maxv = (max_pulse).to_bytes(2, byteorder="big")
+
+            command = [PrivateConstants.SERVO_ATTACH, pin_number,
+                       minv[0], minv[1], maxv[0], maxv[1]]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f'The SERVO feature is disabled in the server.')
 
     def set_pin_mode_sonar(self, trigger_pin, echo_pin,
                            callback=None):
@@ -872,23 +902,28 @@ class Telemetrix(threading.Thread):
         callback data: [PrivateConstants.SONAR_DISTANCE, trigger_pin, distance_value, time_stamp]
 
         """
+        if self.reported_features & PrivateConstants.SONAR_FEATURE:
 
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('set_pin_mode_sonar: A Callback must be specified')
+            if not callback:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError('set_pin_mode_sonar: A Callback must be specified')
 
-        if self.sonar_count < PrivateConstants.MAX_SONARS - 1:
-            self.sonar_callbacks[trigger_pin] = callback
-            self.sonar_count += 1
+            if self.sonar_count < PrivateConstants.MAX_SONARS - 1:
+                self.sonar_callbacks[trigger_pin] = callback
+                self.sonar_count += 1
 
-            command = [PrivateConstants.SONAR_NEW, trigger_pin, echo_pin]
-            self._send_command(command)
+                command = [PrivateConstants.SONAR_NEW, trigger_pin, echo_pin]
+                self._send_command(command)
+            else:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(
+                    f'Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}')
         else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(
-                f'Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}')
+            raise RuntimeError(f'The SONAR feature is disabled in the server.')
 
     def set_pin_mode_spi(self, chip_select_list=None):
         """
@@ -907,23 +942,28 @@ class Telemetrix(threading.Thread):
         command message: [command, number of cs pins, [cs pins...]]
         """
 
-        if type(chip_select_list) != list:
+        if self.reported_features & PrivateConstants.SPI_FEATURE:
+            if type(chip_select_list) != list:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError('chip_select_list must be in the form of a list')
+            if not chip_select_list:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError('Chip select pins were not specified')
+
+            self.spi_enabled = True
+
+            command = [PrivateConstants.SPI_INIT, len(chip_select_list)]
+
+            for pin in chip_select_list:
+                command.append(pin)
+                self.cs_pins_enabled.append(pin)
+            self._send_command(command)
+        else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError('chip_select_list must be in the form of a list')
-        if not chip_select_list:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('Chip select pins were not specified')
-
-        self.spi_enabled = True
-
-        command = [PrivateConstants.SPI_INIT, len(chip_select_list)]
-
-        for pin in chip_select_list:
-            command.append(pin)
-            self.cs_pins_enabled.append(pin)
-        self._send_command(command)
+            raise RuntimeError(f'The SPI feature is disabled in the server.')
 
     def set_pin_mode_stepper(self, interface=1, pin1=2, pin2=3, pin3=4,
                              pin4=5, enable=True):
@@ -966,29 +1006,35 @@ class Telemetrix(threading.Thread):
 
         :return: Motor Reference number
         """
-        if self.number_of_steppers == self.max_number_of_steppers:
+        if self.reported_features & PrivateConstants.STEPPERS_FEATURE:
+
+            if self.number_of_steppers == self.max_number_of_steppers:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError('Maximum number of steppers has already been assigned')
+
+            if interface not in self.valid_stepper_interfaces:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError('Invalid stepper interface')
+
+            self.number_of_steppers += 1
+
+            motor_id = self.next_stepper_assigned
+            self.next_stepper_assigned += 1
+            self.stepper_info_list[motor_id]['instance'] = True
+
+            # build message and send message to server
+            command = [PrivateConstants.SET_PIN_MODE_STEPPER, motor_id, interface, pin1,
+                       pin2, pin3, pin4, enable]
+            self._send_command(command)
+
+            # return motor id
+            return motor_id
+        else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError('Maximum number of steppers has already been assigned')
-
-        if interface not in self.valid_stepper_interfaces:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('Invalid stepper interface')
-
-        self.number_of_steppers += 1
-
-        motor_id = self.next_stepper_assigned
-        self.next_stepper_assigned += 1
-        self.stepper_info_list[motor_id]['instance'] = True
-
-        # build message and send message to server
-        command = [PrivateConstants.SET_PIN_MODE_STEPPER, motor_id, interface, pin1,
-                   pin2, pin3, pin4, enable]
-        self._send_command(command)
-
-        # return motor id
-        return motor_id
+            raise RuntimeError(f'The Stepper feature is disabled in the server.')
 
     def servo_write(self, pin_number, angle):
         """
@@ -1859,9 +1905,14 @@ class Telemetrix(threading.Thread):
 
         :param pin: Data pin connected to the OneWire device
         """
-        self.onewire_enabled = True
-        command = [PrivateConstants.ONE_WIRE_INIT, pin]
-        self._send_command(command)
+        if self.reported_features & PrivateConstants.ONEWIRE_FEATURE:
+            self.onewire_enabled = True
+            command = [PrivateConstants.ONE_WIRE_INIT, pin]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f'The OneWire feature is disabled in the server.')
 
     def onewire_reset(self, callback=None):
         """
@@ -2411,6 +2462,9 @@ class Telemetrix(threading.Thread):
                    time.time()]
 
         cb(cb_list)
+
+    def _features_report(self, report):
+        self.reported_features = report[0]
 
     def _run_threads(self):
         self.run_event.set()

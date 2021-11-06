@@ -80,6 +80,7 @@ class PrivateConstants:
     STEPPER_GET_CURRENT_POSITION = 54
     STEPPER_GET_DISTANCE_TO_GO = 55
     STEPPER_GET_TARGET_POSITION = 56
+    GET_FEATURES = 57
 
     # reports
     # debug data from Arduino
@@ -100,6 +101,7 @@ class PrivateConstants:
     STEPPER_CURRENT_POSITION = 17
     STEPPER_RUNNING_REPORT = 18
     STEPPER_RUN_COMPLETE_REPORT = 19
+    FEATURES = 20
     DEBUG_PRINT = 99
 
     TELEMETRIX_VERSION = "1.8"
@@ -136,3 +138,11 @@ class PrivateConstants:
     # DHT Report sub-types
     DHT_DATA = 0
     DHT_ERROR = 1
+
+    # feature masks
+    ONEWIRE_FEATURE = 0x01
+    DHT_FEATURE = 0x02
+    STEPPERS_FEATURE = 0x04
+    SPI_FEATURE = 0x08
+    SERVO_FEATURE = 0x10
+    SONAR_FEATURE = 0x20
