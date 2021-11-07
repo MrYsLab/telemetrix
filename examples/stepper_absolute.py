@@ -35,9 +35,17 @@ def the_callback(data):
     print(f'Motor {data[1]} absolute motion completed at: {date}.')
 
 
+def running_callback(data):
+    if data[1]:
+        print('The motor is running.')
+    else:
+        print('The motor IS NOT running.')
+
+
 # create an accelstepper instance for a TB6600 motor driver
 motor = board.set_pin_mode_stepper(interface=1, pin1=7, pin2=8)
-
+board.stepper_is_running(motor, callback=running_callback)
+time.sleep(.2)
 # set the max speed and acceleration
 board.stepper_set_max_speed(motor, 400)
 board.stepper_set_acceleration(motor, 800)
@@ -46,7 +54,11 @@ board.stepper_set_acceleration(motor, 800)
 board.stepper_move_to(motor, 2000)
 
 # run the motor
+print('Starting motor...')
 board.stepper_run(motor, completion_callback=the_callback)
+time.sleep(.2)
+board.stepper_is_running(motor, callback=running_callback)
+time.sleep(.2)
 
 # keep application running
 while True:

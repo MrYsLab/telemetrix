@@ -210,6 +210,9 @@ class Telemetrix(threading.Thread):
         self.report_dispatch.update(
             {PrivateConstants.STEPPER_TARGET_POSITION:
                  self._stepper_target_position_report})
+        self.report_dispatch.update(
+            {PrivateConstants.FEATURES:
+                 self._features_report})
 
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
@@ -258,6 +261,9 @@ class Telemetrix(threading.Thread):
 
         # reported arduino instance id
         self.reported_arduino_id = []
+
+        # reported features
+        self.reported_features = 0
 
         # flag to indicate if i2c was previously enabled
         self.i2c_enabled = False
@@ -349,13 +355,13 @@ class Telemetrix(threading.Thread):
         print(f&#39;Waiting for Arduino to reset&#39;)
         print(f&#39;Reset Complete&#39;)
 
-        print(&#39;Retrieving Arduino ID...&#39;)
-        self._get_arduino_id()
-        if self.reported_arduino_id != self.arduino_instance_id:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
-        print(&#39;Valid Arduino ID Found.&#39;)
+        # print(&#39;Retrieving Arduino ID...&#39;)
+        # self._get_arduino_id()
+        # if self.reported_arduino_id != self.arduino_instance_id:
+        #     if self.shutdown_on_exception:
+        #         self.shutdown()
+        #     raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
+        # print(&#39;Valid Arduino ID Found.&#39;)
         # get telemetrix firmware version and print it
         print(&#39;\nRetrieving Telemetrix4Arduino firmware ID...&#39;)
         self._get_firmware_version()
@@ -369,6 +375,11 @@ class Telemetrix(threading.Thread):
                   f&#39;{self.firmware_version[1]}.{self.firmware_version[2]}&#39;)
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
         self._send_command(command)
+
+        # get the features list
+        command = [PrivateConstants.GET_FEATURES]
+        self._send_command(command)
+        time.sleep(.2)
 
         # Have the server reset its data structures
         command = [PrivateConstants.RESET]
@@ -409,13 +420,22 @@ class Telemetrix(threading.Thread):
             &#39;reset...&#39;)
         # temporary for testing
         time.sleep(self.arduino_wait)
+        self._run_threads()
 
-        try:
-            # check for correct arduino device
-            self.serial_port.reset_input_buffer()
-            self.serial_port.reset_output_buffer()
-        except AttributeError:
-            raise RuntimeError(f&#39;Is your board plugged in?&#39;)
+        for serial_port in serial_ports:
+            self.serial_port = serial_port
+
+            self._get_arduino_id()
+            if self.reported_arduino_id != self.arduino_instance_id:
+                continue
+            else:
+                print(&#39;Valid Arduino ID Found.&#39;)
+                self.serial_port.reset_input_buffer()
+                self.serial_port.reset_output_buffer()
+                return
+        if self.shutdown_on_exception:
+            self.shutdown()
+        raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
 
     def _manual_open(self):
         &#34;&#34;&#34;
@@ -861,26 +881,30 @@ class Telemetrix(threading.Thread):
         Time]
 
         &#34;&#34;&#34;
+        if self.reported_features &amp; PrivateConstants.DHT_FEATURE:
+            if not callback:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
 
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
+            if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
+                self.dht_callbacks[pin] = callback
+                self.dht_count += 1
 
-        if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
-            self.dht_callbacks[pin] = callback
-            self.dht_count += 1
+                if dht_type != 22 and dht_type != 11:
+                    dht_type = 22
 
-            if dht_type != 22 and dht_type != 11:
-                dht_type = 22
-
-            command = [PrivateConstants.DHT_NEW, pin, dht_type]
-            self._send_command(command)
+                command = [PrivateConstants.DHT_NEW, pin, dht_type]
+                self._send_command(command)
+            else:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(
+                    f&#39;Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}&#39;)
         else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(
-                f&#39;Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}&#39;)
+            raise RuntimeError(f&#39;The DHT feature is disabled in the server.&#39;)
 
     # noinspection PyRedundantParentheses
     def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
@@ -895,12 +919,18 @@ class Telemetrix(threading.Thread):
         :param max_pulse: maximum pulse width
 
         &#34;&#34;&#34;
-        minv = (min_pulse).to_bytes(2, byteorder=&#34;big&#34;)
-        maxv = (max_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+        if self.reported_features &amp; PrivateConstants.SERVO_FEATURE:
 
-        command = [PrivateConstants.SERVO_ATTACH, pin_number,
-                   minv[0], minv[1], maxv[0], maxv[1]]
-        self._send_command(command)
+            minv = (min_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+            maxv = (max_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+
+            command = [PrivateConstants.SERVO_ATTACH, pin_number,
+                       minv[0], minv[1], maxv[0], maxv[1]]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f&#39;The SERVO feature is disabled in the server.&#39;)
 
     def set_pin_mode_sonar(self, trigger_pin, echo_pin,
                            callback=None):
@@ -915,23 +945,28 @@ class Telemetrix(threading.Thread):
         callback data: [PrivateConstants.SONAR_DISTANCE, trigger_pin, distance_value, time_stamp]
 
         &#34;&#34;&#34;
+        if self.reported_features &amp; PrivateConstants.SONAR_FEATURE:
 
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;set_pin_mode_sonar: A Callback must be specified&#39;)
+            if not callback:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;set_pin_mode_sonar: A Callback must be specified&#39;)
 
-        if self.sonar_count &lt; PrivateConstants.MAX_SONARS - 1:
-            self.sonar_callbacks[trigger_pin] = callback
-            self.sonar_count += 1
+            if self.sonar_count &lt; PrivateConstants.MAX_SONARS - 1:
+                self.sonar_callbacks[trigger_pin] = callback
+                self.sonar_count += 1
 
-            command = [PrivateConstants.SONAR_NEW, trigger_pin, echo_pin]
-            self._send_command(command)
+                command = [PrivateConstants.SONAR_NEW, trigger_pin, echo_pin]
+                self._send_command(command)
+            else:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(
+                    f&#39;Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}&#39;)
         else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(
-                f&#39;Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}&#39;)
+            raise RuntimeError(f&#39;The SONAR feature is disabled in the server.&#39;)
 
     def set_pin_mode_spi(self, chip_select_list=None):
         &#34;&#34;&#34;
@@ -950,23 +985,28 @@ class Telemetrix(threading.Thread):
         command message: [command, number of cs pins, [cs pins...]]
         &#34;&#34;&#34;
 
-        if type(chip_select_list) != list:
+        if self.reported_features &amp; PrivateConstants.SPI_FEATURE:
+            if type(chip_select_list) != list:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;chip_select_list must be in the form of a list&#39;)
+            if not chip_select_list:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;Chip select pins were not specified&#39;)
+
+            self.spi_enabled = True
+
+            command = [PrivateConstants.SPI_INIT, len(chip_select_list)]
+
+            for pin in chip_select_list:
+                command.append(pin)
+                self.cs_pins_enabled.append(pin)
+            self._send_command(command)
+        else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(&#39;chip_select_list must be in the form of a list&#39;)
-        if not chip_select_list:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;Chip select pins were not specified&#39;)
-
-        self.spi_enabled = True
-
-        command = [PrivateConstants.SPI_INIT, len(chip_select_list)]
-
-        for pin in chip_select_list:
-            command.append(pin)
-            self.cs_pins_enabled.append(pin)
-        self._send_command(command)
+            raise RuntimeError(f&#39;The SPI feature is disabled in the server.&#39;)
 
     def set_pin_mode_stepper(self, interface=1, pin1=2, pin2=3, pin3=4,
                              pin4=5, enable=True):
@@ -1009,29 +1049,35 @@ class Telemetrix(threading.Thread):
 
         :return: Motor Reference number
         &#34;&#34;&#34;
-        if self.number_of_steppers == self.max_number_of_steppers:
+        if self.reported_features &amp; PrivateConstants.STEPPERS_FEATURE:
+
+            if self.number_of_steppers == self.max_number_of_steppers:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;Maximum number of steppers has already been assigned&#39;)
+
+            if interface not in self.valid_stepper_interfaces:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;Invalid stepper interface&#39;)
+
+            self.number_of_steppers += 1
+
+            motor_id = self.next_stepper_assigned
+            self.next_stepper_assigned += 1
+            self.stepper_info_list[motor_id][&#39;instance&#39;] = True
+
+            # build message and send message to server
+            command = [PrivateConstants.SET_PIN_MODE_STEPPER, motor_id, interface, pin1,
+                       pin2, pin3, pin4, enable]
+            self._send_command(command)
+
+            # return motor id
+            return motor_id
+        else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(&#39;Maximum number of steppers has already been assigned&#39;)
-
-        if interface not in self.valid_stepper_interfaces:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;Invalid stepper interface&#39;)
-
-        self.number_of_steppers += 1
-
-        motor_id = self.next_stepper_assigned
-        self.next_stepper_assigned += 1
-        self.stepper_info_list[motor_id][&#39;instance&#39;] = True
-
-        # build message and send message to server
-        command = [PrivateConstants.SET_PIN_MODE_STEPPER, motor_id, interface, pin1,
-                   pin2, pin3, pin4, enable]
-        self._send_command(command)
-
-        # return motor id
-        return motor_id
+            raise RuntimeError(f&#39;The Stepper feature is disabled in the server.&#39;)
 
     def servo_write(self, pin_number, angle):
         &#34;&#34;&#34;
@@ -1117,6 +1163,12 @@ class Telemetrix(threading.Thread):
 
         :param completion_callback: call back function to receive motion complete
                                     notification
+
+        callback returns a data list:
+
+        [report_type, motor_id, raw_time_stamp]
+
+        The report_type = 19
         &#34;&#34;&#34;
         if not completion_callback:
             if self.shutdown_on_exception:
@@ -1133,31 +1185,21 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.STEPPER_RUN, motor_id]
         self._send_command(command)
 
-    def stepper_run_speed(self, motor_id, completion_callback=None):
+    def stepper_run_speed(self, motor_id):
         &#34;&#34;&#34;
         This method steps the selected motor based at a constant speed as set by the most
-        recent call to stepper_set_max_speed().
+        recent call to stepper_set_max_speed(). The motor will run continuously.
 
         Once called, the server will continuously attempt to step the motor.
 
         :param motor_id: 0 - 3
 
-        :param completion_callback: call back function to receive motion complete
-                                    notification
-
-        If you are running in continuous mode, then the callback is never called.
         &#34;&#34;&#34;
-        if not completion_callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;stepper_run_speed: A motion complete callback must be &#39;
-                               &#39;specified.&#39;)
         if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_run_speed: Invalid motor_id.&#39;)
 
-        self.stepper_info_list[motor_id][&#39;motion_complete_callback&#39;] = completion_callback
         command = [PrivateConstants.STEPPER_RUN_SPEED, motor_id]
         self._send_command(command)
 
@@ -1307,7 +1349,7 @@ class Telemetrix(threading.Thread):
 
         :return: The distance to go is returned via the callback as a list:
 
-        [REPORT_TYPE=15, motor_id, distance in steps]
+        [REPORT_TYPE=15, motor_id, distance in steps, time_stamp]
 
         A positive distance is clockwise from the current position.
 
@@ -1336,7 +1378,7 @@ class Telemetrix(threading.Thread):
 
         :return: The distance to go is returned via the callback as a list:
 
-        [REPORT_TYPE=16, motor_id, target position in steps]
+        [REPORT_TYPE=16, motor_id, target position in steps, time_stamp]
 
         Positive is clockwise from the 0 position.
 
@@ -1368,7 +1410,7 @@ class Telemetrix(threading.Thread):
 
         :return: The current motor position returned via the callback as a list:
 
-        [REPORT_TYPE=17, motor_id, current position in steps]
+        [REPORT_TYPE=17, motor_id, current position in steps, time_stamp]
 
         Positive is clockwise from the 0 position.
         &#34;&#34;&#34;
@@ -1424,6 +1466,12 @@ class Telemetrix(threading.Thread):
 
         :param completion_callback: call back function to receive motion complete
                                     notification
+
+        callback returns a data list:
+
+        [report_type, motor_id, raw_time_stamp]
+
+        The report_type = 19
         &#34;&#34;&#34;
         if not completion_callback:
             if self.shutdown_on_exception:
@@ -1616,7 +1664,7 @@ class Telemetrix(threading.Thread):
 
         :return: The current running state returned via the callback as a list:
 
-        [REPORT_TYPE=18, motor_id, True or False for running state]
+        [REPORT_TYPE=18, motor_id, True or False for running state, time_stamp]
         &#34;&#34;&#34;
         if not callback:
             if self.shutdown_on_exception:
@@ -1628,6 +1676,8 @@ class Telemetrix(threading.Thread):
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_is_running: Invalid motor_id.&#39;)
+
+        self.stepper_info_list[motor_id][&#39;is_running_callback&#39;] = callback
 
         command = [PrivateConstants.STEPPER_IS_RUNNING, motor_id]
         self._send_command(command)
@@ -1902,9 +1952,14 @@ class Telemetrix(threading.Thread):
 
         :param pin: Data pin connected to the OneWire device
         &#34;&#34;&#34;
-        self.onewire_enabled = True
-        command = [PrivateConstants.ONE_WIRE_INIT, pin]
-        self._send_command(command)
+        if self.reported_features &amp; PrivateConstants.ONEWIRE_FEATURE:
+            self.onewire_enabled = True
+            command = [PrivateConstants.ONE_WIRE_INIT, pin]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f&#39;The OneWire feature is disabled in the server.&#39;)
 
     def onewire_reset(self, callback=None):
         &#34;&#34;&#34;
@@ -2425,15 +2480,14 @@ class Telemetrix(threading.Thread):
 
         :param report: data[0] = motor_id, True if motor is running or False if it is not.
 
-        callback report format: [PrivateConstants.STEPPER_RUNNING_REPORT, motor_id,
-                                 running, time_stamp]
+        callback report format: [18, motor_id,
+                                 running_state, time_stamp]
         &#34;&#34;&#34;
 
         # get callback
         cb = self.stepper_info_list[report[0]][&#39;is_running_callback&#39;]
 
-        cb_list = [PrivateConstants.STEPPER_CURRENT_POSITION, report[0], report[1],
-                   time.time()]
+        cb_list = [PrivateConstants.STEPPER_RUNNING_REPORT, report[0], time.time()]
 
         cb(cb_list)
 
@@ -2454,6 +2508,9 @@ class Telemetrix(threading.Thread):
                    time.time()]
 
         cb(cb_list)
+
+    def _features_report(self, report):
+        self.reported_features = report[0]
 
     def _run_threads(self):
         self.run_event.set()
@@ -2724,6 +2781,9 @@ receiving a KeyboardInterrupt exception</p>
         self.report_dispatch.update(
             {PrivateConstants.STEPPER_TARGET_POSITION:
                  self._stepper_target_position_report})
+        self.report_dispatch.update(
+            {PrivateConstants.FEATURES:
+                 self._features_report})
 
         # dictionaries to store the callbacks for each pin
         self.analog_callbacks = {}
@@ -2772,6 +2832,9 @@ receiving a KeyboardInterrupt exception</p>
 
         # reported arduino instance id
         self.reported_arduino_id = []
+
+        # reported features
+        self.reported_features = 0
 
         # flag to indicate if i2c was previously enabled
         self.i2c_enabled = False
@@ -2863,13 +2926,13 @@ receiving a KeyboardInterrupt exception</p>
         print(f&#39;Waiting for Arduino to reset&#39;)
         print(f&#39;Reset Complete&#39;)
 
-        print(&#39;Retrieving Arduino ID...&#39;)
-        self._get_arduino_id()
-        if self.reported_arduino_id != self.arduino_instance_id:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
-        print(&#39;Valid Arduino ID Found.&#39;)
+        # print(&#39;Retrieving Arduino ID...&#39;)
+        # self._get_arduino_id()
+        # if self.reported_arduino_id != self.arduino_instance_id:
+        #     if self.shutdown_on_exception:
+        #         self.shutdown()
+        #     raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
+        # print(&#39;Valid Arduino ID Found.&#39;)
         # get telemetrix firmware version and print it
         print(&#39;\nRetrieving Telemetrix4Arduino firmware ID...&#39;)
         self._get_firmware_version()
@@ -2883,6 +2946,11 @@ receiving a KeyboardInterrupt exception</p>
                   f&#39;{self.firmware_version[1]}.{self.firmware_version[2]}&#39;)
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
         self._send_command(command)
+
+        # get the features list
+        command = [PrivateConstants.GET_FEATURES]
+        self._send_command(command)
+        time.sleep(.2)
 
         # Have the server reset its data structures
         command = [PrivateConstants.RESET]
@@ -2923,13 +2991,22 @@ receiving a KeyboardInterrupt exception</p>
             &#39;reset...&#39;)
         # temporary for testing
         time.sleep(self.arduino_wait)
+        self._run_threads()
 
-        try:
-            # check for correct arduino device
-            self.serial_port.reset_input_buffer()
-            self.serial_port.reset_output_buffer()
-        except AttributeError:
-            raise RuntimeError(f&#39;Is your board plugged in?&#39;)
+        for serial_port in serial_ports:
+            self.serial_port = serial_port
+
+            self._get_arduino_id()
+            if self.reported_arduino_id != self.arduino_instance_id:
+                continue
+            else:
+                print(&#39;Valid Arduino ID Found.&#39;)
+                self.serial_port.reset_input_buffer()
+                self.serial_port.reset_output_buffer()
+                return
+        if self.shutdown_on_exception:
+            self.shutdown()
+        raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
 
     def _manual_open(self):
         &#34;&#34;&#34;
@@ -3375,26 +3452,30 @@ receiving a KeyboardInterrupt exception</p>
         Time]
 
         &#34;&#34;&#34;
+        if self.reported_features &amp; PrivateConstants.DHT_FEATURE:
+            if not callback:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
 
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
+            if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
+                self.dht_callbacks[pin] = callback
+                self.dht_count += 1
 
-        if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
-            self.dht_callbacks[pin] = callback
-            self.dht_count += 1
+                if dht_type != 22 and dht_type != 11:
+                    dht_type = 22
 
-            if dht_type != 22 and dht_type != 11:
-                dht_type = 22
-
-            command = [PrivateConstants.DHT_NEW, pin, dht_type]
-            self._send_command(command)
+                command = [PrivateConstants.DHT_NEW, pin, dht_type]
+                self._send_command(command)
+            else:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(
+                    f&#39;Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}&#39;)
         else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(
-                f&#39;Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}&#39;)
+            raise RuntimeError(f&#39;The DHT feature is disabled in the server.&#39;)
 
     # noinspection PyRedundantParentheses
     def set_pin_mode_servo(self, pin_number, min_pulse=544, max_pulse=2400):
@@ -3409,12 +3490,18 @@ receiving a KeyboardInterrupt exception</p>
         :param max_pulse: maximum pulse width
 
         &#34;&#34;&#34;
-        minv = (min_pulse).to_bytes(2, byteorder=&#34;big&#34;)
-        maxv = (max_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+        if self.reported_features &amp; PrivateConstants.SERVO_FEATURE:
 
-        command = [PrivateConstants.SERVO_ATTACH, pin_number,
-                   minv[0], minv[1], maxv[0], maxv[1]]
-        self._send_command(command)
+            minv = (min_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+            maxv = (max_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+
+            command = [PrivateConstants.SERVO_ATTACH, pin_number,
+                       minv[0], minv[1], maxv[0], maxv[1]]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f&#39;The SERVO feature is disabled in the server.&#39;)
 
     def set_pin_mode_sonar(self, trigger_pin, echo_pin,
                            callback=None):
@@ -3429,23 +3516,28 @@ receiving a KeyboardInterrupt exception</p>
         callback data: [PrivateConstants.SONAR_DISTANCE, trigger_pin, distance_value, time_stamp]
 
         &#34;&#34;&#34;
+        if self.reported_features &amp; PrivateConstants.SONAR_FEATURE:
 
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;set_pin_mode_sonar: A Callback must be specified&#39;)
+            if not callback:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;set_pin_mode_sonar: A Callback must be specified&#39;)
 
-        if self.sonar_count &lt; PrivateConstants.MAX_SONARS - 1:
-            self.sonar_callbacks[trigger_pin] = callback
-            self.sonar_count += 1
+            if self.sonar_count &lt; PrivateConstants.MAX_SONARS - 1:
+                self.sonar_callbacks[trigger_pin] = callback
+                self.sonar_count += 1
 
-            command = [PrivateConstants.SONAR_NEW, trigger_pin, echo_pin]
-            self._send_command(command)
+                command = [PrivateConstants.SONAR_NEW, trigger_pin, echo_pin]
+                self._send_command(command)
+            else:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(
+                    f&#39;Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}&#39;)
         else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(
-                f&#39;Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}&#39;)
+            raise RuntimeError(f&#39;The SONAR feature is disabled in the server.&#39;)
 
     def set_pin_mode_spi(self, chip_select_list=None):
         &#34;&#34;&#34;
@@ -3464,23 +3556,28 @@ receiving a KeyboardInterrupt exception</p>
         command message: [command, number of cs pins, [cs pins...]]
         &#34;&#34;&#34;
 
-        if type(chip_select_list) != list:
+        if self.reported_features &amp; PrivateConstants.SPI_FEATURE:
+            if type(chip_select_list) != list:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;chip_select_list must be in the form of a list&#39;)
+            if not chip_select_list:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;Chip select pins were not specified&#39;)
+
+            self.spi_enabled = True
+
+            command = [PrivateConstants.SPI_INIT, len(chip_select_list)]
+
+            for pin in chip_select_list:
+                command.append(pin)
+                self.cs_pins_enabled.append(pin)
+            self._send_command(command)
+        else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(&#39;chip_select_list must be in the form of a list&#39;)
-        if not chip_select_list:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;Chip select pins were not specified&#39;)
-
-        self.spi_enabled = True
-
-        command = [PrivateConstants.SPI_INIT, len(chip_select_list)]
-
-        for pin in chip_select_list:
-            command.append(pin)
-            self.cs_pins_enabled.append(pin)
-        self._send_command(command)
+            raise RuntimeError(f&#39;The SPI feature is disabled in the server.&#39;)
 
     def set_pin_mode_stepper(self, interface=1, pin1=2, pin2=3, pin3=4,
                              pin4=5, enable=True):
@@ -3523,29 +3620,35 @@ receiving a KeyboardInterrupt exception</p>
 
         :return: Motor Reference number
         &#34;&#34;&#34;
-        if self.number_of_steppers == self.max_number_of_steppers:
+        if self.reported_features &amp; PrivateConstants.STEPPERS_FEATURE:
+
+            if self.number_of_steppers == self.max_number_of_steppers:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;Maximum number of steppers has already been assigned&#39;)
+
+            if interface not in self.valid_stepper_interfaces:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(&#39;Invalid stepper interface&#39;)
+
+            self.number_of_steppers += 1
+
+            motor_id = self.next_stepper_assigned
+            self.next_stepper_assigned += 1
+            self.stepper_info_list[motor_id][&#39;instance&#39;] = True
+
+            # build message and send message to server
+            command = [PrivateConstants.SET_PIN_MODE_STEPPER, motor_id, interface, pin1,
+                       pin2, pin3, pin4, enable]
+            self._send_command(command)
+
+            # return motor id
+            return motor_id
+        else:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError(&#39;Maximum number of steppers has already been assigned&#39;)
-
-        if interface not in self.valid_stepper_interfaces:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;Invalid stepper interface&#39;)
-
-        self.number_of_steppers += 1
-
-        motor_id = self.next_stepper_assigned
-        self.next_stepper_assigned += 1
-        self.stepper_info_list[motor_id][&#39;instance&#39;] = True
-
-        # build message and send message to server
-        command = [PrivateConstants.SET_PIN_MODE_STEPPER, motor_id, interface, pin1,
-                   pin2, pin3, pin4, enable]
-        self._send_command(command)
-
-        # return motor id
-        return motor_id
+            raise RuntimeError(f&#39;The Stepper feature is disabled in the server.&#39;)
 
     def servo_write(self, pin_number, angle):
         &#34;&#34;&#34;
@@ -3631,6 +3734,12 @@ receiving a KeyboardInterrupt exception</p>
 
         :param completion_callback: call back function to receive motion complete
                                     notification
+
+        callback returns a data list:
+
+        [report_type, motor_id, raw_time_stamp]
+
+        The report_type = 19
         &#34;&#34;&#34;
         if not completion_callback:
             if self.shutdown_on_exception:
@@ -3647,31 +3756,21 @@ receiving a KeyboardInterrupt exception</p>
         command = [PrivateConstants.STEPPER_RUN, motor_id]
         self._send_command(command)
 
-    def stepper_run_speed(self, motor_id, completion_callback=None):
+    def stepper_run_speed(self, motor_id):
         &#34;&#34;&#34;
         This method steps the selected motor based at a constant speed as set by the most
-        recent call to stepper_set_max_speed().
+        recent call to stepper_set_max_speed(). The motor will run continuously.
 
         Once called, the server will continuously attempt to step the motor.
 
         :param motor_id: 0 - 3
 
-        :param completion_callback: call back function to receive motion complete
-                                    notification
-
-        If you are running in continuous mode, then the callback is never called.
         &#34;&#34;&#34;
-        if not completion_callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(&#39;stepper_run_speed: A motion complete callback must be &#39;
-                               &#39;specified.&#39;)
         if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_run_speed: Invalid motor_id.&#39;)
 
-        self.stepper_info_list[motor_id][&#39;motion_complete_callback&#39;] = completion_callback
         command = [PrivateConstants.STEPPER_RUN_SPEED, motor_id]
         self._send_command(command)
 
@@ -3821,7 +3920,7 @@ receiving a KeyboardInterrupt exception</p>
 
         :return: The distance to go is returned via the callback as a list:
 
-        [REPORT_TYPE=15, motor_id, distance in steps]
+        [REPORT_TYPE=15, motor_id, distance in steps, time_stamp]
 
         A positive distance is clockwise from the current position.
 
@@ -3850,7 +3949,7 @@ receiving a KeyboardInterrupt exception</p>
 
         :return: The distance to go is returned via the callback as a list:
 
-        [REPORT_TYPE=16, motor_id, target position in steps]
+        [REPORT_TYPE=16, motor_id, target position in steps, time_stamp]
 
         Positive is clockwise from the 0 position.
 
@@ -3882,7 +3981,7 @@ receiving a KeyboardInterrupt exception</p>
 
         :return: The current motor position returned via the callback as a list:
 
-        [REPORT_TYPE=17, motor_id, current position in steps]
+        [REPORT_TYPE=17, motor_id, current position in steps, time_stamp]
 
         Positive is clockwise from the 0 position.
         &#34;&#34;&#34;
@@ -3938,6 +4037,12 @@ receiving a KeyboardInterrupt exception</p>
 
         :param completion_callback: call back function to receive motion complete
                                     notification
+
+        callback returns a data list:
+
+        [report_type, motor_id, raw_time_stamp]
+
+        The report_type = 19
         &#34;&#34;&#34;
         if not completion_callback:
             if self.shutdown_on_exception:
@@ -4130,7 +4235,7 @@ receiving a KeyboardInterrupt exception</p>
 
         :return: The current running state returned via the callback as a list:
 
-        [REPORT_TYPE=18, motor_id, True or False for running state]
+        [REPORT_TYPE=18, motor_id, True or False for running state, time_stamp]
         &#34;&#34;&#34;
         if not callback:
             if self.shutdown_on_exception:
@@ -4142,6 +4247,8 @@ receiving a KeyboardInterrupt exception</p>
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;stepper_is_running: Invalid motor_id.&#39;)
+
+        self.stepper_info_list[motor_id][&#39;is_running_callback&#39;] = callback
 
         command = [PrivateConstants.STEPPER_IS_RUNNING, motor_id]
         self._send_command(command)
@@ -4416,9 +4523,14 @@ receiving a KeyboardInterrupt exception</p>
 
         :param pin: Data pin connected to the OneWire device
         &#34;&#34;&#34;
-        self.onewire_enabled = True
-        command = [PrivateConstants.ONE_WIRE_INIT, pin]
-        self._send_command(command)
+        if self.reported_features &amp; PrivateConstants.ONEWIRE_FEATURE:
+            self.onewire_enabled = True
+            command = [PrivateConstants.ONE_WIRE_INIT, pin]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f&#39;The OneWire feature is disabled in the server.&#39;)
 
     def onewire_reset(self, callback=None):
         &#34;&#34;&#34;
@@ -4939,15 +5051,14 @@ receiving a KeyboardInterrupt exception</p>
 
         :param report: data[0] = motor_id, True if motor is running or False if it is not.
 
-        callback report format: [PrivateConstants.STEPPER_RUNNING_REPORT, motor_id,
-                                 running, time_stamp]
+        callback report format: [18, motor_id,
+                                 running_state, time_stamp]
         &#34;&#34;&#34;
 
         # get callback
         cb = self.stepper_info_list[report[0]][&#39;is_running_callback&#39;]
 
-        cb_list = [PrivateConstants.STEPPER_CURRENT_POSITION, report[0], report[1],
-                   time.time()]
+        cb_list = [PrivateConstants.STEPPER_RUNNING_REPORT, report[0], time.time()]
 
         cb(cb_list)
 
@@ -4968,6 +5079,9 @@ receiving a KeyboardInterrupt exception</p>
                    time.time()]
 
         cb(cb_list)
+
+    def _features_report(self, report):
+        self.reported_features = report[0]
 
     def _run_threads(self):
         self.run_event.set()
@@ -5879,26 +5993,30 @@ Time]</p></div>
     Time]
 
     &#34;&#34;&#34;
+    if self.reported_features &amp; PrivateConstants.DHT_FEATURE:
+        if not callback:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
 
-    if not callback:
-        if self.shutdown_on_exception:
-            self.shutdown()
-        raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
+        if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
+            self.dht_callbacks[pin] = callback
+            self.dht_count += 1
 
-    if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
-        self.dht_callbacks[pin] = callback
-        self.dht_count += 1
+            if dht_type != 22 and dht_type != 11:
+                dht_type = 22
 
-        if dht_type != 22 and dht_type != 11:
-            dht_type = 22
-
-        command = [PrivateConstants.DHT_NEW, pin, dht_type]
-        self._send_command(command)
+            command = [PrivateConstants.DHT_NEW, pin, dht_type]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(
+                f&#39;Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}&#39;)
     else:
         if self.shutdown_on_exception:
             self.shutdown()
-        raise RuntimeError(
-            f&#39;Maximum Number Of DHTs Exceeded - set_pin_mode_dht fails for pin {pin}&#39;)</code></pre>
+        raise RuntimeError(f&#39;The DHT feature is disabled in the server.&#39;)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_input"><code class="name flex">
@@ -6050,9 +6168,14 @@ API.</p>
 
     :param pin: Data pin connected to the OneWire device
     &#34;&#34;&#34;
-    self.onewire_enabled = True
-    command = [PrivateConstants.ONE_WIRE_INIT, pin]
-    self._send_command(command)</code></pre>
+    if self.reported_features &amp; PrivateConstants.ONEWIRE_FEATURE:
+        self.onewire_enabled = True
+        command = [PrivateConstants.ONE_WIRE_INIT, pin]
+        self._send_command(command)
+    else:
+        if self.shutdown_on_exception:
+            self.shutdown()
+        raise RuntimeError(f&#39;The OneWire feature is disabled in the server.&#39;)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_servo"><code class="name flex">
@@ -6079,12 +6202,18 @@ API.</p>
     :param max_pulse: maximum pulse width
 
     &#34;&#34;&#34;
-    minv = (min_pulse).to_bytes(2, byteorder=&#34;big&#34;)
-    maxv = (max_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+    if self.reported_features &amp; PrivateConstants.SERVO_FEATURE:
 
-    command = [PrivateConstants.SERVO_ATTACH, pin_number,
-               minv[0], minv[1], maxv[0], maxv[1]]
-    self._send_command(command)</code></pre>
+        minv = (min_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+        maxv = (max_pulse).to_bytes(2, byteorder=&#34;big&#34;)
+
+        command = [PrivateConstants.SERVO_ATTACH, pin_number,
+                   minv[0], minv[1], maxv[0], maxv[1]]
+        self._send_command(command)
+    else:
+        if self.shutdown_on_exception:
+            self.shutdown()
+        raise RuntimeError(f&#39;The SERVO feature is disabled in the server.&#39;)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_sonar"><code class="name flex">
@@ -6112,23 +6241,28 @@ API.</p>
     callback data: [PrivateConstants.SONAR_DISTANCE, trigger_pin, distance_value, time_stamp]
 
     &#34;&#34;&#34;
+    if self.reported_features &amp; PrivateConstants.SONAR_FEATURE:
 
-    if not callback:
-        if self.shutdown_on_exception:
-            self.shutdown()
-        raise RuntimeError(&#39;set_pin_mode_sonar: A Callback must be specified&#39;)
+        if not callback:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;set_pin_mode_sonar: A Callback must be specified&#39;)
 
-    if self.sonar_count &lt; PrivateConstants.MAX_SONARS - 1:
-        self.sonar_callbacks[trigger_pin] = callback
-        self.sonar_count += 1
+        if self.sonar_count &lt; PrivateConstants.MAX_SONARS - 1:
+            self.sonar_callbacks[trigger_pin] = callback
+            self.sonar_count += 1
 
-        command = [PrivateConstants.SONAR_NEW, trigger_pin, echo_pin]
-        self._send_command(command)
+            command = [PrivateConstants.SONAR_NEW, trigger_pin, echo_pin]
+            self._send_command(command)
+        else:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(
+                f&#39;Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}&#39;)
     else:
         if self.shutdown_on_exception:
             self.shutdown()
-        raise RuntimeError(
-            f&#39;Maximum Number Of Sonars Exceeded - set_pin_mode_sonar fails for pin {trigger_pin}&#39;)</code></pre>
+        raise RuntimeError(f&#39;The SONAR feature is disabled in the server.&#39;)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_spi"><code class="name flex">
@@ -6164,23 +6298,28 @@ NOTE: You must specify the chips select pins here!</p>
     command message: [command, number of cs pins, [cs pins...]]
     &#34;&#34;&#34;
 
-    if type(chip_select_list) != list:
+    if self.reported_features &amp; PrivateConstants.SPI_FEATURE:
+        if type(chip_select_list) != list:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;chip_select_list must be in the form of a list&#39;)
+        if not chip_select_list:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;Chip select pins were not specified&#39;)
+
+        self.spi_enabled = True
+
+        command = [PrivateConstants.SPI_INIT, len(chip_select_list)]
+
+        for pin in chip_select_list:
+            command.append(pin)
+            self.cs_pins_enabled.append(pin)
+        self._send_command(command)
+    else:
         if self.shutdown_on_exception:
             self.shutdown()
-        raise RuntimeError(&#39;chip_select_list must be in the form of a list&#39;)
-    if not chip_select_list:
-        if self.shutdown_on_exception:
-            self.shutdown()
-        raise RuntimeError(&#39;Chip select pins were not specified&#39;)
-
-    self.spi_enabled = True
-
-    command = [PrivateConstants.SPI_INIT, len(chip_select_list)]
-
-    for pin in chip_select_list:
-        command.append(pin)
-        self.cs_pins_enabled.append(pin)
-    self._send_command(command)</code></pre>
+        raise RuntimeError(f&#39;The SPI feature is disabled in the server.&#39;)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_stepper"><code class="name flex">
@@ -6259,29 +6398,35 @@ the AccelStepper library for the Arduino.</p>
 
     :return: Motor Reference number
     &#34;&#34;&#34;
-    if self.number_of_steppers == self.max_number_of_steppers:
+    if self.reported_features &amp; PrivateConstants.STEPPERS_FEATURE:
+
+        if self.number_of_steppers == self.max_number_of_steppers:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;Maximum number of steppers has already been assigned&#39;)
+
+        if interface not in self.valid_stepper_interfaces:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(&#39;Invalid stepper interface&#39;)
+
+        self.number_of_steppers += 1
+
+        motor_id = self.next_stepper_assigned
+        self.next_stepper_assigned += 1
+        self.stepper_info_list[motor_id][&#39;instance&#39;] = True
+
+        # build message and send message to server
+        command = [PrivateConstants.SET_PIN_MODE_STEPPER, motor_id, interface, pin1,
+                   pin2, pin3, pin4, enable]
+        self._send_command(command)
+
+        # return motor id
+        return motor_id
+    else:
         if self.shutdown_on_exception:
             self.shutdown()
-        raise RuntimeError(&#39;Maximum number of steppers has already been assigned&#39;)
-
-    if interface not in self.valid_stepper_interfaces:
-        if self.shutdown_on_exception:
-            self.shutdown()
-        raise RuntimeError(&#39;Invalid stepper interface&#39;)
-
-    self.number_of_steppers += 1
-
-    motor_id = self.next_stepper_assigned
-    self.next_stepper_assigned += 1
-    self.stepper_info_list[motor_id][&#39;instance&#39;] = True
-
-    # build message and send message to server
-    command = [PrivateConstants.SET_PIN_MODE_STEPPER, motor_id, interface, pin1,
-               pin2, pin3, pin4, enable]
-    self._send_command(command)
-
-    # return motor id
-    return motor_id</code></pre>
+        raise RuntimeError(f&#39;The Stepper feature is disabled in the server.&#39;)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.shutdown"><code class="name flex">
@@ -6638,7 +6783,7 @@ the pin to enabled.</p>
 <p>:param motor_id: 0 - 3</p>
 <p>:param current_position_callback: required callback function to receive report</p>
 <p>:return: The current motor position returned via the callback as a list:</p>
-<p>[REPORT_TYPE=17, motor_id, current position in steps]</p>
+<p>[REPORT_TYPE=17, motor_id, current position in steps, time_stamp]</p>
 <p>Positive is clockwise from the 0 position.</p></div>
 <details class="source">
 <summary>
@@ -6654,7 +6799,7 @@ the pin to enabled.</p>
 
     :return: The current motor position returned via the callback as a list:
 
-    [REPORT_TYPE=17, motor_id, current position in steps]
+    [REPORT_TYPE=17, motor_id, current position in steps, time_stamp]
 
     Positive is clockwise from the 0 position.
     &#34;&#34;&#34;
@@ -6684,7 +6829,7 @@ from the server.</p>
 <p>:param motor_id: 0 - 3</p>
 <p>:param distance_to_go_callback: required callback function to receive report</p>
 <p>:return: The distance to go is returned via the callback as a list:</p>
-<p>[REPORT_TYPE=15, motor_id, distance in steps]</p>
+<p>[REPORT_TYPE=15, motor_id, distance in steps, time_stamp]</p>
 <p>A positive distance is clockwise from the current position.</p></div>
 <details class="source">
 <summary>
@@ -6701,7 +6846,7 @@ from the server.</p>
 
     :return: The distance to go is returned via the callback as a list:
 
-    [REPORT_TYPE=15, motor_id, distance in steps]
+    [REPORT_TYPE=15, motor_id, distance in steps, time_stamp]
 
     A positive distance is clockwise from the current position.
 
@@ -6793,7 +6938,7 @@ that was previously set by stepper_set_speed();</p>
 <p>:param motor_id: 0 - 3</p>
 <p>:param target_callback: required callback function to receive report</p>
 <p>:return: The distance to go is returned via the callback as a list:</p>
-<p>[REPORT_TYPE=16, motor_id, target position in steps]</p>
+<p>[REPORT_TYPE=16, motor_id, target position in steps, time_stamp]</p>
 <p>Positive is clockwise from the 0 position.</p></div>
 <details class="source">
 <summary>
@@ -6809,7 +6954,7 @@ that was previously set by stepper_set_speed();</p>
 
     :return: The distance to go is returned via the callback as a list:
 
-    [REPORT_TYPE=16, motor_id, target position in steps]
+    [REPORT_TYPE=16, motor_id, target position in steps, time_stamp]
 
     Positive is clockwise from the 0 position.
 
@@ -6841,7 +6986,7 @@ that was previously set by stepper_set_speed();</p>
 <p>:param motor_id: 0-4</p>
 <p>:param callback: required callback function to receive report</p>
 <p>:return: The current running state returned via the callback as a list:</p>
-<p>[REPORT_TYPE=18, motor_id, True or False for running state]</p></div>
+<p>[REPORT_TYPE=18, motor_id, True or False for running state, time_stamp]</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -6858,7 +7003,7 @@ that was previously set by stepper_set_speed();</p>
 
     :return: The current running state returned via the callback as a list:
 
-    [REPORT_TYPE=18, motor_id, True or False for running state]
+    [REPORT_TYPE=18, motor_id, True or False for running state, time_stamp]
     &#34;&#34;&#34;
     if not callback:
         if self.shutdown_on_exception:
@@ -6870,6 +7015,8 @@ that was previously set by stepper_set_speed();</p>
         if self.shutdown_on_exception:
             self.shutdown()
         raise RuntimeError(&#39;stepper_is_running: Invalid motor_id.&#39;)
+
+    self.stepper_info_list[motor_id][&#39;is_running_callback&#39;] = callback
 
     command = [PrivateConstants.STEPPER_IS_RUNNING, motor_id]
     self._send_command(command)</code></pre>
@@ -7025,7 +7172,10 @@ that have not achieved their target position.</p></div>
 <p>Once called, the server will continuously attempt to step the motor.</p>
 <p>:param motor_id: 0 - 3</p>
 <p>:param completion_callback: call back function to receive motion complete
-notification</p></div>
+notification</p>
+<p>callback returns a data list:</p>
+<p>[report_type, motor_id, raw_time_stamp]</p>
+<p>The report_type = 19</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -7040,6 +7190,12 @@ notification</p></div>
 
     :param completion_callback: call back function to receive motion complete
                                 notification
+
+    callback returns a data list:
+
+    [report_type, motor_id, raw_time_stamp]
+
+    The report_type = 19
     &#34;&#34;&#34;
     if not completion_callback:
         if self.shutdown_on_exception:
@@ -7058,45 +7214,32 @@ notification</p></div>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.stepper_run_speed"><code class="name flex">
-<span>def <span class="ident">stepper_run_speed</span></span>(<span>self, motor_id, completion_callback=None)</span>
+<span>def <span class="ident">stepper_run_speed</span></span>(<span>self, motor_id)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This method steps the selected motor based at a constant speed as set by the most
-recent call to stepper_set_max_speed().</p>
+recent call to stepper_set_max_speed(). The motor will run continuously.</p>
 <p>Once called, the server will continuously attempt to step the motor.</p>
-<p>:param motor_id: 0 - 3</p>
-<p>:param completion_callback: call back function to receive motion complete
-notification</p>
-<p>If you are running in continuous mode, then the callback is never called.</p></div>
+<p>:param motor_id: 0 - 3</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def stepper_run_speed(self, motor_id, completion_callback=None):
+<pre><code class="python">def stepper_run_speed(self, motor_id):
     &#34;&#34;&#34;
     This method steps the selected motor based at a constant speed as set by the most
-    recent call to stepper_set_max_speed().
+    recent call to stepper_set_max_speed(). The motor will run continuously.
 
     Once called, the server will continuously attempt to step the motor.
 
     :param motor_id: 0 - 3
 
-    :param completion_callback: call back function to receive motion complete
-                                notification
-
-    If you are running in continuous mode, then the callback is never called.
     &#34;&#34;&#34;
-    if not completion_callback:
-        if self.shutdown_on_exception:
-            self.shutdown()
-        raise RuntimeError(&#39;stepper_run_speed: A motion complete callback must be &#39;
-                           &#39;specified.&#39;)
     if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
         if self.shutdown_on_exception:
             self.shutdown()
         raise RuntimeError(&#39;stepper_run_speed: Invalid motor_id.&#39;)
 
-    self.stepper_info_list[motor_id][&#39;motion_complete_callback&#39;] = completion_callback
     command = [PrivateConstants.STEPPER_RUN_SPEED, motor_id]
     self._send_command(command)</code></pre>
 </details>
@@ -7110,7 +7253,10 @@ reached.</p>
 <p>Does not implement accelerations.</p>
 <p>:param motor_id: 0 - 3</p>
 <p>:param completion_callback: call back function to receive motion complete
-notification</p></div>
+notification</p>
+<p>callback returns a data list:</p>
+<p>[report_type, motor_id, raw_time_stamp]</p>
+<p>The report_type = 19</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -7126,6 +7272,12 @@ notification</p></div>
 
     :param completion_callback: call back function to receive motion complete
                                 notification
+
+    callback returns a data list:
+
+    [report_type, motor_id, raw_time_stamp]
+
+    The report_type = 19
     &#34;&#34;&#34;
     if not completion_callback:
         if self.shutdown_on_exception:

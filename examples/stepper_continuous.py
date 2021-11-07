@@ -46,7 +46,7 @@ board.stepper_set_max_speed(motor, 900)
 board.stepper_set_speed(motor, 500)
 
 # run the motor
-board.stepper_run_speed(motor, completion_callback=the_callback)
+board.stepper_run_speed(motor)
 
 # keep application running
 while True:
