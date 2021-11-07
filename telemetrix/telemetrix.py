@@ -1120,6 +1120,12 @@ class Telemetrix(threading.Thread):
 
         :param completion_callback: call back function to receive motion complete
                                     notification
+
+        callback returns a data list:
+
+        [report_type, motor_id, raw_time_stamp]
+
+        The report_type = 19
         """
         if not completion_callback:
             if self.shutdown_on_exception:
@@ -1136,31 +1142,21 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.STEPPER_RUN, motor_id]
         self._send_command(command)
 
-    def stepper_run_speed(self, motor_id, completion_callback=None):
+    def stepper_run_speed(self, motor_id):
         """
         This method steps the selected motor based at a constant speed as set by the most
-        recent call to stepper_set_max_speed().
+        recent call to stepper_set_max_speed(). The motor will run continuously.
 
         Once called, the server will continuously attempt to step the motor.
 
         :param motor_id: 0 - 3
 
-        :param completion_callback: call back function to receive motion complete
-                                    notification
-
-        If you are running in continuous mode, then the callback is never called.
         """
-        if not completion_callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('stepper_run_speed: A motion complete callback must be '
-                               'specified.')
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_run_speed: Invalid motor_id.')
 
-        self.stepper_info_list[motor_id]['motion_complete_callback'] = completion_callback
         command = [PrivateConstants.STEPPER_RUN_SPEED, motor_id]
         self._send_command(command)
 
@@ -1310,7 +1306,7 @@ class Telemetrix(threading.Thread):
 
         :return: The distance to go is returned via the callback as a list:
 
-        [REPORT_TYPE=15, motor_id, distance in steps]
+        [REPORT_TYPE=15, motor_id, distance in steps, time_stamp]
 
         A positive distance is clockwise from the current position.
 
@@ -1339,7 +1335,7 @@ class Telemetrix(threading.Thread):
 
         :return: The distance to go is returned via the callback as a list:
 
-        [REPORT_TYPE=16, motor_id, target position in steps]
+        [REPORT_TYPE=16, motor_id, target position in steps, time_stamp]
 
         Positive is clockwise from the 0 position.
 
@@ -1371,7 +1367,7 @@ class Telemetrix(threading.Thread):
 
         :return: The current motor position returned via the callback as a list:
 
-        [REPORT_TYPE=17, motor_id, current position in steps]
+        [REPORT_TYPE=17, motor_id, current position in steps, time_stamp]
 
         Positive is clockwise from the 0 position.
         """
@@ -1427,6 +1423,12 @@ class Telemetrix(threading.Thread):
 
         :param completion_callback: call back function to receive motion complete
                                     notification
+
+        callback returns a data list:
+
+        [report_type, motor_id, raw_time_stamp]
+
+        The report_type = 19
         """
         if not completion_callback:
             if self.shutdown_on_exception:
@@ -1619,7 +1621,7 @@ class Telemetrix(threading.Thread):
 
         :return: The current running state returned via the callback as a list:
 
-        [REPORT_TYPE=18, motor_id, True or False for running state]
+        [REPORT_TYPE=18, motor_id, True or False for running state, time_stamp]
         """
         if not callback:
             if self.shutdown_on_exception:
@@ -1631,6 +1633,8 @@ class Telemetrix(threading.Thread):
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_is_running: Invalid motor_id.')
+
+        self.stepper_info_list[motor_id]['is_running_callback'] = callback
 
         command = [PrivateConstants.STEPPER_IS_RUNNING, motor_id]
         self._send_command(command)
@@ -2433,15 +2437,14 @@ class Telemetrix(threading.Thread):
 
         :param report: data[0] = motor_id, True if motor is running or False if it is not.
 
-        callback report format: [PrivateConstants.STEPPER_RUNNING_REPORT, motor_id,
-                                 running, time_stamp]
+        callback report format: [18, motor_id,
+                                 running_state, time_stamp]
         """
 
         # get callback
         cb = self.stepper_info_list[report[0]]['is_running_callback']
 
-        cb_list = [PrivateConstants.STEPPER_CURRENT_POSITION, report[0], report[1],
-                   time.time()]
+        cb_list = [PrivateConstants.STEPPER_RUNNING_REPORT, report[0], time.time()]
 
         cb(cb_list)
 
