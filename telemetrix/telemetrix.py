@@ -261,12 +261,6 @@ class Telemetrix(threading.Thread):
         for motor in range(self.max_number_of_steppers):
             self.stepper_info_list.append(self.stepper_info)
 
-        # flag to indicate if a multi-stepper was already added
-        self.multi_stepper_added = False
-
-        # number of motors managed by multi-stepper
-        self.multi_stepper_num_motors = 0
-
         self.the_reporter_thread.start()
         self.the_data_receive_thread.start()
 
@@ -1637,66 +1631,6 @@ class Telemetrix(threading.Thread):
         self.stepper_info_list[motor_id]['is_running_callback'] = callback
 
         command = [PrivateConstants.STEPPER_IS_RUNNING, motor_id]
-        self._send_command(command)
-
-    def stepper_add_multi_stepper(self, *motors):
-        """
-        Enable a multi-stepper on the server.
-
-        Only a single multi-stepper is allowed with up to 4 motors.
-
-        :param motors: The motor ids to add: ex: stepper_add_multi_stepper(1, 2, 3)
-
-        """
-        if self.multi_stepper_added:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('stepper_add_multi_stepper: Multi-stepper has already '
-                               'been added.')
-
-        for motor in motors:
-            if not self.stepper_info_list[motor]['instance']:
-                if self.shutdown_on_exception:
-                    self.shutdown()
-                raise RuntimeError('stepper_add_multi_stepper: Invalid motor_id in list.')
-
-        self.multi_stepper_added = True
-
-        self.multi_stepper_num_motors = len(motors)
-
-        command = [PrivateConstants.STEPPER_ADD_MULTI_STEPPER, len(motors)]
-        for motor in motors:
-            command.append(motor)
-        self._send_command(command)
-
-    def stepper_multi_run(self):
-        """
-        Calls runSpeed() on all the managed steppers
-        that have not achieved their target position.
-        """
-        command = [PrivateConstants.STEPPER_MULTI_RUN]
-        self._send_command(command)
-
-    def stepper_multi_move_to(self, *targets):
-        """
-        Set the target positions of all managed steppers .
-
-        New speeds will be computed for each stepper so they will all arrive at their
-        respective targets at very close to the same time.
-
-        :param targets: a variable number of target values, one value for each
-                        managed motor.
-
-                        For example, if two motors were added to the multi-stepper:
-                        stepper_multi_move_to(100, 200)
-
-        """
-
-        command = [PrivateConstants.STEPPER_MULTI_MOVE_TO, self.multi_stepper_num_motors]
-        for target in targets:
-            the_target = list(target.to_bytes(4, 'big',  signed=True))
-            for b in the_target:
-                command.append(b)
         self._send_command(command)
 
     def _set_pin_mode(self, pin_number, pin_state, differential=0, callback=None):
