@@ -14,8 +14,7 @@
  along with this library; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- DHT support courtesy of Martyn Wheeler
- Based on the DHTNew library - https://github.com/RobTillaart/DHTNew
+
 """
 
 import sys
@@ -32,7 +31,7 @@ Setup a pin for digital input and monitor its changes
 """
 
 # Setup a pin for analog input and monitor its changes
-DIGITAL_PIN = 4  # arduino pin number
+DIGITAL_PIN = 5  # arduino pin number
 
 # Callback data indices
 CB_PIN_MODE = 0
@@ -75,7 +74,7 @@ def digital_in(my_board, pin):
         sys.exit(0)
 
 
-board = telemetrix.Telemetrix(ip_address='192.168.2.220')
+board = telemetrix.Telemetrix(ip_address='192.168.2.112')
 
 try:
     digital_in(board, DIGITAL_PIN)
