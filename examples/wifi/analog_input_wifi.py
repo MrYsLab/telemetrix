@@ -14,8 +14,7 @@
  along with this library; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- DHT support courtesy of Martyn Wheeler
- Based on the DHTNew library - https://github.com/RobTillaart/DHTNew
+
 """
 
 import sys
@@ -81,7 +80,7 @@ def analog_in(my_board, pin):
         sys.exit(0)
 
 
-board = telemetrix.Telemetrix(ip_address='192.168.2.220')
+board = telemetrix.Telemetrix(ip_address='192.168.2.112')
 
 try:
     analog_in(board, ANALOG_PIN)

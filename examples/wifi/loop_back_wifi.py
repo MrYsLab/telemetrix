@@ -51,7 +51,7 @@ def loop_back(my_board, loop_back_data):
         sys.exit(0)
 
 
-board = telemetrix.Telemetrix(ip_address='192.168.2.220')
+board = telemetrix.Telemetrix(ip_address='192.168.2.112')
 char_list = ['A', 'B', 'Z']
 try:
     loop_back(board, char_list)

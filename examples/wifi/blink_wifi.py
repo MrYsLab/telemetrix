@@ -14,8 +14,7 @@
  along with this library; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- DHT support courtesy of Martyn Wheeler
- Based on the DHTNew library - https://github.com/RobTillaart/DHTNew
+
 """
 
 import sys
@@ -29,10 +28,10 @@ and toggle the pin 5 times.
 """
 
 # some globals
-DIGITAL_PIN = 2  # the board LED
+DIGITAL_PIN = 5  # the board LED
 
 # Create a Telemetrix instance.
-board = telemetrix.Telemetrix(ip_address='192.168.2.220')
+board = telemetrix.Telemetrix(ip_address='192.168.2.112')
 
 # Set the DIGITAL_PIN as an output pin
 board.set_pin_mode_digital_output(DIGITAL_PIN)
