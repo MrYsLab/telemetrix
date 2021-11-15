@@ -206,7 +206,7 @@ class OneWireTemp:
 
 
 # instantiate the class
-ow = OneWireTemp(12)
+ow = OneWireTemp(5)
 while True:
     try:
         time.sleep(1)
