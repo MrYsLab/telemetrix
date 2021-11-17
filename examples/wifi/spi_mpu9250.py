@@ -29,7 +29,7 @@ the callback functions.
 #    12 MISO                                    ADO
 #    13 MOSI                                    SDA
 #    14 Clock                                   SCL
-#    4 Chip Select                              NCS
+#    5 Chip Select                              NCS
 
 
 
