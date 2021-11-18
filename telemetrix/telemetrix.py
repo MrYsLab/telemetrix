@@ -306,13 +306,6 @@ class Telemetrix(threading.Thread):
         print(f'Waiting for Arduino to reset')
         print(f'Reset Complete')
 
-        # print('Retrieving Arduino ID...')
-        # self._get_arduino_id()
-        # if self.reported_arduino_id != self.arduino_instance_id:
-        #     if self.shutdown_on_exception:
-        #         self.shutdown()
-        #     raise RuntimeError(f'Incorrect Arduino ID: {self.reported_arduino_id}')
-        # print('Valid Arduino ID Found.')
         # get telemetrix firmware version and print it
         print('\nRetrieving Telemetrix4Arduino firmware ID...')
         self._get_firmware_version()
@@ -774,7 +767,8 @@ class Telemetrix(threading.Thread):
         The pin_type for digital input pins with pullups enabled = 11
 
         """
-        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback)
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback=
+        callback)
 
     def set_pin_mode_digital_output(self, pin_number):
         """

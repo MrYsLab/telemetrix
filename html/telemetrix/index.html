@@ -379,6 +379,8 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.RESET]
         self._send_command(command)
 
+        time.sleep(1.2)
+
     def _find_arduino(self):
         &#34;&#34;&#34;
         This method will search all potential serial ports for an Arduino
@@ -817,7 +819,8 @@ class Telemetrix(threading.Thread):
         The pin_type for digital input pins with pullups enabled = 11
 
         &#34;&#34;&#34;
-        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback)
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback=
+        callback)
 
     def set_pin_mode_digital_output(self, pin_number):
         &#34;&#34;&#34;
@@ -2884,6 +2887,8 @@ receiving a KeyboardInterrupt exception</p>
         command = [PrivateConstants.RESET]
         self._send_command(command)
 
+        time.sleep(1.2)
+
     def _find_arduino(self):
         &#34;&#34;&#34;
         This method will search all potential serial ports for an Arduino
@@ -3322,7 +3327,8 @@ receiving a KeyboardInterrupt exception</p>
         The pin_type for digital input pins with pullups enabled = 11
 
         &#34;&#34;&#34;
-        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback)
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback=
+        callback)
 
     def set_pin_mode_digital_output(self, pin_number):
         &#34;&#34;&#34;
@@ -5950,7 +5956,8 @@ Time]</p></div>
     The pin_type for digital input pins with pullups enabled = 11
 
     &#34;&#34;&#34;
-    self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback)</code></pre>
+    self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback=
+    callback)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_output"><code class="name flex">
