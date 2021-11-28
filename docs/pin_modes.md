@@ -224,7 +224,7 @@ def set_pin_mode_one_wire(self, pin):
 1. telemetrix: [servo.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/servo.py)
 2. telemetrix-aio: [servo.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/servo.py)
 
-### servo_detach
+#### servo_detach
 
 ```python
   def servo_detach(self, pin_number)
@@ -285,4 +285,4 @@ def set_pin_mode_spi(self, chip_select_list=None):
 <br>
 <br>
 
-Copyright (C) 2020 Alan Yorinks. All Rights Reserved.
+Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

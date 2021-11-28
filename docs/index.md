@@ -3,71 +3,93 @@
 <div style="text-align:center;color:#990033; font-family:times, serif; font-size:3.5em"><i>The Telemetrix Project</i></div>
 <div style="text-align:center;color:#990033; font-family:times, serif; font-size:2.5em"><i>A User's Guide </i></div>
 <br>
-<div style="text-align:center;color:#990033; font-family:times, serif;font-size:2em"><i>Using Telemetrix With Arduino, ESP8266, and STM32 Devlopment Boards </i></div>
+<div style="text-align:center;color:#990033; font-family:times, serif;
+font-size:2em"><i>Using Telemetrix With Arduino, ESP8266, and STM32 Development Boards </i></div>
 
 
 <br>
 
 
-*Telemetry* is a system for collecting data on a remote device and then 
-automatically transmitting the collected data back to local receiving equipment for processing.
+The Telemetrix Project is a modern-day replacement for Arduino StandardFirmata, equipped 
+with many more built-in features than StandardFirmata. 
+The project consists of Python APIs used to create a Python client application  and C++
+servers that communicate with the Python client over a serial or WiFi link. 
 
-The Telemetrix Project is a telemetry system explicitly designed for Arduino 
-Core-based MCUs, using Python on the local client and an Arduino Core 
-sketch on the Microcontroller Unit (MCU). Two clients are offered, 
-[_telemetrix_](https://github.com/MrYsLab/telemetrix), which uses standard Python threading techniques for concurrency, 
-and [_telemetrix-aio_](https://github.com/MrYsLab/telemetrix-aio) for those who prefer to work 
-within a Python asyncio environment. Both clients support both serial and WiFi communications.
+The project offers two server libraries to control and monitor a Single Board Computer 
+(SBC). [Telemetrix4Arduino](https://github.com/MrYsLab/Telemetrix4Arduino) uses a 
+serial USB link, supporting Arduino and STM32 development 
+boards, 
+and the 
+other, [Telemetrix4ESP8266](https://github.com/MrYsLab/Telemetrix4Esp8266), 
+uses a WiFi link in support of the ESP-8266.
+Both  servers are written using standard Arduino C++ and may be installed 
+via the Arduino IDE library manager. Once installed,
+no further changes to the SBC code are necessary.
 
-The servers, [Telemetrix4Arduino](https://github.com/MrYsLab/Telemetrix4Arduino), and 
-[Telemetrix4ESP8266](https://github.com/MrYsLab/Telemetrix4Esp8266), are written using standard Arduino
- C++. Both may be installed via the Arduino IDE library manager. Telemetrix4Arduino is 
-used for both Arduino and STM32 boards, and uses a serial/USB cable for transport. 
-Telemetrix4ESP8266 uses a WiFi interface for the transport and is tailored 
-specifically for the ESP8266.
+Also included are two client APIs, [_telemetrix_](https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html),
+which uses standard Python threading 
+techniques for concurrency, 
+and [_telemetrix-aio_](https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix-aio/blob/master/html/telemetrix_aio/index.html) for those who prefer to work 
+within a Python asyncio environment. Both clients support serial and WiFi communications 
+and may be used with either server.
 
-Telemetrix was designed with extensibility in mind. Adding new functionality is
-straight forward. Debugging tools are integrated into the system to aid in extending its functionality.
+Here is a feature comparison between Telemetrix and StandardFirmata:
+
+| Feature | Telemetrix | StandardFirmata |
+|-------|:----------:|:-----------------:|
+|     Analog Input    |       X     |      X           |
+|     Analog Output (PWM)    |       X     |      X           |
+|     Digital Input    |       X     |      X           |
+|     Digital Output    |       X     |      X           |
+|     i2c Primitives  |       X     |      X           |
+|     Servo Motor Control  |       X     |      X           |
+|     DHT Temperature/Humidity Sensor  |       X     |                 |
+|     OneWire Primitives |       X     |                 |
+|     HC-SR04 Sonar Distance Sensor  |       X     |                 |
+|     SPI Primitives  |       X     |                 |
+|     Stepper Motor Control (AccelStepper) |       X     |                 |
+|    Python Threaded Client Included  |       X     |      
+|    Python Asyncio Client Included  |       X     |
+|    Support For STM32 Boards (Black Pill)|       X     |    
+|    Designed To Be User Extensible |       X     |                 |
+|    Integrated Debugging Aids Provided |       X     |                 |
+|    Examples For All Features |       X     |                 |
+
+
 
 <br>
 
 # Summary Of Major Features
 
 * Applications are programmed using conventional Python 3.
-* All Data change events are reported asynchronously via user registered callback functions. 
-* Each data change event is time-stamped.
-* Online [API Reference Documentation for Telemetrix](https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html).
-* Online [API Reference Documentation for Telemetrix-AIO](https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix-aio/blob/master/html/telemetrix_aio/index.html).
-* A full set of working examples for [Telemetrix](https://github.com/MrYsLab/telemetrix/tree/master/examples) and [Telemetrix-AIO](https://github.com/MrYsLab/telemetrix-aio/tree/master/examples)
-are available for download online. WiFi examples are also provided.
-* Both clients connect to the servers using a serial or WiFi interface, depending upon the server in use.
-* Integrated debugging methods are included to aid in adding new features.
-
-# Intuitive And Easy To use APIs
-
-For example, to receive asynchronous digital pin state data change notifications, you do the following:
-
-
-* **Set a pin mode for the pin and register an associated callback function for the pin**. 
-    Your callback function is written to accept  a single parameter: 
-    
-        def the_callback(data):
+* All Data change events are reported asynchronously via user registered callback 
+  functions. Below is the format for all callback functions.
+```python
+def the_callback(data):
      
             # Your code here
     
-    When the telemetrix client calls the callback function, it populates the _data_
-parameter with a list describing the data change event.
-
-    For example, for a digital data change, the list would contain the following:
-    
+```
+ When Telemetrix invokes the callback function, the _data_ parameter is populated with 
+ a list describing the data change event. For example, for a digital input data change, 
+ the list would contain a pin-type identifier, the GPIO PIN, the reported data 
+ change value for the pin, and a time-stamp of when the change occurred.
+```python
     [pin_type=digital input, pin_number, pin_value, time stamp]
+```
+* Intuitive APIs.
+    * Online [API Reference Documentation for Telemetrix](https://htmlpreview.github.io/?
+   https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html).
+    * Online [API Reference Documentation for Telemetrix-AIO](https://htmlpreview.github.
+   io/?https://github.com/MrYsLab/telemetrix-aio/blob/master/html/telemetrix_aio/index.html).
+* A complete set of working examples for [Telemetrix](https://github.
+  com/MrYsLab/telemetrix/tree/master/examples) and [Telemetrix-AIO](https://github.com/MrYsLab/telemetrix-aio/tree/master/examples)
+are available for download online. WiFi examples are also provided.
+* Both clients connect to the servers using a serial or WiFi interface, depending upon 
+  the server in use.
+* Integrated debugging methods are included to aid in adding new features.
 
-    Each input pin type returns a unique list, as described in the API.
-    
-
-*  **Have your application sit in a loop, waiting for notifications.**
-    
-# Working Examples    
+# Working Examples For Digital Input   
 
 Here is a Telemetrix example that monitors digital pin 12 for state changes:
 
@@ -225,7 +247,7 @@ Pin: 12 Value: 1 Time Stamp: 2020-03-10 13:26:27
 <br>
 <br>
 
-Copyright (C) 2020 Alan Yorinks. All Rights Reserved.
+Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.
 
-**Last updated 27 August 2021 **
+**Last updated 20 November 2021 **
 

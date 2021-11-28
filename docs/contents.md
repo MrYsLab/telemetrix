@@ -11,12 +11,10 @@
 
 * A discussion of the [API methods](./init.md), including links to working examples.
 
-* A [tutorial on how to extend Telemetrix and Telemetrix-AIO](./dht.md) using
-the [DHTNew](https://github.com/RobTillaart/DHTNew) library for DHT type temperature sensors.
 
 
 <br>
 <br>
 
-Copyright (C) 2020 Alan Yorinks. All Rights Reserved.
+Copyright (C) 2020=21 Alan Yorinks. All Rights Reserved.
 

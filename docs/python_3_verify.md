@@ -38,5 +38,5 @@ If you need to install Python 3, please go to the next section.
 <br>
 
 
-Copyright (C) 2020 Alan Yorinks. All Rights Reserved.
+Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.
 

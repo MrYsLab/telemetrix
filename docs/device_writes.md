@@ -74,4 +74,4 @@ For a continuous servo, 0 is full-speed in one direction,
 <br>
 <br>
 
-Copyright (C) 2020 Alan Yorinks. All Rights Reserved.
+Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

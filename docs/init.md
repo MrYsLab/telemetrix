@@ -73,7 +73,7 @@ and you wish to have a specific Arduino selected by the application for connecti
 
 The default value for the arduino_instance_id for both telemetrix and Telemetrix4Arduino is 1.
 
-Instructions for changing the FirmataExpress value may be found
+Instructions for changing the Telemetrix4Arduino value may be found
 in the [**Installing Telemetrix4Arduino**](./telemetrix4arduino.md) section of this document.
 
 ### arduino_wait
@@ -145,7 +145,7 @@ and you wish to have a specific Arduino selected by the application for connecti
 
 The default value for the arduino_instance_id for both telemetrix and Telemetrix4Arduino is 1.
 
-Instructions for changing the FirmataExpress value may be found
+Instructions for changing the Telemetrix4Arduino value may be found
 in the [**Installing Telemetrix4Arduino**](./telemetrix4arduino.md) section of this document.
 
 ### arduino_wait
@@ -224,4 +224,4 @@ The IP port used for the WiFi connection is specified with this parameter. The d
 <br>
 <br>
 
-Copyright (C) 2020 Alan Yorinks. All Rights Reserved.
+Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

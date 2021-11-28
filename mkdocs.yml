@@ -19,9 +19,9 @@ nav:
         - I2C Reads And Writes: i2c.md
         - OneWire Commands: onewire.md
         - SPI Commands: spi.md
+        - Stepper Commands: stepper.md
         - Shutting Down: management.md
         - Debugging: debug.md
-    - Extending Telemetrix: dht.md
     - About: about.md
     - License: license.md
 # theme: windmill

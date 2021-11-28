@@ -65,4 +65,4 @@ Telemetrix uses the standard I2C pins as mapped in each specific variants file.
 <br>
 
 
-Copyright (C) 2020 Alan Yorinks. All Rights Reserved.
+Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.
