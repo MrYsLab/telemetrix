@@ -282,6 +282,60 @@ def set_pin_mode_spi(self, chip_select_list=None):
 
 1. telemetrix: [spi_mpu9250.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/spi_mpu9250.py)
 2. telemetrix-aio : [spi_mpu9250.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/spi_mpu9250.py)
+
+### set_pin_mode_stepper
+
+```python
+ def set_pin_mode_stepper(self, interface=1, pin1=2, pin2=3, pin3=4, 
+                          pin4=5, enable=True)
+
+    Stepper motor support is implemented as a proxy for the the AccelStepper 
+    library for the Arduino.
+
+    https://github.com/waspinator/AccelStepper
+
+    Instantiate a stepper motor.
+
+    Initialize the interface and pins for a stepper motor.
+
+    :param interface: Motor Interface Type:
+
+        1 = Stepper Driver, 2 driver pins required
+
+        2 = FULL2WIRE  2 wire stepper, 2 motor pins required
+
+        3 = FULL3WIRE 3 wire stepper, such as HDD spindle,
+            3 motor pins required
+
+        4 = FULL4WIRE, 4 wire full stepper, 4 motor pins
+            required
+
+        6 = HALF3WIRE, 3 wire half stepper, such as HDD spindle,
+            3 motor pins required
+
+        8 = HALF4WIRE, 4 wire half stepper, 4 motor pins required
+
+    :param pin1: Arduino digital pin number for motor pin 1
+
+    :param pin2: Arduino digital pin number for motor pin 2
+
+    :param pin3: Arduino digital pin number for motor pin 3
+
+    :param pin4: Arduino digital pin number for motor pin 4
+
+    :param enable: If this is True, enable the output pins.
+
+    :return: Motor Reference number
+ 
+```
+
+1. telemetrix: [stepper_absolute.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_absolute.py)
+2. telemetrix-aio : [stepper_absolute.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_absolute.py)
+
+
+
+
+
 <br>
 <br>
 

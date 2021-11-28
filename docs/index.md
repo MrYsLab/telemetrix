@@ -72,8 +72,13 @@ def the_callback(data):
 ```
  When Telemetrix invokes the callback function, the _data_ parameter is populated with 
  a list describing the data change event. For example, for a digital input data change, 
- the list would contain a pin-type identifier, the GPIO PIN, the reported data 
- change value for the pin, and a time-stamp of when the change occurred.
+ the list would contain:
+ 
+* A pin-type identifier
+* The GPIO PIN Number Identifier
+* The reported data change value for the pin
+* A time-stamp of when the change occurred.
+
 ```python
     [pin_type=digital input, pin_number, pin_value, time stamp]
 ```
@@ -249,5 +254,5 @@ Pin: 12 Value: 1 Time Stamp: 2020-03-10 13:26:27
 
 Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.
 
-**Last updated 20 November 2021 **
+**Last updated 30 November 2021 **
 

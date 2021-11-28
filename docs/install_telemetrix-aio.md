@@ -12,7 +12,7 @@ To install telemetrix-aio on Linux (including Raspberry Pi) and macOS computers,
 sudo pip3 install telemetrix-aio
 ```
 
-For Windows users type:
+For Windows users, type:
 
 ```
 pip install telemetrix-aio

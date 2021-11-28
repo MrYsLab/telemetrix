@@ -1,14 +1,14 @@
 ## INSTALLING PYTHON 
 ### Windows Users
 
-You must use Python 3.7 or greater
+You must use Python 3.7 or greater.
 
 To install Python 3, go to the
 <a href="https://www.python.org/" target="_blank">Python home page,</a>
 and download the latest Python 3 distribution for your operating system.
 
-During the installation process, if there is a checkbox to add Python 3.x to your path,
- make sure it is checked before proceeding with the installation.
+If there is a checkbox to add Python 3.x to your path during the installation process, 
+make sure it is checked before proceeding with the installation.
 
 ![](./images/windows_python_install.png)
 

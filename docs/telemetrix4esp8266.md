@@ -1,9 +1,10 @@
 # Telemetrix4Esp8266
 The TelemetrixEsp8266 Arduino sketch acts as a TCP/IP server. The following steps explain
-how to install the sketch and connect your Telemetrix Python application to an ESP-8266 device.
+installing the sketch and connecting your Telemetrix Python application to an 
+ESP-8266 device.
 
 ## Installation And Usage Instructions
-<p>1. Make sure that you have installed board support for the ESP-8266 into the
+<p>1. Ensure that you have installed board support for the ESP-8266 into the
 Arduino IDE. Instructions
 are available at this [link.](https://github.com/esp8266/Arduino#installing-with-boards-manager)
 
@@ -34,17 +35,19 @@ of your network so that the network may assign an IP address to your ESP-8266</p
 ![](./images/esp8266_network.png)
 
 
-<p>7. Connect a USB serial cable to your ESP-8266 device and upload the modified Telemetrix4Esp8266 sketch to your device by clicking on the
+<p>7. Connect a USB serial cable to your ESP-8266 device and upload the modified 
+Telemetrix4Esp8266 sketch to your device by clicking the
 Upload button on the Arduino IDE.
 </p>
 
-<p>8. To determine the IP address that your router assigned to the device,
+<p>8. To determine the IP address your router assigned to the device,
 open the Arduino IDE Serial Monitor, and set the baud rate to 115200. 
 Reset the ESP-8266. If you are using a NodeMCU type device, press the RST button.
 
-The on-board LED will light, and you should see a message in the serial monitor that the board is
-connecting to your network. Upon successful connection, the on-board LED will be extinguished,
-and the IP address and port are displayed in the serial monitor.</p>
+The onboard LED will light, and you should see a message on the serial monitor that the 
+board is
+connecting to your network. Upon successful connection, the onboard LED will be extinguished,
+and the IP address and port are displayed on the serial monitor.</p>
 
 <p>NOTE: If you are using multiple ESP-8266 devices for your application, you may set the port value
 to be used by modifying the default value in the sketch. 
