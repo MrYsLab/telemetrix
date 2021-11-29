@@ -488,6 +488,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../stepper/" class="md-nav__link">
+        Stepper Commands
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../management/" class="md-nav__link">
         Shutting Down
       </a>
@@ -509,21 +521,6 @@
           
         </ul>
       </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../dht/" class="md-nav__link">
-        Extending Telemetrix
-      </a>
     </li>
   
 
@@ -629,20 +626,25 @@ and then clicking the upload button on the IDE.</p>
 <p>Telemetrix4Arduino, in conjunction with the Telemetrix Project clients, associates a 
 specific Arduino board with your application.</p>
 <p>If you only have a single Arduino connected at a time, you do not need to do anything. However,
-if you wish to run multiple Arduinos, you will need to assign a unique ID number to each
+if you wish to run multiple Arduinos, you must assign a unique ID number to each
 Arduino. The ID number is then supplied as an input parameter when your application
  is instantiated.</p>
 <p><img alt="" src="../images/add_zip3.png" /></p>
-<p>Note that if you wish to change the instance_id for the server, you must edit the sketch code and upload the changes to the Arduino.</p>
+<p>If you wish to change the instance_id for the server, you must edit the sketch code 
+and upload the changes to the Arduino.</p>
 <p>To match the instance_id on the client side, you will need to specify the arduino_instance id parameter
 when instantiating the client class:</p>
 <pre><code>def __init__(self, com_port=None, arduino_instance_id=1,
                  arduino_wait=4, sleep_tune=0.000001,
                  shutdown_on_exception=True)
 </code></pre>
+<p><strong>NOTE</strong>: 
+If you use an Arduino Uno, you may see a warning in the Arduino IDE 
+after compiling. You may ignore this warning.</p>
+<p><img alt="" src="../images/warning.png" /></p>
 <p><br>
 <br>
-Copyright (C) 2020 Alan Yorinks. All Rights Reserved.</p>
+Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.</p>
                 
               
               

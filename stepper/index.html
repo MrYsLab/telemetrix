@@ -1,0 +1,1363 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.4">
+    
+    
+      
+        <title>Stepper Commands - Telemetrix and Telemtrix-AIO User's Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.f7f47774.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#stepper_get_current_position" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Telemetrix and Telemtrix-AIO User&#39;s Guide" class="md-header__button md-logo" aria-label="Telemetrix and Telemtrix-AIO User's Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Telemetrix and Telemtrix-AIO User's Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Stepper Commands
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Telemetrix and Telemtrix-AIO User&#39;s Guide" class="md-nav__button md-logo" aria-label="Telemetrix and Telemtrix-AIO User's Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Telemetrix and Telemtrix-AIO User's Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contents/" class="md-nav__link">
+        What Is Contained In This Guide?
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        System and Installation Requirements
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="System and Installation Requirements" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          System and Installation Requirements
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python_3_verify/" class="md-nav__link">
+        Verifying Python 3 Version
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python_install/" class="md-nav__link">
+        Python 3 Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install_telemetrix/" class="md-nav__link">
+        Installing Telemetrix
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install_telemetrix-aio/" class="md-nav__link">
+        Installing Telemetrix-AIO
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telemetrix4arduino/" class="md-nav__link">
+        Installing Telemetrix4Arduino
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telemetrix4esp8266/" class="md-nav__link">
+        Installing And Using Telemetrix4Esp8266
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../upgrade/" class="md-nav__link">
+        Upgrading To The Latest Version Python Clients
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pins/" class="md-nav__link">
+        Specifying Pin Numbers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      <label class="md-nav__link" for="__nav_5">
+        The Python APIs
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="The Python APIs" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          The Python APIs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../init/" class="md-nav__link">
+        The __init__ Method
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pin_modes/" class="md-nav__link">
+        Setting Pin Modes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enable_disable/" class="md-nav__link">
+        Enabling/Disabling Analog And Digital Reporting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../device_writes/" class="md-nav__link">
+        Writing Values To Pins And Selected Devices
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../i2c/" class="md-nav__link">
+        I2C Reads And Writes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../onewire/" class="md-nav__link">
+        OneWire Commands
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spi/" class="md-nav__link">
+        SPI Commands
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Stepper Commands
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Stepper Commands
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_get_current_position" class="md-nav__link">
+    stepper_get_current_position
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_get_distance_to_go" class="md-nav__link">
+    stepper_get_distance_to_go
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_get_target_position" class="md-nav__link">
+    stepper_get_target_position
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_is_running" class="md-nav__link">
+    stepper_is_running
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_move" class="md-nav__link">
+    stepper_move
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_move_to" class="md-nav__link">
+    stepper_move_to
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_run" class="md-nav__link">
+    stepper_run
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_run_speed" class="md-nav__link">
+    stepper_run_speed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_run_speed_to_position" class="md-nav__link">
+    stepper_run_speed_to_position
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_acceleration" class="md-nav__link">
+    stepper_set_acceleration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_current_position" class="md-nav__link">
+    stepper_set_current_position
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_max_speed" class="md-nav__link">
+    stepper_set_max_speed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_speed" class="md-nav__link">
+    stepper_set_speed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-methods" class="md-nav__link">
+    Additional Methods
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_disable_outputs" class="md-nav__link">
+    stepper_disable_outputs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_enable_outputs" class="md-nav__link">
+    stepper_enable_outputs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_get_max_speed" class="md-nav__link">
+    stepper_get_max_speed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_get_speed" class="md-nav__link">
+    stepper_get_speed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_3_pins_inverted" class="md-nav__link">
+    stepper_set_3_pins_inverted
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_4_pins_inverted" class="md-nav__link">
+    stepper_set_4_pins_inverted
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_enable_pin" class="md-nav__link">
+    stepper_set_enable_pin
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_min_pulse_width" class="md-nav__link">
+    stepper_set_min_pulse_width
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_stop" class="md-nav__link">
+    stepper_stop
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../management/" class="md-nav__link">
+        Shutting Down
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debug/" class="md-nav__link">
+        Debugging
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_get_current_position" class="md-nav__link">
+    stepper_get_current_position
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_get_distance_to_go" class="md-nav__link">
+    stepper_get_distance_to_go
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_get_target_position" class="md-nav__link">
+    stepper_get_target_position
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_is_running" class="md-nav__link">
+    stepper_is_running
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_move" class="md-nav__link">
+    stepper_move
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_move_to" class="md-nav__link">
+    stepper_move_to
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_run" class="md-nav__link">
+    stepper_run
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_run_speed" class="md-nav__link">
+    stepper_run_speed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_run_speed_to_position" class="md-nav__link">
+    stepper_run_speed_to_position
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_acceleration" class="md-nav__link">
+    stepper_set_acceleration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_current_position" class="md-nav__link">
+    stepper_set_current_position
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_max_speed" class="md-nav__link">
+    stepper_set_max_speed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_speed" class="md-nav__link">
+    stepper_set_speed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-methods" class="md-nav__link">
+    Additional Methods
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_disable_outputs" class="md-nav__link">
+    stepper_disable_outputs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_enable_outputs" class="md-nav__link">
+    stepper_enable_outputs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_get_max_speed" class="md-nav__link">
+    stepper_get_max_speed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_get_speed" class="md-nav__link">
+    stepper_get_speed
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_3_pins_inverted" class="md-nav__link">
+    stepper_set_3_pins_inverted
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_4_pins_inverted" class="md-nav__link">
+    stepper_set_4_pins_inverted
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_enable_pin" class="md-nav__link">
+    stepper_set_enable_pin
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_set_min_pulse_width" class="md-nav__link">
+    stepper_set_min_pulse_width
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stepper_stop" class="md-nav__link">
+    stepper_stop
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Stepper Commands</h1>
+                
+                <h3 id="stepper_get_current_position">stepper_get_current_position</h3>
+<pre><code class="language-python">def stepper_get_current_position(self, motor_id, current_position_callback)
+
+    Request the current motor position from the server.
+
+    :param motor_id: 0 - 3
+
+    :param current_position_callback: required callback function to receive report
+
+    :return: The current motor position returned via the callback as a list:
+
+    [REPORT_TYPE=17, motor_id, current position in steps, time_stamp]
+
+    Positive is clockwise from the 0 position.
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_set_and_get.py">stepper_set_and_get.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_set_and_get.py">stepper_set_and_get.py</a></li>
+</ol>
+<h3 id="stepper_get_distance_to_go">stepper_get_distance_to_go</h3>
+<pre><code class="language-python">def stepper_get_distance_to_go(self, motor_id, distance_to_go_callback)
+
+    Request the distance from the current position to the target 
+    position from the server.
+
+    :param motor_id: 0 - 3
+
+    :param distance_to_go_callback: required callback function 
+                                    to receive report
+
+    :return: The distance to go is returned via the callback as a list:
+
+    [REPORT_TYPE=15, motor_id, distance in steps, time_stamp]
+
+    A positive distance is clockwise from the current position.
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_set_and_get.py">stepper_set_and_get.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_set_and_get.py">stepper_set_and_get.py</a></li>
+</ol>
+<h3 id="stepper_get_target_position">stepper_get_target_position</h3>
+<pre><code class="language-python">def stepper_get_target_position(self, motor_id, target_callback)
+
+    Request the most recently set target position from the server.
+
+    :param motor_id: 0 - 3
+
+    :param target_callback: required callback function to receive report
+
+    :return: The distance to go is returned via the callback as a list:
+
+    [REPORT_TYPE=16, motor_id, target position in steps, time_stamp]
+
+    Positive is clockwise from the 0 position.
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_set_and_get.py">stepper_set_and_get.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_set_and_get.py">stepper_set_and_get.py</a></li>
+</ol>
+<h3 id="stepper_is_running">stepper_is_running</h3>
+<pre><code class="language-python">def stepper_is_running(self, motor_id, callback)
+
+    Checks to see if the motor is currently running to a target.
+
+    Callback returns True if the speed is not zero or not at the target position.
+
+    :param motor_id: 0-4
+
+    :param callback: required callback function to receive report
+
+    :return: The current running state returned via the callback as a list:
+
+    [REPORT_TYPE=18, motor_id, True or False for running state, time_stamp]
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_absolute.py">stepper_absolute.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_absolute.py">stepper_absolute.py</a></li>
+</ol>
+<h3 id="stepper_move">stepper_move</h3>
+<pre><code class="language-python">def stepper_move(self, motor_id, relative_position)
+
+    Set the target position relative to the current position.
+
+    :param motor_id: motor id: 0 - 3
+
+    :param relative_position: The desired position relative to the 
+                              current position.
+                              Negative is anticlockwise from the 
+                              current position. 
+                              Maximum value is 32 bits.
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_relative.py">stepper_relative.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_relative.py">stepper_relative.py</a></li>
+</ol>
+<h3 id="stepper_move_to">stepper_move_to</h3>
+<pre><code class="language-python">def stepper_move_to(self, motor_id, position)
+
+    Set an absolution target position. If position is positive, the movement is 
+    clockwise, else it is counter-clockwise.
+
+    The run() function (below) will try to move the motor 
+    (at most one step per call) from the current position to the target
+    position set by the most recent call to this function. 
+    Caution: moveTo() also recalculates the speed for the next step. 
+    If you are trying to use constant speed movements, you should 
+    call setSpeed() after calling moveTo().
+
+    :param motor_id: motor id: 0 - 3
+
+    :param position: target position. Maximum value is 32 bits.
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_run_speed_to_position.py">stepper_run_speed_to_position.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_run_speed_to_position.py">stepper_run_speed_to_position.py</a></li>
+</ol>
+<h3 id="stepper_run">stepper_run</h3>
+<pre><code class="language-python">def stepper_run(self, motor_id, completion_callback=None)
+
+    This method steps the selected motor based on the current speed.
+
+    Once called, the server will continuously attempt to step the motor.
+
+    :param motor_id: 0 - 3
+
+    :param completion_callback: call back function to receive
+                                motion complete notification
+
+    callback returns a data list:
+
+    [report_type, motor_id, raw_time_stamp]
+
+    The report_type = 19
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_absolute.py">stepper_absolute.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_absolute.py">stepper_absolute.py</a></li>
+</ol>
+<h3 id="stepper_run_speed">stepper_run_speed</h3>
+<pre><code class="language-python">def stepper_run_speed(self, motor_id)
+
+    This method steps the selected motor based at a constant speed as 
+    set by the most recent call to stepper_set_max_speed(). 
+    The motor will run continuously.
+
+    Once called, the server will continuously attempt to step the motor.
+
+    :param motor_id: 0 - 3
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_continuous.py">stepper_continuous.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_continuous.py">stepper_continuous.py</a></li>
+</ol>
+<h3 id="stepper_run_speed_to_position">stepper_run_speed_to_position</h3>
+<pre><code class="language-python">
+def stepper_run_speed_to_position(self, motor_id, completion_callback=None)
+
+    Runs the motor at the currently selected speed until the target
+    position is reached.
+
+    Does not implement accelerations.
+
+    :param motor_id: 0 - 3
+
+    :param completion_callback: call back function to receive motion 
+                                complete notification
+
+    callback returns a data list:
+
+    [report_type, motor_id, raw_time_stamp]
+
+    The report_type = 19
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/tepper_run_speed_to_position.py">tepper_run_speed_to_position.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/tepper_run_speed_to_position.py">tepper_run_speed_to_position.py</a></li>
+</ol>
+<h3 id="stepper_set_acceleration">stepper_set_acceleration</h3>
+<pre><code class="language-python">def stepper_set_acceleration(self, motor_id, acceleration)
+
+    Sets the acceleration/deceleration rate.
+
+    :param motor_id: 0 - 3
+
+    :param acceleration: The desired acceleration in steps per 
+                         second per second. 
+                         Must be &gt; 0.0. This is an expensive call since it 
+                         requires a square root to be calculated on the server. 
+                         Dont call more often than needed.
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_absolute.py">stepper_absolute.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_absolute.py">stepper_absolute.py</a></li>
+</ol>
+<h3 id="stepper_set_current_position">stepper_set_current_position</h3>
+<pre><code class="language-python">def stepper_set_current_position(self, motor_id, position)
+
+    Resets the current position of the motor, so that wherever the motor happens 
+    to be right now is considered to be the new 0 position. 
+    Useful for setting a zero position on a stepper after an 
+    initial hardware positioning move.
+
+    Has the side effect of setting the current motor speed to 0.
+
+    :param motor_id: 0 - 3
+
+    :param position: Position in steps. This is a 32 bit value
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_set_and_get.py">stepper_set_and_get.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_set_and_get.py">stepper_set_and_get.py</a></li>
+</ol>
+<h3 id="stepper_set_max_speed">stepper_set_max_speed</h3>
+<pre><code class="language-python">def stepper_set_max_speed(self, motor_id, max_speed)
+
+    Sets the maximum permitted speed. The stepper_run() function will 
+    accelerate up to the speed set by this function.
+
+    Caution: the maximum speed achievable depends on your processor 
+    and clock speed. The default maxSpeed is 1 step per second.
+
+    Caution: Speeds that exceed the maximum speed supported by the 
+    processor may result in non-linear accelerations and decelerations.
+
+    :param motor_id: 0 - 3
+
+    :param max_speed: 1 - 1000
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_absolute.py">stepper_absolute.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_absolute.py">stepper_absolute.py</a></li>
+</ol>
+<h3 id="stepper_set_speed">stepper_set_speed</h3>
+<pre><code class="language-python">def stepper_set_speed(self, motor_id, speed)
+
+    Sets the desired constant speed for use with stepper_run_speed().
+
+    :param motor_id: 0 - 3
+
+    :param speed: 0 - 1000 The desired constant speed in steps 
+                  per second. 
+                  Positive is clockwise. Speeds of more than 1000 steps 
+                  per second are unreliable. Speed accuracy depends on 
+                  the Arduino crystal. 
+                  Jitter depends on how frequently you call the 
+                  stepper_run_speed() method. The speed will be 
+                  limited by the current value of stepper_set_max_speed().
+</code></pre>
+<p><strong>Examples:</strong> </p>
+<ol>
+<li>telemetrix: <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/tepper_run_speed_to_position.py">tepper_run_speed_to_position.py</a></li>
+<li>telemetrix-aio : <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/tepper_run_speed_to_position.py">tepper_run_speed_to_position.py</a></li>
+</ol>
+<h3 id="additional-methods">Additional Methods</h3>
+<p><strong>The following methods are included for AccelStepper compatibility. 
+No examples are provided for these methods.</strong></p>
+<h3 id="stepper_disable_outputs">stepper_disable_outputs</h3>
+<pre><code class="language-python">def stepper_disable_outputs(self, motor_id)
+
+    Disable motor pin outputs by setting them all LOW.
+
+    Depending on the design of your electronics this may turn off the power 
+    to the motor coils, saving power.
+
+    This is useful to support Arduino low power modes: 
+    disable the outputs during sleep and then re-enable with enableOutputs() 
+    before stepping again.
+
+    If the enable Pin is defined, sets it to OUTPUT mode and clears 
+    the pin to disabled.
+
+    :param motor_id: 0 - 3
+</code></pre>
+<h3 id="stepper_enable_outputs">stepper_enable_outputs</h3>
+<pre><code class="language-python">def stepper_enable_outputs(self, motor_id)
+
+    Enable motor pin outputs by setting the motor pins to OUTPUT mode.
+
+    If the enable Pin is defined, sets it to OUTPUT mode and sets 
+    the pin to enabled.
+
+    :param motor_id: 0 - 3
+</code></pre>
+<h3 id="stepper_get_max_speed">stepper_get_max_speed</h3>
+<pre><code class="language-python">def stepper_get_max_speed(self, motor_id)
+
+    Returns the maximum speed configured for this stepper that was 
+    previously set by stepper_set_max_speed()
+
+    Value is stored in the client, so no callback is required.
+
+    :param motor_id: 0 - 3
+
+    :return: The currently configured maximum speed.
+</code></pre>
+<h3 id="stepper_get_speed">stepper_get_speed</h3>
+<pre><code class="language-python">def stepper_get_speed(self, motor_id)
+
+    Returns the most recently set speed. that was previously set 
+    by stepper_set_speed();
+
+    Value is stored in the client, so no callback is required.
+
+    :param motor_id: 0 - 3
+</code></pre>
+<h3 id="stepper_set_3_pins_inverted">stepper_set_3_pins_inverted</h3>
+<pre><code class="language-python">def stepper_set_3_pins_inverted(self, motor_id, direction=False, 
+                                step=False, enable=False)
+
+    Sets the inversion for stepper driver pins.
+
+    :param motor_id: 0 - 3
+
+    :param direction: True=inverted or False
+
+    :param step: True=inverted or False
+
+    :param enable: True=inverted or False
+</code></pre>
+<h3 id="stepper_set_4_pins_inverted">stepper_set_4_pins_inverted</h3>
+<pre><code class="language-python">def stepper_set_4_pins_inverted(self, motor_id, pin1_invert=False, 
+                                pin2_invert=False, pin3_invert=False, 
+                                pin4_invert=False, enable=False)
+
+    Sets the inversion for 2, 3 and 4 wire stepper pins
+
+    :param motor_id: 0 - 3
+
+    :param pin1_invert: True=inverted or False
+
+    :param pin2_invert: True=inverted or False
+
+    :param pin3_invert: True=inverted or False
+
+    :param pin4_invert: True=inverted or False
+
+    :param enable: True=inverted or False
+</code></pre>
+<h3 id="stepper_set_enable_pin">stepper_set_enable_pin</h3>
+<pre><code class="language-python">def stepper_set_enable_pin(self, motor_id, pin=255)
+
+    Sets the enable pin number for stepper drivers. 
+    0xFF indicates unused (default).
+
+    Otherwise, if a pin is set, the pin will be turned on when 
+
+    enableOutputs() is called and switched off when disableOutputs() is called.
+
+    :param motor_id: 0 - 4 :param pin: 0-0xff
+</code></pre>
+<h3 id="stepper_set_min_pulse_width">stepper_set_min_pulse_width</h3>
+<pre><code class="language-python">def stepper_set_min_pulse_width(self, motor_id, minimum_width)
+
+    Sets the minimum pulse width allowed by the stepper driver.
+
+    The minimum practical pulse width is approximately 20 microseconds.
+
+    Times less than 20 microseconds will usually result in 20 microseconds or so.
+
+    :param motor_id: 0 -3
+
+    :param minimum_width: A 16 bit unsigned value expressed in microseconds.
+</code></pre>
+<h3 id="stepper_stop">stepper_stop</h3>
+<pre><code class="language-python">def stepper_stop(self, motor_id)
+
+    Sets a new target position that causes the stepper to stop as quickly as 
+    possible, using the current speed and acceleration parameters.
+
+    :param motor_id: 0 - 3
+</code></pre>
+<p><br>
+<br></p>
+<p>Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../spi/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SPI Commands" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              SPI Commands
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../management/" class="md-footer__link md-footer__link--next" aria-label="Next: Shutting Down" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Shutting Down
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.febc23d1.min.js"></script>
+      
+    
+  </body>
+</html>

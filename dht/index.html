@@ -61,7 +61,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#a-use-case-the-dht-22-sensor" class="md-skip">
+        <a href="#extending-telemetrix" class="md-skip">
           Skip to content
         </a>
       
@@ -439,6 +439,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../stepper/" class="md-nav__link">
+        Stepper Commands
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../management/" class="md-nav__link">
         Shutting Down
       </a>
@@ -460,116 +472,6 @@
           
         </ul>
       </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Extending Telemetrix
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Extending Telemetrix
-      </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#the-command-and-reporter-packets" class="md-nav__link">
-    The Command And Reporter Packets
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#coping-with-various-data-types-with-a-byte-oriented-serial-link" class="md-nav__link">
-    Coping With Various Data Types With A Byte-Oriented Serial Link
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#preparing-for-the-new-extension" class="md-nav__link">
-    Preparing For The New Extension
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#implementing-the-new-extension" class="md-nav__link">
-    Implementing The New Extension
-  </a>
-  
-    <nav class="md-nav" aria-label="Implementing The New Extension">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#adding-a-new-client-command" class="md-nav__link">
-    Adding A New Client Command
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#adding-a-new-server-command-handler" class="md-nav__link">
-    Adding A New Server Command Handler
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#add-a-new-server-function-to-continuously-monitor-the-device" class="md-nav__link">
-    Add A New Server Function To Continuously Monitor The Device
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#add-a-new-client-report-handler" class="md-nav__link">
-    Add a New Client Report Handler
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -623,76 +525,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#the-command-and-reporter-packets" class="md-nav__link">
-    The Command And Reporter Packets
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#coping-with-various-data-types-with-a-byte-oriented-serial-link" class="md-nav__link">
-    Coping With Various Data Types With A Byte-Oriented Serial Link
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#preparing-for-the-new-extension" class="md-nav__link">
-    Preparing For The New Extension
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#implementing-the-new-extension" class="md-nav__link">
-    Implementing The New Extension
-  </a>
-  
-    <nav class="md-nav" aria-label="Implementing The New Extension">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#adding-a-new-client-command" class="md-nav__link">
-    Adding A New Client Command
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#adding-a-new-server-command-handler" class="md-nav__link">
-    Adding A New Server Command Handler
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#add-a-new-server-function-to-continuously-monitor-the-device" class="md-nav__link">
-    Add A New Server Function To Continuously Monitor The Device
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#add-a-new-client-report-handler" class="md-nav__link">
-    Add a New Client Report Handler
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -704,74 +536,141 @@
               
                 
                 
-                <h1 id="a-use-case-the-dht-22-sensor">A Use Case - The DHT 22 Sensor</h1>
-<p>The Telemetrix Project comes pre-packaged with support for a fixed set of sensors and actuators.
-But, what if you want to add support for something outside of the base set?</p>
-<p>In this section, you will learn how to add custom support for a sensor or actuator of your choosing.</p>
-<p>We will be using the DHT 22 temperature/humidity sensor to 
-illustrate how to extend the Telemetrix Project's capabilities for discussion purposes.</p>
-<h2 id="the-command-and-reporter-packets">The Command And Reporter Packets</h2>
-<p>The Telemetrix clients and server communicate by exchanging data packets over the serial link. </p>
-<p>The data packets originating from the client are called <em>command</em> packets. </p>
-<p>The data packets originating from the server are called <em>reporter</em> packets.</p>
-<p>The format for both command and reporter packets is the same.</p>
+                <h1 id="extending-telemetrix">Extending Telemetrix</h1>
+<p>The Telemetrix Project comes pre-packaged with support for a fixed set of sensors and 
+actuators. But, what if you want to add support for something outside of the base set?</p>
+<p>Telemetrix was designed specifically to allow you to extend its capabilities to 
+customize it to meet your needs. Before going into a little detail about the 
+infrastructure let's look at how the client and server exchange information.</p>
+<h1 id="understanding-telemetrix-data-packets">Understanding Telemetrix Data Packets</h1>
+<p>When an application wishes to control the server or when the server 
+wishes to report data information back to the application, a Telemetrix Data Packet is 
+formed and sent over the serial or WiFi link</p>
+<p>For consistency, the format for both client and server packets is identical. </p>
+<p>Let's take a look at the packet format.</p>
+<h2 id="packet-format">Packet Format</h2>
 <p><img src="../images/packet.png"></p>
-<p>The <em>packet length</em> and <em>packet ID</em> portions of the packet are each one byte in length. 
-The total payload length is of variable size.</p>
-<p>The packet length byte represents the total length in bytes of the payload section of the packet.
-Note that the length does not include the packet length byte.</p>
-<p>When Telemetrix4Arduino receives a command in the 
+<p>A Telemetrix Packet consists of 3 parts. The packet length, the packet ID and the payload.</p>
+<h3 id="packet-id">Packet ID</h3>
+<p>The packet ID contains either a command or report ID. These IDs are defined to be the 
+same value for both client and server. This is shown in the examples below.</p>
+<p>On the client side, command IDs are declared in
+<a href="https://github.com/MrYsLab/telemetrix/blob/master/telemetrix/private_constants.py">private_constants.py</a>.</p>
+<p>When creating a command packet the command method selects the appropriate command 
+packed ID to use. </p>
+<pre><code class="language-python"># commands
+# send a loop back request - for debugging communications
+LOOP_COMMAND = 0
+SET_PIN_MODE = 1  # set a pin to INPUT/OUTPUT/PWM/etc
+DIGITAL_WRITE = 2  # set a single digital pin value instead of entire port
+ANALOG_WRITE = 3
+</code></pre>
+<p>On the server side, the IDs are declared in the
+<a href="https://github.com/MrYsLab/Telemetrix4Arduino/blob/master/examples/Telemetrix4Arduino/Telemetrix4Arduino.ino">.ino</a>
+file. </p>
+<pre><code class="language-python">// Commands -received by this sketch
+// Add commands retaining the sequential numbering.
+// The order of commands here must be maintained in the command_table.
+#define SERIAL_LOOP_BACK 0
+#define SET_PIN_MODE 1
+#define DIGITAL_WRITE 2
+#define ANALOG_WRITE 3
+</code></pre>
+<p>The server uses the command packet ID to index into an array of function pointers used 
+to implement the command.
+This array is called the command table.</p>
+<pre><code class="language-python">
+command_descriptor command_table[] =
+{
+  {&amp;serial_loopback},
+  {&amp;set_pin_mode},
+  {&amp;digital_write},
+  {&amp;analog_write},
+</code></pre>
+<p>When adding a new command 
+Here is a partial list of command IDs.</p>
+<pre><code class="language-python">
+</code></pre>
+<h3 id="packet-length">Packet Length</h3>
+<p>The <em>payload length</em> and <em>packet ID</em> portions of the packet are each one byte in length. 
+The total payload length is of variable size and is reflected in the payload length byte.</p>
+<h1 id="a-high-level-view-of-adding-an-extension">A High Level View Of Adding An Extension</h1>
+<h2 id="commands">Commands</h2>
+<h2 id="reports">Reports</h2>
+<h2 id="create-a-new-command">Create A New Command</h2>
+<p>To command the server to perform ommands are implemented through calls to the API</p>
+<p>Telemetrix is driven by the client and server  exchanging data
+packets. To add new features, one must understand the structure and use of these packets.</p>
+<p>The data packets originating from the client are called <em><strong>command</strong></em> packets. </p>
+<p>The data packets originating from the server are called <em><strong>reporter</strong></em> packets.</p>
+<p>The format for both command and reporter packets is the same.</p>
+<h3 id="packet-id_1">Packet ID</h3>
+<p>The packet ID is used by both the client and server to locate the 
+When Telemetrix4Arduino receives a command in the 
 <a href="https://github.com/MrYsLab/Telemetrix4Arduino/blob/275f58b98e336855deb677ae5f7406e5a253b469/examples/Telemetrix4Arduino/Telemetrix4Arduino.ino#L768">get_next_command</a> function, 
-all of the bytes that follow the payload ID are placed into a command_buffer for processing.</p>
+all of the bytes that follow the packet ID are placed into a command_buffer for 
+processing. The ESP-8266 server behaves in the same manner.</p>
 <p>When a Telemetrix client receives a report, the
  <a href="https://github.com/MrYsLab/telemetrix/blob/aebc7d985328c8d8c4de192d175e0792e5154637/telemetrix/telemetrix.py#L1063">_reporter</a> 
- method also places all of the bytes following the payload
+ method also places all of the bytes following the packet
 ID into the response_data buffer for processing.</p>
-<h2 id="coping-with-various-data-types-with-a-byte-oriented-serial-link">Coping With Various Data Types With A Byte-Oriented Serial Link</h2>
-<p>When data is sent across the serial link, it is sent as a series of bytes.
-Some data types, such as integers and floating-point values, are larger than a single byte.
-For the Telemetrix Project, an integer value is two bytes in length, and a floating-point value is four bytes
-in length.</p>
-<p>When sending a value larger than a byte in length, the multi-byte values are disassembled into 
-individual bytes before transmission.
-When received, the individual bytes are reassembled into the original multi-byte value. 
- For all data items that must be represented in this manner, by convention, the most significant byte (MSB)
- is the first byte transmitted, followed by all subsequent bytes in descending byte order.</p>
-<p>For example, the DHT 22 sensor expresses temperature and humidity values as floating-point. To send a report containing
-these values to the client, they must first be converted to individual bytes.</p>
-<p>Using humidity as an example, let's see how this is done:</p>
-<pre><code>// get humidity
-dht_data = dhts[i].dht_sensor-&gt;getHumidity();
-memcpy(&amp;report_message[4], &amp;dht_data, sizeof dht_data);
+<h3 id="the-packet-id">The Packet ID</h3>
+<p>The packet ID identifies the command or report type. The packet ID drives the data 
+processing of the system. </p>
+<h3 id="building-and-sending-a-command-packet">Building And Sending A Command Packet</h3>
+<p>To associate a GPIO digital input pin with a DHT device, the client application
+calls the 
+<a href="https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html#telemetrix.telemetrix.Telemetrix.set_pin_mode_dht">set_pin_mode_dht</a> method.</p>
+<p>The <strong><em>set_pin_mode_dht</em></strong> method creates a list containing command packet values of the 
+command ID, the GPIO pin-number and the DHT device type.</p>
+<pre><code class="language-python">        command = [PrivateConstants.DHT_NEW, pin, dht_type]
+        self._send_command(command)
 </code></pre>
-<p>The humidity is retrieved by calling the DHTNEW method,  <em>getHumdity</em>.
-The floating-point value returned in dht_data is converted to bytes, by using
-the memcpy function. In the example above, the bytes are copied into a report_message
-buffer in MSB order.</p>
-<p>On the client side, the converted bytes need to be reassembled into floats before providing
-the data values to the user application.</p>
-<pre><code class="language-python">f_humidity = bytearray(data[2:6])
-f_temperature = bytearray(data[6:])
-message = [PrivateConstants.DHT_REPORT, data[0], data[1],
-           (struct.unpack('&lt;f', f_humidity))[0],
-           (struct.unpack('&lt;f', f_temperature))[0],
-           time.time()]
+<p>The set_pin_mode_dht method then calls the _<strong><em>send_command</em></strong> utility method.  The length
+of the command packet is calculated and placed as the first byte of the command. The 
+command is then converted to a byte string and sent across the link.</p>
+<pre><code class="language-python">def _send_command(self, command):
+        &quot;&quot;&quot;
+        This is a private utility method.
+        :param command:  command data in the form of a list
+        &quot;&quot;&quot;
+        # the length of the list is added at the head
+        command.insert(0, len(command))
+        send_message = bytes(command)
+
+        if self.serial_port:
+            try:
+                self.serial_port.write(send_message)
+            except SerialException:
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError('write fail in _send_command')
+        elif self.ip_address:
+            self.sock.sendall(send_message)
+        else:
+            raise RuntimeError('No serial port or ip address set.')
+
 </code></pre>
-<p>In the example above, the humidity and temperature values are first extracted from the incoming report
-as bytearrays. Then using the Python struct library, the bytearrays are reassembled into their
- original floating-point values.</p>
+<p>The command variable is list populated with the command ID, DHT_NEW, the GPIO pin 
+number, and a dht_type.</p>
+<p>For commands, the 
+server 
+maintains an array of command handler function pointers. The packet ID is used as an 
+index into the array to retrieve its associated command handler function. </p>
+<p>For reports, the client maintains a dictionary of report handler methods. The packet ID 
+is the key used to
+retrieve the associated report handling method.</p>
 <h2 id="preparing-for-the-new-extension">Preparing For The New Extension</h2>
-<p>Before jumping directly into coding, there are a few things you should consider when designing
-your extension.</p>
+<p>Before jumping directly into coding, you should consider a few things when designing your extension.</p>
 <ol>
 <li>
 <p>Review the library's API to select the methods you wish to support.</p>
-<p>You may support the full set of library functions or a subset. For this example,
+<p>You may support the complete set of library functions or a subset. For this example,
 only the minimum functions will be supported to help keep things as simple as possible.</p>
-<p>The library chosen for the DHT is the <a href="https://github.com/RobTillaart/DHTNew">dhtnew library</a>.</p>
+<p>The library chosen for the DHT is the <a href="https://github.com/RobTillaart/DHTstable">DHTstable library</a>.</p>
 </li>
 <li>
-<p>Determine if there is a time constraint on how often a device can be accessed.</p>
+<p>Determine if there is a time constraint on accessing the device.</p>
 <p>The DHT 22, for example, can only be read every 2 seconds to receive valid data. 
   We will demonstrate how to support this restriction in a non-blocking manner.</p>
 </li>
@@ -781,12 +680,64 @@ only the minimum functions will be supported to help keep things as simple as po
 </li>
 </ol>
 <h2 id="implementing-the-new-extension">Implementing The New Extension</h2>
-<p>Below are the steps used for adding the DHT extension. We will use the telemetrix client for illustration
+<h3 id="design-decisions">Design Decisions</h3>
+<p>For the DHT, a new command method, called <strong><em>set_pin_mode_dht</em></strong>, is added to the client,
+and an associated command handler is created on the server.</p>
+<p>A new report is added for the server to notify the client of the latest humidity and 
+temperature values retrieved from the DHT device. An associated report handler is added 
+to the client.</p>
+<p>The DHT feature is implemented on the server using the following DHTStable methods:</p>
+<ul>
+<li>read11</li>
+<li>read22</li>
+<li>getHumidity</li>
+<li>getTemperature</li>
+</ul>
+<p>Note that this is only a subset of available methods provided by DHTStable.</p>
+<h3 id="adding-a-new-command">Adding A New Command</h3>
+<h4 id="client-side">Client Side</h4>
+<p>First, add a new command ID to  <strong><em>private_constants.py.</em></strong></p>
+<pre><code class="language-python"># commands
+    # send a loop back request - for debugging communications
+    LOOP_COMMAND = 0
+    SET_PIN_MODE = 1  # set a pin to INPUT/OUTPUT/PWM/etc
+    DIGITAL_WRITE = 2  # set a single digital pin value instead of entire port
+    ANALOG_WRITE = 3
+    MODIFY_REPORTING = 4
+    GET_FIRMWARE_VERSION = 5
+    ARE_U_THERE = 6  # Arduino ID query for auto-detect of telemetrix connected boards
+    SERVO_ATTACH = 7
+    SERVO_WRITE = 8
+    SERVO_DETACH = 9
+    I2C_BEGIN = 10
+    I2C_READ = 11
+    I2C_WRITE = 12
+    SONAR_NEW = 13
+    DHT_NEW = 14
+</code></pre>
+<p>DHT_NEW is the command that will be sent to the server.</p>
+<h4 id="server-side">Server Side</h4>
+<h3 id="adding-a-new-report">Adding A New Report</h3>
+<h4 id="server-side_1">Server Side</h4>
+<h4 id="client-side_1">Client Side</h4>
+<h3 id="four-steps-to-add-the-new-command-and-its-report">Four Steps To Add The New Command And Its Report</h3>
+<h4 id="1-modify-the-client">1. Modify The Client</h4>
+<p>For DHT support, we are going to add a <strong><em>set_pin_mode_dht</em></strong> command. This command 
+will instruct the server add a DHT to its list of DHT devices that it needs to monitor.</p>
+<p>On the client side, this is the only new method we need to add.</p>
+<p>On the server side, we will need to add code to accept the new command. The server 
+also needs code to build a report message when it monitors the DHT devices.</p>
+<p>The assumption is that the new extension will ultimately result in continuous report generation
+ without any additional API calls. </p>
+<p>Your device may have different requirements, and you will need to adjust things for your particular case.</p>
+<h3 id="modifying-the-client-for-the-new-command">Modifying The Client For The New Command</h3>
+<p>For DHT support, a single command will be added to associate a GPIO pin with a sensor.
+To be consistent, we will call this command <strong><em>set_pin_mode_dht</em></strong>.</p>
+<h4 id="1-add-a-constant-value-for-the-new-command">1. Add A Constant Value For The New Command</h4>
+<p>Edit the private_constants.py file and add a value for the new command.</p>
+<p>Below are the steps used for adding the DHT extension. We will use the <strong><em>telemetrix</em></strong> client for illustration
 purposes. Modifying telemetrix-aio would take a similar approach. </p>
-<p>Each step will be discussed in detail in the following sections.
-The assumption is that the new extension will ultimately result in continuous report generation
- without any additional API calls. 
-Your device may have different requirements, and you will need to adjust things for your particular case.</p>
+<p>The following sections discuss each step in detail.</p>
 <ol>
 <li>
 <p>Add a new <strong>client</strong> command to be transmitted to the server.</p>
@@ -801,7 +752,7 @@ Your device may have different requirements, and you will need to adjust things 
 <p>Add a new function to the <strong>client</strong> to handle the new incoming reports.</p>
 </li>
 </ol>
-<h3 id="adding-a-new-client-command">Adding A New Client Command</h3>
+<h4 id="adding-a-new-client-command">Adding A New Client Command</h4>
 <p><b>1. Define A New Command Value</b></p>
 
 <p>To add a new command to the API, define a new command value in
@@ -879,8 +830,9 @@ Because DHT devices generate reports, we ensure that the user specifies a callba
 The callback is added to dht_callbacks, and the number of active DHT devices is incremented. If the maximum number of DHT 
 devices is exceeded, a RuntimeError is raised.  Otherwise, a command data packet is built and sent to the server.</p>
 <p><strong>NOTE:</strong> The <a href="https://github.com/MrYsLab/telemetrix/blob/aebc7d985328c8d8c4de192d175e0792e5154637/telemetrix/telemetrix.py#L1007">_send_command</a>
- method will automatically calculate the packet length and append it to the packet.</p>
-<h3 id="adding-a-new-server-command-handler">Adding A New Server Command Handler</h3>
+ method will automatically calculate the payload length and append it to the packet.</p>
+<h3 id="modifying-the-server">Modifying The Server</h3>
+<h4 id="adding-a-new-server-command-handler">Adding A New Server Command Handler</h4>
 <p><b>1. Add the library to the list of #includes</b></p>
 
 <pre><code>#include &lt;Arduino.h&gt;
@@ -1072,14 +1024,15 @@ the loop section of the sketch.</p>
 will return valid data.  The format for the report is shown in the comments for the function.
 For valid data, the floating-point values are copied to the buffer as bytes, and a report is sent across the link.</p>
 <p>If an error is returned as a result of the read, byte 2 of the report, the report sub-type is changed 
-from DHT_DATA to DHT_ERROR, and the packet length is changed to a value of 4 bytes. The report is then 
+from DHT_DATA to DHT_ERROR, and the payload length is changed to a value of 4 bytes. The 
+report is then 
 sent across the serial link.</p>
 <pre><code>void scan_dhts()
 {
     // prebuild report for valid data
     // reuse the report if a read command fails
 
-    // data returned is in floating point form - 4 bytes
+    // data returned is in floating-point form - 4 bytes
     // each for humidity and temperature
 
     // byte 0 = packet length
@@ -1165,7 +1118,7 @@ sent across the serial link.</p>
 <p>The report_dispatch dictionary uses report ID values as a key to look up the
 handler for the incoming report. The dictionary update method is used when adding a new entry into 
 the dispatch dictionary.</p>
-<pre><code># The report_dispatch dictionary is used to process
+<pre><code>        # The report_dispatch dictionary is used to process
         # incoming report messages by looking up the report message
         # and executing its associated processing method.
 
@@ -1222,6 +1175,79 @@ using the reported pin number as the key and calls the callback function.</p>
 
             self.dht_callbacks[data[1]](message)
 </code></pre>
+<h2 id="coping-with-various-data-types-with-a-byte-oriented-serial-link">Coping With Various Data Types With A Byte-Oriented Serial Link</h2>
+<p>When data is sent across the serial link, it is sent as a series of bytes.
+Some data types, such as integers and floating-point values, are larger than a single byte. 
+For the Telemetrix Project, an integer value is two bytes in length, 
+and a floating-point value is four bytes in size.</p>
+<p>The multi-byte values are disassembled into individual bytes before transmission 
+when sending a value larger than a byte in length. 
+When received, the individual bytes are reassembled into the original multi-byte 
+value. For all data items that must be represented in this manner, by convention, 
+the most significant byte (MSB) is the first byte transmitted, followed by all 
+subsequent bytes in descending byte order.</p>
+<p>For example, the DHT 22 sensor expresses temperature and humidity values as 
+floating-point. To send a report containing these values to the client, they 
+must first be converted to individual bytes.
+Using a humidity/temperature report as an example, let's see how this is done. On the 
+server side.
+After data is retrieved from the DHT sensor,  a report message is 
+created using the following format:</p>
+<pre><code class="language-python">  // byte 0 = packet length
+  // byte 1 = report type
+  // byte 2 = report sub type - DHT_DATA or DHT_ERROR
+  // byte 3 = pin number
+  // byte 4 = dht type
+  // byte 5 = humidity positivity flag 0=positive, 1= negative
+  // byte 6 = temperature positivity flag 0=positive, 1= negative
+  // byte 7 = humidity integer portion
+  // byte 8 = humidity fractional portion
+  // byte 9 = temperature integer portion
+  // byte 10= temperature fractional portion
+</code></pre>
+<p>Although both temperature and humidity values are reported as floating-point values that
+are 4 bytes in length each, we can use a "trick" to send these values using 3 bytes each.
+We can do this because the integer portion, the value on the 
+left side of the decimal point, and the fractional portion, the value on the right 
+side of the decimal, are valued at less than 256.  As a result, we can send the 
+integer and fractional portions as bytes. However, we do still need to be able to 
+differentiate between positive and negative values. The value's positivity is checked, 
+and a  flag is set to indicate if the value is positive or negative.<br />
+As a result, a floating point value is represented in three bytes instead 
+of four, making the data packet more efficient for transmission across the link.
+Using humidity as an example, here is the code that
+performs this conversion:</p>
+<pre><code>float j, f;
+          float humidity = dhts[i].dht_sensor-&gt;getHumidity();
+          if (humidity &gt;= 0.0) {
+            report_message[5] = 0;
+          }
+          else {
+            report_message[5] = 1;
+          }
+          f = modff(humidity, &amp;j);
+          report_message[7] = (uint8_t)j;
+          report_message[8] = (uint8_t)(f * 100);
+</code></pre>
+<p>The humidity is retrieved by calling the DHTStable library method,  <em>getHumdity</em>.
+The humidity's positivity is checked, and the positivity flag is appropriately 
+set within the report message.   Then using the C library function <em>modff</em>, the integer portion 
+of the value is separated from the fractional part. The integer portion is returned 
+in "j," and the fractional part is returned in "f." The fractional part is 
+multiplied by 100 to convert the value to an integer.</p>
+<p>On the client side, the converted bytes need to be reassembled into floats before providing
+the data values to the user application.</p>
+<pre><code class="language-python">f_humidity = float(data[5] + data[6] / 100)
+            if data[3]:
+                f_humidity *= -1.0
+</code></pre>
+<p>Here, we retrieve the integer and fractional portions from the report message. The 
+fractional part is divided by 100 to return it to a floating-point value, and then the
+integer and fractional values are added together. Lastly, the positivity flag is 
+checked to determine if the value is positive or negative and adjusted appropriately.</p>
+<p><br>
+<br></p>
+<p>Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.</p>
                 
               
               
@@ -1237,41 +1263,6 @@ using the reported pin number as the key and calls the callback function.</p>
       
         
 <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../debug/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Debugging" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Debugging
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../about/" class="md-footer__link md-footer__link--next" aria-label="Next: About" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              About
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
