@@ -29,7 +29,7 @@ Here is a feature comparison between Telemetrix and StandardFirmata:
 
 
 The project consists of a 
-[Python client API]((https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html) )
+[Python client API](https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html)
 used to create a Python 
 client 
 application and C++ servers that communicate with the Python client over a serial or WiFi link. 
