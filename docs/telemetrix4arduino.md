@@ -25,13 +25,14 @@ Telemetrix4Arduino, in conjunction with the Telemetrix Project clients, associat
 specific Arduino board with your application.
 
 If you only have a single Arduino connected at a time, you do not need to do anything. However,
-if you wish to run multiple Arduinos, you will need to assign a unique ID number to each
+if you wish to run multiple Arduinos, you must assign a unique ID number to each
 Arduino. The ID number is then supplied as an input parameter when your application
  is instantiated.
 
 ![](./images/add_zip3.png)
 
-Note that if you wish to change the instance_id for the server, you must edit the sketch code and upload the changes to the Arduino.
+If you wish to change the instance_id for the server, you must edit the sketch code 
+and upload the changes to the Arduino.
 
 To match the instance_id on the client side, you will need to specify the arduino_instance id parameter
 when instantiating the client class:
@@ -41,6 +42,14 @@ def __init__(self, com_port=None, arduino_instance_id=1,
                  arduino_wait=4, sleep_tune=0.000001,
                  shutdown_on_exception=True)
 ```
+
+**NOTE**: 
+If you use an Arduino Uno, you may see a warning in the Arduino IDE 
+after compiling. You may ignore this warning.
+
+![](./images/warning.png)
+
+
 
 
 <br>
