@@ -59,13 +59,14 @@ def sonar(my_board, trigger_pin, echo_pin, callback):
     # wait forever
     while True:
         try:
-            time.sleep(.01)
+            time.sleep(.02)
         except KeyboardInterrupt:
             my_board.shutdown()
             sys.exit(0)
 
 
-board = telemetrix.Telemetrix(ip_address='192.168.2.220')
+board = telemetrix.Telemetrix(ip_address='192.168.2.112')
+time.sleep(.02)
 try:
     sonar(board, TRIGGER_PIN, ECHO_PIN, the_callback)
     board.shutdown()

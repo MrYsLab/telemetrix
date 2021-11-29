@@ -71,7 +71,6 @@ def dht(my_board):
         """
 
     # set the pin mode for the trigger and echo pins
-    my_board.set_pin_mode_dht(4, callback=the_callback, dht_type=11)
     my_board.set_pin_mode_dht(5, callback=the_callback, dht_type=22)
 
     # wait forever
@@ -83,7 +82,7 @@ def dht(my_board):
             sys.exit(0)
 
 
-board = telemetrix.Telemetrix(ip_address='192.168.2.170')
+board = telemetrix.Telemetrix(ip_address='192.168.2.112')
 try:
     dht(board)
     board.shutdown()

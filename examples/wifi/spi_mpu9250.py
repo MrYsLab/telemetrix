@@ -24,13 +24,22 @@ The processing of the data returned from the MPU9250 is done within
 the callback functions.
 """
 
+# ESP8266 GPIO Pin      ============>     MPU9250 Pin
+#
+#    12 MISO                                    ADO
+#    13 MOSI                                    SDA
+#    14 Clock                                   SCL
+#    5 Chip Select                              NCS
+
+
+
 import sys
 import time
 
 from telemetrix import telemetrix
 
 # Instantiate the TelemetrixRpiPico class accepting all default parameters.
-board = telemetrix.Telemetrix(ip_address='192.168.2.112')
+board = telemetrix.Telemetrix(ip_address='192.168.2.220')
 
 
 # Convenience values for the pins.
@@ -38,10 +47,9 @@ board = telemetrix.Telemetrix(ip_address='192.168.2.112')
 # These are the standard pins for many Arduino AVR boards.
 # Change to match your particular board.
 
-# if using an Uno, CS = 10, if Mkr WiFi 1010, CS = 9.
-# change for your board.
-CS = [4]
-CS_PIN = 4
+# Chip select being used in GPIO4
+CS = [5]
+CS_PIN = 5
 
 NUM_BYTES_TO_READ = 6
 
@@ -113,7 +121,7 @@ def read_data_from_device(register, number_of_bytes, callback):
 
     # deactivate chip select
     board.spi_cs_control(CS_PIN, 1)
-    time.sleep(.1)
+    time.sleep(1)
 
 
 # initialize the device
@@ -124,21 +132,21 @@ board.spi_cs_control(CS_PIN, 0)
 board.spi_write_blocking([0x6B, 0])
 board.spi_cs_control(CS_PIN, 1)
 
-time.sleep(.1)
+time.sleep(1)
 
 # get the device ID
 read_data_from_device(0x75, 1, the_device_callback)
 
 while True:
     try:
-        time.sleep(1)
+        # time.sleep(1)
         # get the acceleration values
         read_data_from_device(0x3b, 6, accel_callback)
-        time.sleep(.1)
+        time.sleep(1)
 
         # get the gyro values
         read_data_from_device(0x43, 6, gyro_callback)
-        time.sleep(.1)
+        time.sleep(1)
     except KeyboardInterrupt:
         board.shutdown()
         sys.exit(0)
