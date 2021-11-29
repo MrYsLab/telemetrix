@@ -1,14 +1,19 @@
 # The Telemetrix Project
 
-Telemetry is a system for collecting data on a remote device and then automatically transmitting the 
-collected data back to local receiving equipment for processing.
+The Telemetrix Project is a modern-day replacement for 
+Arduino StandardFirmata, but is equipped with many more built-in features than 
+StandardFirmata. 
 
-The Telemetrix Project is a telemetry system explicitly designed for Arduino Core-based MCUs, using 
-Python on the local client and an 
-Arduino Core sketch, called 
-[Telemetrix4Arduino](https://github.com/MrYsLab/Telemetrix4Arduino) on the Microcontroller Unit (MCU). 
+The project consists of Python client API used to create a Python 
+client 
+application and C++ servers that communicate with the Python client over a serial or WiFi link. 
 
-In addition, WiFi is supported for the ESP8266 when used in conjunction with 
+This repository is the Python 3 client API
+
+The server for Arduino serial linked devices is called
+[Telemetrix4Arduino](https://github.com/MrYsLab/Telemetrix4Arduino) 
+
+The WiFi server for ESP8266 devices is called
 [Telemetrix4Esp8266](https://github.com/MrYsLab/Telemetrix4Esp8266).
 
 It is designed to be user extensible so that you may add support for sensors and actuators
