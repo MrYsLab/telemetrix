@@ -44,12 +44,13 @@ def running_callback(data):
 
 
 # create an accelstepper instance for a TB6600 motor driver
-# motor = board.set_pin_mode_stepper(interface=1, pin1=4, pin2=5)
+# motor = board.set_pin_mode_stepper(interface=2, pin1=4, pin2=5)
+motor = board.set_pin_mode_stepper(interface=2, pin1=5, pin2=4)
+
 
 # if you are using a 28BYJ-48 Stepper Motor with ULN2003
 # comment out the line above and uncomment out the line below.
 # motor = board.set_pin_mode_stepper(interface=4, pin1=5, pin2=4, pin3=14, pin4=12)
-motor = board.set_pin_mode_stepper(interface=1, pin1=5, pin2=4)
 
 
 board.stepper_is_running(motor, callback=running_callback)
@@ -59,7 +60,7 @@ board.stepper_set_max_speed(motor, 400)
 board.stepper_set_acceleration(motor, 800)
 
 # set the absolute position in steps
-board.stepper_move_to(motor, 2000)
+board.stepper_move_to(motor, -2000)
 
 # run the motor
 print('Starting motor...')

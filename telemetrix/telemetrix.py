@@ -767,8 +767,8 @@ class Telemetrix(threading.Thread):
         The pin_type for digital input pins with pullups enabled = 11
 
         """
-        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback=
-        callback)
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP,
+                           callback=callback)
 
     def set_pin_mode_digital_output(self, pin_number):
         """
@@ -1063,7 +1063,11 @@ class Telemetrix(threading.Thread):
 
         :param position: target position. Maximum value is 32 bits.
         """
-
+        if position < 0:
+            polarity = 1
+        else:
+            polarity = 0
+        position = abs(position)
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
                 self.shutdown()
@@ -1074,6 +1078,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.STEPPER_MOVE_TO, motor_id]
         for value in position_bytes:
             command.append(value)
+        command.append(polarity)
         self._send_command(command)
 
     def stepper_move(self, motor_id, relative_position):
@@ -1086,6 +1091,12 @@ class Telemetrix(threading.Thread):
                                   position. Negative is anticlockwise from
                                   the current position. Maximum value is 32 bits.
         """
+        if relative_position < 0:
+            polarity = 1
+        else:
+            polarity = 0
+
+        relative_position = abs(relative_position)
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
                 self.shutdown()
@@ -1096,6 +1107,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.STEPPER_MOVE, motor_id]
         for value in position_bytes:
             command.append(value)
+        command.append(polarity)
         self._send_command(command)
 
     def stepper_run(self, motor_id, completion_callback=None):

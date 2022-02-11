@@ -11,7 +11,7 @@ setup(
     packages=['telemetrix'],
     install_requires=['pyserial'],
 
-    version='1.8',
+    version='1.9',
     description="Remotely Control And Monitor Arduino-Core devices",
     long_description=long_description,
     long_description_content_type='text/markdown',

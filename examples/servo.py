@@ -32,7 +32,7 @@ SERVO_PIN = 5
 
 # Create a Telemetrix instance.
 board = telemetrix.Telemetrix()
-board.set_pin_mode_servo(SERVO_PIN)
+board.set_pin_mode_servo(SERVO_PIN, 100, 3000)
 time.sleep(.2)
 board.servo_write(SERVO_PIN, 90)
 time.sleep(1)

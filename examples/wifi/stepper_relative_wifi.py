@@ -27,6 +27,7 @@ Run a motor to a relative position.
 
 # Create a Telemetrix instance.
 board = telemetrix.Telemetrix(ip_address='192.168.2.112')
+time.sleep(.2)
 
 
 def the_callback(data):
@@ -35,7 +36,7 @@ def the_callback(data):
 
 
 # create an accelstepper instance for a TB6600 motor driver
-motor = board.set_pin_mode_stepper(interface=1, pin1=5, pin2=4)
+motor = board.set_pin_mode_stepper(interface=2, pin1=5, pin2=4)
 
 # if you are using a 28BYJ-48 Stepper Motor with ULN2003
 # comment out the line above and uncomment out the line below.
@@ -47,7 +48,7 @@ board.stepper_set_max_speed(motor, 400)
 board.stepper_set_acceleration(motor, 800)
 
 # set the relative position in steps
-board.stepper_move(motor, 2000)
+board.stepper_move(motor, -2000)
 
 # run the motor
 board.stepper_run(motor, completion_callback=the_callback)
