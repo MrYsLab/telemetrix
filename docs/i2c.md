@@ -32,9 +32,11 @@ telemetrix-aio secondary port:  [i2c_adxl345_accelerometer2.py](https://github.c
 ### i2c_read
 
 ```python
- def i2c_read(self, address, register, number_of_bytes, callback=None, i2c_port=0)
+ def i2c_read(self, address, register, number_of_bytes, callback=None, 
+              i2c_port=0, write_register=True)
 
-    Read the specified number of bytes from the specified register for the i2c device.
+    Read the specified number of bytes from the specified register for
+    the i2c device.
 
     :param address: i2c device address
 
@@ -42,11 +44,20 @@ telemetrix-aio secondary port:  [i2c_adxl345_accelerometer2.py](https://github.c
 
     :param number_of_bytes: number of bytes to be read
 
-    :param callback: Required callback function to report i2c data as a result of read command
+    :param callback: Required callback function to report i2c data as
+                     a result of read command
 
     :param i2c_port: 0 = default, 1 = secondary
 
-    callback returns a data list: [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
+    :param write_register: If True, the register is written before read 
+                           Else, the write is suppressed
+
+    callback returns a data list:
+
+    [I2C_READ_REPORT, address, register, count of data bytes, 
+     data bytes, time-stamp]
+    
+ 
 ```
 **Examples:**
 
@@ -57,9 +68,12 @@ See NOTE above.
 ### i2c_read_restart_transmission
 
 ```python
-  def i2c_read_restart_transmission(self, address, register, number_of_bytes, callback=None, i2c_port=0)
+ def i2c_read_restart_transmission(self, address, register, number_of_bytes, 
+                                   callback=None, i2c_port=0, write_register=True)
 
-    Read the specified number of bytes from the specified register for the i2c device. This restarts the transmission after the read. It is required for some i2c devices such as the MMA8452Q accelerometer.
+    Read the specified number of bytes from the specified 
+    register for the i2c device. This restarts the transmission after the read. 
+    It is required for some i2c devices such as the MMA8452Q accelerometer.
 
     :param address: i2c device address
 
@@ -67,13 +81,18 @@ See NOTE above.
 
     :param number_of_bytes: number of bytes to be read
 
-    :param callback: Required callback function to report i2c data as a result of read command
+    :param callback: Required callback function to report i2c data 
+                     as a result of read command
 
     :param i2c_port: 0 = default 1 = secondary
 
+    :param write_register: If True, the register is written before read
+                        Else, the write is suppressed
+
     callback returns a data list:
 
-    [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
+    [I2C_READ_REPORT, address, register, count of data bytes, 
+     data bytes, time-stamp]
 ```
 
 **Examples:**
