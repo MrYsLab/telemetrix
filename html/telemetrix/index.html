@@ -349,13 +349,6 @@ class Telemetrix(threading.Thread):
         print(f&#39;Waiting for Arduino to reset&#39;)
         print(f&#39;Reset Complete&#39;)
 
-        # print(&#39;Retrieving Arduino ID...&#39;)
-        # self._get_arduino_id()
-        # if self.reported_arduino_id != self.arduino_instance_id:
-        #     if self.shutdown_on_exception:
-        #         self.shutdown()
-        #     raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
-        # print(&#39;Valid Arduino ID Found.&#39;)
         # get telemetrix firmware version and print it
         print(&#39;\nRetrieving Telemetrix4Arduino firmware ID...&#39;)
         self._get_firmware_version()
@@ -378,8 +371,6 @@ class Telemetrix(threading.Thread):
         # Have the server reset its data structures
         command = [PrivateConstants.RESET]
         self._send_command(command)
-
-        time.sleep(1.2)
 
     def _find_arduino(self):
         &#34;&#34;&#34;
@@ -577,39 +568,50 @@ class Telemetrix(threading.Thread):
         time.sleep(.5)
 
     def i2c_read(self, address, register, number_of_bytes,
-                 callback=None, i2c_port=0):
+                 callback=None, i2c_port=0,
+                 write_register=True):
         &#34;&#34;&#34;
-        Read the specified number of bytes from the specified register for
-        the i2c device.
+        Read the specified number of bytes from the
+        specified register for the i2c device.
 
 
         :param address: i2c device address
 
-        :param register: i2c register (or None if no register selection is needed)
+        :param register: i2c register (or None if no register
+                                       selection is needed)
 
         :param number_of_bytes: number of bytes to be read
 
-        :param callback: Required callback function to report i2c data as a
-                   result of read command
+        :param callback: Required callback function to report
+                         i2c data as a result of read command
 
        :param i2c_port: 0 = default, 1 = secondary
 
+       :param write_register: If True, the register is written
+                                       before read
+                              Else, the write is suppressed
+
 
         callback returns a data list:
-        [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
+
+        [I2C_READ_REPORT, address, register, count of data bytes,
+         data bytes, time-stamp]
 
         &#34;&#34;&#34;
 
         self._i2c_read_request(address, register, number_of_bytes,
-                               callback=callback, i2c_port=i2c_port)
+                               callback=callback, i2c_port=i2c_port,
+                               write_register=write_register)
 
     def i2c_read_restart_transmission(self, address, register,
                                       number_of_bytes,
-                                      callback=None, i2c_port=0):
+                                      callback=None, i2c_port=0,
+                                      write_register=True):
         &#34;&#34;&#34;
-        Read the specified number of bytes from the specified register for
-        the i2c device. This restarts the transmission after the read. It is
-        required for some i2c devices such as the MMA8452Q accelerometer.
+        Read the specified number of bytes from the specified
+        register for the i2c device. This restarts the transmission
+        after the read. It is required for some i2c devices such as the MMA8452Q
+        accelerometer.
 
 
         :param address: i2c device address
@@ -619,24 +621,31 @@ class Telemetrix(threading.Thread):
 
         :param number_of_bytes: number of bytes to be read
 
-        :param callback: Required callback function to report i2c data as a
-                   result of read command
+        :param callback: Required callback function to report i2c
+                         data as a result of read command
 
        :param i2c_port: 0 = default 1 = secondary
+
+       :param write_register: If True, the register is written before read
+                              Else, the write is suppressed
+
 
 
         callback returns a data list:
 
-        [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
+        [I2C_READ_REPORT, address, register, count of data bytes,
+         data bytes, time-stamp]
 
         &#34;&#34;&#34;
 
         self._i2c_read_request(address, register, number_of_bytes,
                                stop_transmission=False,
-                               callback=callback, i2c_port=i2c_port)
+                               callback=callback, i2c_port=i2c_port,
+                               write_register=write_register)
 
     def _i2c_read_request(self, address, register, number_of_bytes,
-                          stop_transmission=True, callback=None, i2c_port=0):
+                          stop_transmission=True, callback=None, i2c_port=0,
+                          write_register=True):
         &#34;&#34;&#34;
         This method requests the read of an i2c device. Results are retrieved
         via callback.
@@ -651,6 +660,9 @@ class Telemetrix(threading.Thread):
 
         :param callback: Required callback function to report i2c data as a
                    result of read command.
+
+       :param write_register: If True, the register is written before read
+                              Else, the write is suppressed
 
         &#34;&#34;&#34;
         if not i2c_port:
@@ -680,15 +692,21 @@ class Telemetrix(threading.Thread):
         if not register:
             register = 0
 
+        if write_register:
+            write_register = 1
+        else:
+            write_register = 0
+
         # message contains:
         # 1. address
         # 2. register
         # 3. number of bytes
         # 4. restart_transmission - True or False
         # 5. i2c port
+        # 6. suppress write flag
 
         command = [PrivateConstants.I2C_READ, address, register, number_of_bytes,
-                   stop_transmission, i2c_port]
+                   stop_transmission, i2c_port, write_register]
         self._send_command(command)
 
     def i2c_write(self, address, args, i2c_port=0):
@@ -819,8 +837,8 @@ class Telemetrix(threading.Thread):
         The pin_type for digital input pins with pullups enabled = 11
 
         &#34;&#34;&#34;
-        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback=
-        callback)
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP,
+                           callback=callback)
 
     def set_pin_mode_digital_output(self, pin_number):
         &#34;&#34;&#34;
@@ -1115,7 +1133,11 @@ class Telemetrix(threading.Thread):
 
         :param position: target position. Maximum value is 32 bits.
         &#34;&#34;&#34;
-
+        if position &lt; 0:
+            polarity = 1
+        else:
+            polarity = 0
+        position = abs(position)
         if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
             if self.shutdown_on_exception:
                 self.shutdown()
@@ -1126,6 +1148,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.STEPPER_MOVE_TO, motor_id]
         for value in position_bytes:
             command.append(value)
+        command.append(polarity)
         self._send_command(command)
 
     def stepper_move(self, motor_id, relative_position):
@@ -1138,6 +1161,12 @@ class Telemetrix(threading.Thread):
                                   position. Negative is anticlockwise from
                                   the current position. Maximum value is 32 bits.
         &#34;&#34;&#34;
+        if relative_position &lt; 0:
+            polarity = 1
+        else:
+            polarity = 0
+
+        relative_position = abs(relative_position)
         if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
             if self.shutdown_on_exception:
                 self.shutdown()
@@ -1148,6 +1177,7 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.STEPPER_MOVE, motor_id]
         for value in position_bytes:
             command.append(value)
+        command.append(polarity)
         self._send_command(command)
 
     def stepper_run(self, motor_id, completion_callback=None):
@@ -2857,13 +2887,6 @@ receiving a KeyboardInterrupt exception</p>
         print(f&#39;Waiting for Arduino to reset&#39;)
         print(f&#39;Reset Complete&#39;)
 
-        # print(&#39;Retrieving Arduino ID...&#39;)
-        # self._get_arduino_id()
-        # if self.reported_arduino_id != self.arduino_instance_id:
-        #     if self.shutdown_on_exception:
-        #         self.shutdown()
-        #     raise RuntimeError(f&#39;Incorrect Arduino ID: {self.reported_arduino_id}&#39;)
-        # print(&#39;Valid Arduino ID Found.&#39;)
         # get telemetrix firmware version and print it
         print(&#39;\nRetrieving Telemetrix4Arduino firmware ID...&#39;)
         self._get_firmware_version()
@@ -2886,8 +2909,6 @@ receiving a KeyboardInterrupt exception</p>
         # Have the server reset its data structures
         command = [PrivateConstants.RESET]
         self._send_command(command)
-
-        time.sleep(1.2)
 
     def _find_arduino(self):
         &#34;&#34;&#34;
@@ -3085,39 +3106,50 @@ receiving a KeyboardInterrupt exception</p>
         time.sleep(.5)
 
     def i2c_read(self, address, register, number_of_bytes,
-                 callback=None, i2c_port=0):
+                 callback=None, i2c_port=0,
+                 write_register=True):
         &#34;&#34;&#34;
-        Read the specified number of bytes from the specified register for
-        the i2c device.
+        Read the specified number of bytes from the
+        specified register for the i2c device.
 
 
         :param address: i2c device address
 
-        :param register: i2c register (or None if no register selection is needed)
+        :param register: i2c register (or None if no register
+                                       selection is needed)
 
         :param number_of_bytes: number of bytes to be read
 
-        :param callback: Required callback function to report i2c data as a
-                   result of read command
+        :param callback: Required callback function to report
+                         i2c data as a result of read command
 
        :param i2c_port: 0 = default, 1 = secondary
 
+       :param write_register: If True, the register is written
+                                       before read
+                              Else, the write is suppressed
+
 
         callback returns a data list:
-        [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
+
+        [I2C_READ_REPORT, address, register, count of data bytes,
+         data bytes, time-stamp]
 
         &#34;&#34;&#34;
 
         self._i2c_read_request(address, register, number_of_bytes,
-                               callback=callback, i2c_port=i2c_port)
+                               callback=callback, i2c_port=i2c_port,
+                               write_register=write_register)
 
     def i2c_read_restart_transmission(self, address, register,
                                       number_of_bytes,
-                                      callback=None, i2c_port=0):
+                                      callback=None, i2c_port=0,
+                                      write_register=True):
         &#34;&#34;&#34;
-        Read the specified number of bytes from the specified register for
-        the i2c device. This restarts the transmission after the read. It is
-        required for some i2c devices such as the MMA8452Q accelerometer.
+        Read the specified number of bytes from the specified
+        register for the i2c device. This restarts the transmission
+        after the read. It is required for some i2c devices such as the MMA8452Q
+        accelerometer.
 
 
         :param address: i2c device address
@@ -3127,24 +3159,31 @@ receiving a KeyboardInterrupt exception</p>
 
         :param number_of_bytes: number of bytes to be read
 
-        :param callback: Required callback function to report i2c data as a
-                   result of read command
+        :param callback: Required callback function to report i2c
+                         data as a result of read command
 
        :param i2c_port: 0 = default 1 = secondary
+
+       :param write_register: If True, the register is written before read
+                              Else, the write is suppressed
+
 
 
         callback returns a data list:
 
-        [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
+        [I2C_READ_REPORT, address, register, count of data bytes,
+         data bytes, time-stamp]
 
         &#34;&#34;&#34;
 
         self._i2c_read_request(address, register, number_of_bytes,
                                stop_transmission=False,
-                               callback=callback, i2c_port=i2c_port)
+                               callback=callback, i2c_port=i2c_port,
+                               write_register=write_register)
 
     def _i2c_read_request(self, address, register, number_of_bytes,
-                          stop_transmission=True, callback=None, i2c_port=0):
+                          stop_transmission=True, callback=None, i2c_port=0,
+                          write_register=True):
         &#34;&#34;&#34;
         This method requests the read of an i2c device. Results are retrieved
         via callback.
@@ -3159,6 +3198,9 @@ receiving a KeyboardInterrupt exception</p>
 
         :param callback: Required callback function to report i2c data as a
                    result of read command.
+
+       :param write_register: If True, the register is written before read
+                              Else, the write is suppressed
 
         &#34;&#34;&#34;
         if not i2c_port:
@@ -3188,15 +3230,21 @@ receiving a KeyboardInterrupt exception</p>
         if not register:
             register = 0
 
+        if write_register:
+            write_register = 1
+        else:
+            write_register = 0
+
         # message contains:
         # 1. address
         # 2. register
         # 3. number of bytes
         # 4. restart_transmission - True or False
         # 5. i2c port
+        # 6. suppress write flag
 
         command = [PrivateConstants.I2C_READ, address, register, number_of_bytes,
-                   stop_transmission, i2c_port]
+                   stop_transmission, i2c_port, write_register]
         self._send_command(command)
 
     def i2c_write(self, address, args, i2c_port=0):
@@ -3327,8 +3375,8 @@ receiving a KeyboardInterrupt exception</p>
         The pin_type for digital input pins with pullups enabled = 11
 
         &#34;&#34;&#34;
-        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback=
-        callback)
+        self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP,
+                           callback=callback)
 
     def set_pin_mode_digital_output(self, pin_number):
         &#34;&#34;&#34;
@@ -3623,7 +3671,11 @@ receiving a KeyboardInterrupt exception</p>
 
         :param position: target position. Maximum value is 32 bits.
         &#34;&#34;&#34;
-
+        if position &lt; 0:
+            polarity = 1
+        else:
+            polarity = 0
+        position = abs(position)
         if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
             if self.shutdown_on_exception:
                 self.shutdown()
@@ -3634,6 +3686,7 @@ receiving a KeyboardInterrupt exception</p>
         command = [PrivateConstants.STEPPER_MOVE_TO, motor_id]
         for value in position_bytes:
             command.append(value)
+        command.append(polarity)
         self._send_command(command)
 
     def stepper_move(self, motor_id, relative_position):
@@ -3646,6 +3699,12 @@ receiving a KeyboardInterrupt exception</p>
                                   position. Negative is anticlockwise from
                                   the current position. Maximum value is 32 bits.
         &#34;&#34;&#34;
+        if relative_position &lt; 0:
+            polarity = 1
+        else:
+            polarity = 0
+
+        relative_position = abs(relative_position)
         if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
             if self.shutdown_on_exception:
                 self.shutdown()
@@ -3656,6 +3715,7 @@ receiving a KeyboardInterrupt exception</p>
         command = [PrivateConstants.STEPPER_MOVE, motor_id]
         for value in position_bytes:
             command.append(value)
+        command.append(polarity)
         self._send_command(command)
 
     def stepper_run(self, motor_id, completion_callback=None):
@@ -5220,78 +5280,98 @@ receiving a KeyboardInterrupt exception</p>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.i2c_read"><code class="name flex">
-<span>def <span class="ident">i2c_read</span></span>(<span>self, address, register, number_of_bytes, callback=None, i2c_port=0)</span>
+<span>def <span class="ident">i2c_read</span></span>(<span>self, address, register, number_of_bytes, callback=None, i2c_port=0, write_register=True)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Read the specified number of bytes from the specified register for
-the i2c device.</p>
+<div class="desc"><p>Read the specified number of bytes from the
+specified register for the i2c device.</p>
 <p>:param address: i2c device address</p>
-<p>:param register: i2c register (or None if no register selection is needed)</p>
+<p>:param register: i2c register (or None if no register
+selection is needed)</p>
 <p>:param number_of_bytes: number of bytes to be read</p>
-<p>:param callback: Required callback function to report i2c data as a
-result of read command</p>
+<p>:param callback: Required callback function to report
+i2c data as a result of read command</p>
 <p>:param i2c_port: 0 = default, 1 = secondary</p>
-<p>callback returns a data list:
-[I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]</p></div>
+<p>:param write_register: If True, the register is written
+before read
+Else, the write is suppressed</p>
+<p>callback returns a data list:</p>
+<p>[I2C_READ_REPORT, address, register, count of data bytes,
+data bytes, time-stamp]</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def i2c_read(self, address, register, number_of_bytes,
-             callback=None, i2c_port=0):
+             callback=None, i2c_port=0,
+             write_register=True):
     &#34;&#34;&#34;
-    Read the specified number of bytes from the specified register for
-    the i2c device.
+    Read the specified number of bytes from the
+    specified register for the i2c device.
 
 
     :param address: i2c device address
 
-    :param register: i2c register (or None if no register selection is needed)
+    :param register: i2c register (or None if no register
+                                   selection is needed)
 
     :param number_of_bytes: number of bytes to be read
 
-    :param callback: Required callback function to report i2c data as a
-               result of read command
+    :param callback: Required callback function to report
+                     i2c data as a result of read command
 
    :param i2c_port: 0 = default, 1 = secondary
 
+   :param write_register: If True, the register is written
+                                   before read
+                          Else, the write is suppressed
+
 
     callback returns a data list:
-    [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
+
+    [I2C_READ_REPORT, address, register, count of data bytes,
+     data bytes, time-stamp]
 
     &#34;&#34;&#34;
 
     self._i2c_read_request(address, register, number_of_bytes,
-                           callback=callback, i2c_port=i2c_port)</code></pre>
+                           callback=callback, i2c_port=i2c_port,
+                           write_register=write_register)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.i2c_read_restart_transmission"><code class="name flex">
-<span>def <span class="ident">i2c_read_restart_transmission</span></span>(<span>self, address, register, number_of_bytes, callback=None, i2c_port=0)</span>
+<span>def <span class="ident">i2c_read_restart_transmission</span></span>(<span>self, address, register, number_of_bytes, callback=None, i2c_port=0, write_register=True)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Read the specified number of bytes from the specified register for
-the i2c device. This restarts the transmission after the read. It is
-required for some i2c devices such as the MMA8452Q accelerometer.</p>
+<div class="desc"><p>Read the specified number of bytes from the specified
+register for the i2c device. This restarts the transmission
+after the read. It is required for some i2c devices such as the MMA8452Q
+accelerometer.</p>
 <p>:param address: i2c device address</p>
 <p>:param register: i2c register (or None if no register
 selection is needed)</p>
 <p>:param number_of_bytes: number of bytes to be read</p>
-<p>:param callback: Required callback function to report i2c data as a
-result of read command</p>
+<p>:param callback: Required callback function to report i2c
+data as a result of read command</p>
 <p>:param i2c_port: 0 = default 1 = secondary</p>
+<p>:param write_register: If True, the register is written before read
+Else, the write is suppressed</p>
 <p>callback returns a data list:</p>
-<p>[I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]</p></div>
+<p>[I2C_READ_REPORT, address, register, count of data bytes,
+data bytes, time-stamp]</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def i2c_read_restart_transmission(self, address, register,
                                   number_of_bytes,
-                                  callback=None, i2c_port=0):
+                                  callback=None, i2c_port=0,
+                                  write_register=True):
     &#34;&#34;&#34;
-    Read the specified number of bytes from the specified register for
-    the i2c device. This restarts the transmission after the read. It is
-    required for some i2c devices such as the MMA8452Q accelerometer.
+    Read the specified number of bytes from the specified
+    register for the i2c device. This restarts the transmission
+    after the read. It is required for some i2c devices such as the MMA8452Q
+    accelerometer.
 
 
     :param address: i2c device address
@@ -5301,21 +5381,27 @@ result of read command</p>
 
     :param number_of_bytes: number of bytes to be read
 
-    :param callback: Required callback function to report i2c data as a
-               result of read command
+    :param callback: Required callback function to report i2c
+                     data as a result of read command
 
    :param i2c_port: 0 = default 1 = secondary
+
+   :param write_register: If True, the register is written before read
+                          Else, the write is suppressed
+
 
 
     callback returns a data list:
 
-    [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
+    [I2C_READ_REPORT, address, register, count of data bytes,
+     data bytes, time-stamp]
 
     &#34;&#34;&#34;
 
     self._i2c_read_request(address, register, number_of_bytes,
                            stop_transmission=False,
-                           callback=callback, i2c_port=i2c_port)</code></pre>
+                           callback=callback, i2c_port=i2c_port,
+                           write_register=write_register)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.i2c_write"><code class="name flex">
@@ -5956,8 +6042,8 @@ Time]</p></div>
     The pin_type for digital input pins with pullups enabled = 11
 
     &#34;&#34;&#34;
-    self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP, callback=
-    callback)</code></pre>
+    self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP,
+                       callback=callback)</code></pre>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.set_pin_mode_digital_output"><code class="name flex">
@@ -6878,6 +6964,12 @@ the current position. Maximum value is 32 bits.</p></div>
                               position. Negative is anticlockwise from
                               the current position. Maximum value is 32 bits.
     &#34;&#34;&#34;
+    if relative_position &lt; 0:
+        polarity = 1
+    else:
+        polarity = 0
+
+    relative_position = abs(relative_position)
     if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
         if self.shutdown_on_exception:
             self.shutdown()
@@ -6888,6 +6980,7 @@ the current position. Maximum value is 32 bits.</p></div>
     command = [PrivateConstants.STEPPER_MOVE, motor_id]
     for value in position_bytes:
         command.append(value)
+    command.append(polarity)
     self._send_command(command)</code></pre>
 </details>
 </dd>
@@ -6925,7 +7018,11 @@ after calling moveTo().</p>
 
     :param position: target position. Maximum value is 32 bits.
     &#34;&#34;&#34;
-
+    if position &lt; 0:
+        polarity = 1
+    else:
+        polarity = 0
+    position = abs(position)
     if not self.stepper_info_list[motor_id][&#39;instance&#39;]:
         if self.shutdown_on_exception:
             self.shutdown()
@@ -6936,6 +7033,7 @@ after calling moveTo().</p>
     command = [PrivateConstants.STEPPER_MOVE_TO, motor_id]
     for value in position_bytes:
         command.append(value)
+    command.append(polarity)
     self._send_command(command)</code></pre>
 </details>
 </dd>
