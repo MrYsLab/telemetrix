@@ -315,6 +315,8 @@ class Telemetrix(threading.Thread):
             raise RuntimeError(f'Telemetrix4Arduino firmware version')
 
         else:
+            if self.firmware_version[0] < 5:
+                raise RuntimeError('Please upgrade the server firmware to version 5.0.0 or greater')
             print(f'Telemetrix4Arduino firmware version: {self.firmware_version[0]}.'
                   f'{self.firmware_version[1]}.{self.firmware_version[2]}')
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
