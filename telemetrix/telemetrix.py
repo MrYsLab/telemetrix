@@ -315,6 +315,8 @@ class Telemetrix(threading.Thread):
             raise RuntimeError(f'Telemetrix4Arduino firmware version')
 
         else:
+            if self.firmware_version[0] < 5:
+                raise RuntimeError('Please upgrade the server firmware to version 5.0.0 or greater')
             print(f'Telemetrix4Arduino firmware version: {self.firmware_version[0]}.'
                   f'{self.firmware_version[1]}.{self.firmware_version[2]}')
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
@@ -525,39 +527,50 @@ class Telemetrix(threading.Thread):
         time.sleep(.5)
 
     def i2c_read(self, address, register, number_of_bytes,
-                 callback=None, i2c_port=0):
+                 callback=None, i2c_port=0,
+                 write_register=True):
         """
-        Read the specified number of bytes from the specified register for
-        the i2c device.
+        Read the specified number of bytes from the
+        specified register for the i2c device.
 
 
         :param address: i2c device address
 
-        :param register: i2c register (or None if no register selection is needed)
+        :param register: i2c register (or None if no register
+                                       selection is needed)
 
         :param number_of_bytes: number of bytes to be read
 
-        :param callback: Required callback function to report i2c data as a
-                   result of read command
+        :param callback: Required callback function to report
+                         i2c data as a result of read command
 
        :param i2c_port: 0 = default, 1 = secondary
 
+       :param write_register: If True, the register is written
+                                       before read
+                              Else, the write is suppressed
+
 
         callback returns a data list:
-        [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
+
+        [I2C_READ_REPORT, address, register, count of data bytes,
+         data bytes, time-stamp]
 
         """
 
         self._i2c_read_request(address, register, number_of_bytes,
-                               callback=callback, i2c_port=i2c_port)
+                               callback=callback, i2c_port=i2c_port,
+                               write_register=write_register)
 
     def i2c_read_restart_transmission(self, address, register,
                                       number_of_bytes,
-                                      callback=None, i2c_port=0):
+                                      callback=None, i2c_port=0,
+                                      write_register=True):
         """
-        Read the specified number of bytes from the specified register for
-        the i2c device. This restarts the transmission after the read. It is
-        required for some i2c devices such as the MMA8452Q accelerometer.
+        Read the specified number of bytes from the specified
+        register for the i2c device. This restarts the transmission
+        after the read. It is required for some i2c devices such as the MMA8452Q
+        accelerometer.
 
 
         :param address: i2c device address
@@ -567,24 +580,31 @@ class Telemetrix(threading.Thread):
 
         :param number_of_bytes: number of bytes to be read
 
-        :param callback: Required callback function to report i2c data as a
-                   result of read command
+        :param callback: Required callback function to report i2c
+                         data as a result of read command
 
        :param i2c_port: 0 = default 1 = secondary
+
+       :param write_register: If True, the register is written before read
+                              Else, the write is suppressed
+
 
 
         callback returns a data list:
 
-        [I2C_READ_REPORT, address, register, count of data bytes, data bytes, time-stamp]
+        [I2C_READ_REPORT, address, register, count of data bytes,
+         data bytes, time-stamp]
 
         """
 
         self._i2c_read_request(address, register, number_of_bytes,
                                stop_transmission=False,
-                               callback=callback, i2c_port=i2c_port)
+                               callback=callback, i2c_port=i2c_port,
+                               write_register=write_register)
 
     def _i2c_read_request(self, address, register, number_of_bytes,
-                          stop_transmission=True, callback=None, i2c_port=0):
+                          stop_transmission=True, callback=None, i2c_port=0,
+                          write_register=True):
         """
         This method requests the read of an i2c device. Results are retrieved
         via callback.
@@ -599,6 +619,9 @@ class Telemetrix(threading.Thread):
 
         :param callback: Required callback function to report i2c data as a
                    result of read command.
+
+       :param write_register: If True, the register is written before read
+                              Else, the write is suppressed
 
         """
         if not i2c_port:
@@ -628,15 +651,21 @@ class Telemetrix(threading.Thread):
         if not register:
             register = 0
 
+        if write_register:
+            write_register = 1
+        else:
+            write_register = 0
+
         # message contains:
         # 1. address
         # 2. register
         # 3. number of bytes
         # 4. restart_transmission - True or False
         # 5. i2c port
+        # 6. suppress write flag
 
         command = [PrivateConstants.I2C_READ, address, register, number_of_bytes,
-                   stop_transmission, i2c_port]
+                   stop_transmission, i2c_port, write_register]
         self._send_command(command)
 
     def i2c_write(self, address, args, i2c_port=0):
