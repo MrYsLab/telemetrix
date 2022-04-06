@@ -83,10 +83,8 @@ def the_callback(data):
     [pin_type=digital input, pin_number, pin_value, time stamp]
 ```
 * Intuitive APIs.
-    * Online [API Reference Documentation for Telemetrix](https://htmlpreview.github.io/?
-   https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html).
-    * Online [API Reference Documentation for Telemetrix-AIO](https://htmlpreview.github.
-   io/?https://github.com/MrYsLab/telemetrix-aio/blob/master/html/telemetrix_aio/index.html).
+    * Online [API Reference Documentation for Telemetrix](https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix/blob/master/html/telemetrix/index.html).
+    * Online [API Reference Documentation for Telemetrix-AIO](https://htmlpreview.github.io/?https://github.com/MrYsLab/telemetrix-aio/blob/master/html/telemetrix_aio/index.html).
 * A complete set of working examples for [Telemetrix](https://github.
   com/MrYsLab/telemetrix/tree/master/examples) and [Telemetrix-AIO](https://github.com/MrYsLab/telemetrix-aio/tree/master/examples)
 are available for download online. WiFi examples are also provided.
@@ -254,5 +252,5 @@ Pin: 12 Value: 1 Time Stamp: 2020-03-10 13:26:27
 
 Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.
 
-**Last updated 15 February 2022 **
+**Last updated 6 April 2022 **
 
