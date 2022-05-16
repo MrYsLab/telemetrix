@@ -86,6 +86,7 @@ class wheels():
         self.stop()
         time.sleep(.2)
         self.car_right()
+        time.sleep(3)
         self.stop()
         time.sleep(1)
 
