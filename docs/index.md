@@ -250,7 +250,7 @@ Pin: 12 Value: 1 Time Stamp: 2020-03-10 13:26:27
 <br>
 <br>
 
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.
+Copyright (C) 2020-22 Alan Yorinks. All Rights Reserved.
 
-**Last updated 6 April 2022 **
+**Last updated 4 June 2022 **
 
