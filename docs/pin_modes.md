@@ -119,6 +119,8 @@ When this method is called, a check for a valid DHT device is made. If an error
 
 Data reporting via callbacks for this pin begins immediately after this method is called. 
 
+The pin_type for this report is set to a value of 2 - DIGITAL_REPORT
+
 
 ### set_pin_mode_digital_input_pullup
 
@@ -145,6 +147,9 @@ Data reporting via callbacks for this pin begins immediately after this method i
 **Notes:** 
 
 Data reporting via callbacks for this pin begins immediately after this method is called. 
+
+The pin_type for this report is set to a value of 2 - DIGITAL_REPORT
+
 
 ### set_pin_mode_digital_output
 
