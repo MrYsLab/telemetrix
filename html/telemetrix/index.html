@@ -358,6 +358,8 @@ class Telemetrix(threading.Thread):
             raise RuntimeError(f&#39;Telemetrix4Arduino firmware version&#39;)
 
         else:
+            if self.firmware_version[0] &lt; 5:
+                raise RuntimeError(&#39;Please upgrade the server firmware to version 5.0.0 or greater&#39;)
             print(f&#39;Telemetrix4Arduino firmware version: {self.firmware_version[0]}.&#39;
                   f&#39;{self.firmware_version[1]}.{self.firmware_version[2]}&#39;)
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
@@ -797,7 +799,7 @@ class Telemetrix(threading.Thread):
 
         [pin_type, pin_number, pin_value, raw_time_stamp]
 
-        The pin_type for analog input pins = 2
+        The pin_type for analog input pins = 3
 
         &#34;&#34;&#34;
         self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG, differential,
@@ -816,7 +818,7 @@ class Telemetrix(threading.Thread):
 
         [pin_type, pin_number, pin_value, raw_time_stamp]
 
-        The pin_type for digital input pins = 0
+        The pin_type for all digital input pins = 2
 
         &#34;&#34;&#34;
         self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback=callback)
@@ -834,8 +836,7 @@ class Telemetrix(threading.Thread):
 
         [pin_type, pin_number, pin_value, raw_time_stamp]
 
-        The pin_type for digital input pins with pullups enabled = 11
-
+        The pin_type for all digital input pins = 2
         &#34;&#34;&#34;
         self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP,
                            callback=callback)
@@ -895,6 +896,7 @@ class Telemetrix(threading.Thread):
         Temperature,
         Time]
 
+        DHT_REPORT_TYPE = 12
         &#34;&#34;&#34;
         if self.reported_features &amp; PrivateConstants.DHT_FEATURE:
             if not callback:
@@ -2896,6 +2898,8 @@ receiving a KeyboardInterrupt exception</p>
             raise RuntimeError(f&#39;Telemetrix4Arduino firmware version&#39;)
 
         else:
+            if self.firmware_version[0] &lt; 5:
+                raise RuntimeError(&#39;Please upgrade the server firmware to version 5.0.0 or greater&#39;)
             print(f&#39;Telemetrix4Arduino firmware version: {self.firmware_version[0]}.&#39;
                   f&#39;{self.firmware_version[1]}.{self.firmware_version[2]}&#39;)
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
@@ -3335,7 +3339,7 @@ receiving a KeyboardInterrupt exception</p>
 
         [pin_type, pin_number, pin_value, raw_time_stamp]
 
-        The pin_type for analog input pins = 2
+        The pin_type for analog input pins = 3
 
         &#34;&#34;&#34;
         self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG, differential,
@@ -3354,7 +3358,7 @@ receiving a KeyboardInterrupt exception</p>
 
         [pin_type, pin_number, pin_value, raw_time_stamp]
 
-        The pin_type for digital input pins = 0
+        The pin_type for all digital input pins = 2
 
         &#34;&#34;&#34;
         self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback=callback)
@@ -3372,8 +3376,7 @@ receiving a KeyboardInterrupt exception</p>
 
         [pin_type, pin_number, pin_value, raw_time_stamp]
 
-        The pin_type for digital input pins with pullups enabled = 11
-
+        The pin_type for all digital input pins = 2
         &#34;&#34;&#34;
         self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP,
                            callback=callback)
@@ -3433,6 +3436,7 @@ receiving a KeyboardInterrupt exception</p>
         Temperature,
         Time]
 
+        DHT_REPORT_TYPE = 12
         &#34;&#34;&#34;
         if self.reported_features &amp; PrivateConstants.DHT_FEATURE:
             if not callback:
@@ -5874,7 +5878,7 @@ report will be generated</p>
 <p>:param callback: callback function</p>
 <p>callback returns a data list:</p>
 <p>[pin_type, pin_number, pin_value, raw_time_stamp]</p>
-<p>The pin_type for analog input pins = 2</p></div>
+<p>The pin_type for analog input pins = 3</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -5895,7 +5899,7 @@ report will be generated</p>
 
     [pin_type, pin_number, pin_value, raw_time_stamp]
 
-    The pin_type for analog input pins = 2
+    The pin_type for analog input pins = 3
 
     &#34;&#34;&#34;
     self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG, differential,
@@ -5932,7 +5936,8 @@ report will be generated</p>
 <p>Error Callback: [DHT REPORT Type, DHT_ERROR_NUMBER, PIN, DHT_TYPE, Time]</p>
 <p>Valid Data Callback: DHT REPORT Type, DHT_DATA=, PIN, DHT_TYPE, Humidity,
 Temperature,
-Time]</p></div>
+Time]</p>
+<p>DHT_REPORT_TYPE = 12</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -5952,6 +5957,7 @@ Time]</p></div>
     Temperature,
     Time]
 
+    DHT_REPORT_TYPE = 12
     &#34;&#34;&#34;
     if self.reported_features &amp; PrivateConstants.DHT_FEATURE:
         if not callback:
@@ -5988,7 +5994,7 @@ Time]</p></div>
 <p>:param callback: callback function</p>
 <p>callback returns a data list:</p>
 <p>[pin_type, pin_number, pin_value, raw_time_stamp]</p>
-<p>The pin_type for digital input pins = 0</p></div>
+<p>The pin_type for all digital input pins = 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -6006,7 +6012,7 @@ Time]</p></div>
 
     [pin_type, pin_number, pin_value, raw_time_stamp]
 
-    The pin_type for digital input pins = 0
+    The pin_type for all digital input pins = 2
 
     &#34;&#34;&#34;
     self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback=callback)</code></pre>
@@ -6021,7 +6027,7 @@ Time]</p></div>
 <p>:param callback: callback function</p>
 <p>callback returns a data list:</p>
 <p>[pin_type, pin_number, pin_value, raw_time_stamp]</p>
-<p>The pin_type for digital input pins with pullups enabled = 11</p></div>
+<p>The pin_type for all digital input pins = 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -6039,8 +6045,7 @@ Time]</p></div>
 
     [pin_type, pin_number, pin_value, raw_time_stamp]
 
-    The pin_type for digital input pins with pullups enabled = 11
-
+    The pin_type for all digital input pins = 2
     &#34;&#34;&#34;
     self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP,
                        callback=callback)</code></pre>

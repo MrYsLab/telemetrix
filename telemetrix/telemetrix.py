@@ -756,7 +756,7 @@ class Telemetrix(threading.Thread):
 
         [pin_type, pin_number, pin_value, raw_time_stamp]
 
-        The pin_type for analog input pins = 2
+        The pin_type for analog input pins = 3
 
         """
         self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG, differential,
@@ -775,7 +775,7 @@ class Telemetrix(threading.Thread):
 
         [pin_type, pin_number, pin_value, raw_time_stamp]
 
-        The pin_type for digital input pins = 0
+        The pin_type for all digital input pins = 2
 
         """
         self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback=callback)
@@ -793,8 +793,7 @@ class Telemetrix(threading.Thread):
 
         [pin_type, pin_number, pin_value, raw_time_stamp]
 
-        The pin_type for digital input pins with pullups enabled = 11
-
+        The pin_type for all digital input pins = 2
         """
         self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP,
                            callback=callback)
@@ -854,6 +853,7 @@ class Telemetrix(threading.Thread):
         Temperature,
         Time]
 
+        DHT_REPORT_TYPE = 12
         """
         if self.reported_features & PrivateConstants.DHT_FEATURE:
             if not callback:
