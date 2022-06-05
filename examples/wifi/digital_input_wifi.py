@@ -30,7 +30,7 @@ Monitor a digital input pin
 Setup a pin for digital input and monitor its changes
 """
 
-# Setup a pin for analog input and monitor its changes
+# Set up a pin for analog input and monitor its changes
 DIGITAL_PIN = 5  # arduino pin number
 
 # Callback data indices
@@ -58,7 +58,7 @@ def digital_in(my_board, pin):
      digital input. Any changes on this pin will
      be reported through the call back function.
 
-     :param my_board: a pymata4 instance
+     :param my_board: a telemetrix instance
      :param pin: Arduino pin number
      """
 

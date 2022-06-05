@@ -31,7 +31,7 @@ Monitor an analog input pin
 Setup a pin for analog input and monitor its changes
 """
 
-# Setup a pin for analog input and monitor its changes
+# Set up a pin for analog input and monitor its changes
 ANALOG_PIN = 2  # arduino pin number (A2)
 
 # Callback data indices
@@ -59,13 +59,12 @@ def analog_in(my_board, pin):
      analog input. Any changes on this pin will
      be reported through the call back function.
 
-     :param my_board: a pymata4 instance
+     :param my_board: a telemetrix instance
      :param pin: Arduino pin number
      """
 
     # set the pin mode
     my_board.set_pin_mode_analog_input(pin, differential=5, callback=the_callback)
-
 
     # time.sleep(5)
     # my_board.disable_analog_reporting()

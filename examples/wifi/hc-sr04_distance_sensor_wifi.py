@@ -48,7 +48,7 @@ def sonar(my_board, trigger_pin, echo_pin, callback):
     Set the pin mode for a sonar device. Results will appear via the
     callback.
 
-    :param my_board: an pymata express instance
+    :param my_board: a telemetrix instance
     :param trigger_pin: Arduino pin number
     :param echo_pin: Arduino pin number
     :param callback: The callback function

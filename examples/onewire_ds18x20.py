@@ -116,7 +116,7 @@ class OneWireTemp:
 
                 self.board.onewire_skip()
 
-                # read the the data from the scratch pad
+                # read the data from the scratch pad
                 self.board.onewire_write(0xBE)
 
                 for x in range(10):

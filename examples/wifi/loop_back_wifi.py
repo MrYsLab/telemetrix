@@ -39,7 +39,7 @@ def loop_back(my_board, loop_back_data):
     This function will request that the supplied characters be
     sent to the board and looped back and printed out to the console.
 
-    :param my_board: a pymata4 instance
+    :param my_board: a telemetrix instance
     :param loop_back_data: A list of characters to have looped back
     """
     try:

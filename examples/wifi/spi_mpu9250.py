@@ -32,7 +32,6 @@ the callback functions.
 #    5 Chip Select                              NCS
 
 
-
 import sys
 import time
 

@@ -72,7 +72,7 @@ def dht(my_board, pin, callback, dht_type):
         Set the pin mode for a DHT 22 device. Results will appear via the
         callback.
 
-        :param my_board: an pymata express instance
+        :param my_board: an telemetrix instance
         :param pin: Arduino pin number
         :param callback: The callback function
         :param dht_type: 22 or 11

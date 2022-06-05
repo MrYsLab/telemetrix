@@ -31,7 +31,7 @@ Monitor an analog input pin
 Setup a pin for analog input and monitor its changes
 """
 
-# Setup a pin for analog input and monitor its changes
+# Set up a pin for analog input and monitor its changes
 ANALOG_PIN = 2  # arduino pin number (A2)
 
 # Callback data indices
@@ -62,7 +62,7 @@ def analog_in(my_board, pin):
      It sets a differential value of 5 and also
      sets the scan interval to 30.
 
-     :param my_board: a pymata4 instance
+     :param my_board: a telemetrix instance
      :param pin: Arduino pin number
      """
 

@@ -46,5 +46,3 @@ time.sleep(1)
 board.servo_detach(SERVO_PIN)
 time.sleep(.2)
 board.shutdown()
-
-
