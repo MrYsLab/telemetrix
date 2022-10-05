@@ -88,6 +88,7 @@ def the_callback(data):
 * A complete set of working examples for [Telemetrix](https://github.
   com/MrYsLab/telemetrix/tree/master/examples) and [Telemetrix-AIO](https://github.com/MrYsLab/telemetrix-aio/tree/master/examples)
 are available for download online. WiFi examples are also provided.
+* There is a section of [contributed examples](https://github.com/MrYsLab/telemetrix/tree/master/examples/Contributed) as well.
 * Both clients connect to the servers using a serial or WiFi interface, depending upon 
   the server in use.
 * Integrated debugging methods are included to aid in adding new features.
