@@ -1,0 +1,1315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>i2c_lcd_pcf8574 API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>i2c_lcd_pcf8574</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import sys
+import time
+from telemetrix import telemetrix
+
+&#34;&#34;&#34;
+This file contains a library to control an i2c LCD. 
+See i2c_ldc_pcf8574_hello_world.py for an example of its use.
+&#34;&#34;&#34;
+
+
+class _OutputState(object):
+    &#34;&#34;&#34;
+       This class helps us construct the I2C output based on data and control outputs.
+       Because the LCD is set to 4-bit mode, 4 bits of the I2C output are for the control outputs
+       while the other 4 bits are for the 8 bits of data which are send in parts using
+       the enable output.
+    &#34;&#34;&#34;
+    def __init__(self):
+        self.rs = 0
+        self.rw = 0
+        self.E = 0
+        self.Led = 0
+        self.data = 0
+
+    def GetLowData(self):
+        buffer = self.rs
+        buffer |= self.rw &lt;&lt; 1
+        buffer |= self.E &lt;&lt; 2
+        buffer |= self.Led &lt;&lt; 3
+        buffer |= (self.data &amp; 0x0F) &lt;&lt; 4
+
+        return buffer
+
+    def GetHighData(self):
+        buffer = self.rs
+        buffer |= self.rw &lt;&lt; 1
+        buffer |= self.E &lt;&lt; 2
+        buffer |= self.Led &lt;&lt; 3
+        buffer |= (self.data &amp; 0xF0)
+
+        return buffer
+
+
+class LcdI2c(object):
+    &#34;&#34;&#34;
+    This class contains all the LCD control methods that constitute the API.
+    &#34;&#34;&#34;
+    def __init__(self, board, address=0x27, columns=16, rows=2):
+        &#34;&#34;&#34;
+        Initializer for an LcdI2c class
+
+        :param board: a telemetrix instance
+
+        :param address: I2C address of the LCD
+
+        :param columns: Number of display columns
+
+        :param rows: Number of display rows
+        &#34;&#34;&#34;
+        self.board = board
+        self._address = address
+        self._columnMax = columns - 1
+        self._rowMax = rows - 1
+        self._displayState = 0x00
+        self._entryState = 0x00
+        self._output = _OutputState()
+
+        board.set_pin_mode_i2c()
+        board._I2C_Write(self._address, [0])
+
+    def begin(self):
+        &#34;&#34;&#34;
+        Initialize the LCD display
+        &#34;&#34;&#34;
+        self.delayMiliseconds(50)  # Wait more than 40ms after powerOn.
+        self._I2C_Write(0b00000000)  # Clear i2c adapter
+        self.delayMiliseconds(50)  # Wait more than 40ms after powerOn.
+
+        self._InitializeLCD()
+
+    def backlight(self):
+        &#34;&#34;&#34;
+        Turn on the backlight
+        &#34;&#34;&#34;
+        self._output.Led = 1
+        # Led pin is independent of LCD data and control lines.
+        self.__I2C_Write(0b00000000 | self._output.Led &lt;&lt; 3)
+
+    def noBacklight(self):
+        &#34;&#34;&#34;
+        Turn off the backlight
+        &#34;&#34;&#34;
+        self._output.Led = 0
+        # Led pin is independent of LCD data and control lines.
+        self.__I2C_Write(0b00000000 | self._output.Led &lt;&lt; 3)
+
+    def clear(self):
+        &#34;&#34;&#34;
+        Clear the display
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._LCD_Write(0b00000001)
+        self.delayMiliseconds(160)
+
+    def home(self):
+        &#34;&#34;&#34;
+        Set the cursor to the home position
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._LCD_Write(0b00000010)
+        self.delayMiliseconds(160)
+
+    # Part of Entry mode set
+    def leftToRight(self):
+        &#34;&#34;&#34;
+        Set display data entry from left to right
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._entryState |= 1 &lt;&lt; 1
+
+        self._LCD_Write(0b00000100 | self._entryState)
+        self.delayMiliseconds(37)
+
+    # Part of Entry mode set
+    def rightToLeft(self):
+        &#34;&#34;&#34;
+        Set display data entry from right to left
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._entryState &amp;= ~(1 &lt;&lt; 1)
+
+        self._LCD_Write(0b00000100 | self._entryState)
+        self.delayMiliseconds(37)
+
+    # Part of Entry mode set
+    def autoscroll(self):
+        &#34;&#34;&#34;
+        Turn on display autoscroll
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._entryState |= 1
+
+        self._LCD_Write(0b00000100 | self._entryState)
+        self.delayMiliseconds(37)
+
+    # Part of Entry mode set
+    def noAutoscroll(self):
+        &#34;&#34;&#34;
+        Turn off display autoscroll
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._entryState &amp;= ~1
+
+        self._LCD_Write(0b00000100 | self._entryState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def display(self):
+        &#34;&#34;&#34;
+        Enable the display
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState |= 1 &lt;&lt; 2
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def noDisplay(self):
+        &#34;&#34;&#34;
+        Disable the display
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState &amp;= ~(1 &lt;&lt; 2)
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def cursor(self):
+        &#34;&#34;&#34;
+        Enable the cursor
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState |= 1 &lt;&lt; 1
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def noCursor(self):
+        &#34;&#34;&#34;
+        Disable the cursor
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState &amp;= ~(1 &lt;&lt; 1)
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def blink(self):
+        &#34;&#34;&#34;
+        Enable blink
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState |= 1
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def noBlink(self):
+        &#34;&#34;&#34;
+        Disable blink
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState &amp;= ~1
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Cursor or display shift
+    def scrollDisplayLeft(self):
+        &#34;&#34;&#34;
+        Scroll the display to the left
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._LCD_Write(0b00011000)
+        self.delayMiliseconds(37)
+
+    # Part of Cursor or display shift
+    def scrollDisplayRight(self):
+        &#34;&#34;&#34;
+        Scroll the display to the right
+        &#34;&#34;&#34;
+
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._LCD_Write(0b00011100)
+        self.delayMiliseconds(37)
+
+    # Set CGRAM address
+    def createChar(self, location, charmap=[]):
+        &#34;&#34;&#34;
+        Create a custom character
+
+        :param location: integer identifier of the custom character
+
+        :param charmap: Each character is made up of a 5x8 bitmap
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        location %= 8
+
+        self._LCD_Write(0b01000000 | (location &lt;&lt; 3))
+        self.delayMiliseconds(37)
+
+        for i in charmap:
+            self.write(i)
+
+        self.setCursor(0, 0)  # Set the address pointer back to the DDRAM
+
+    # Set DDRAM address
+    def setCursor(self, col, row):
+        &#34;&#34;&#34;
+        Set the cursor to the column and row
+        :param col: display column
+        :param row: display row
+        &#34;&#34;&#34;
+        row_offsets = []
+        row_offsets.extend([0x00, 0x40, 0x14, 0x54])
+        self._output.rs = 0
+        self._output.rw = 0
+
+        if col &gt; self._columnMax:
+            col = self._columnMax  # sanity limits
+        if row &gt; self._rowMax:
+            row = self._rowMax  # sanity limits
+
+        newAddress = row_offsets[row] + col
+
+        self._LCD_Write(0b10000000 | newAddress)
+        self.delayMiliseconds(37)
+
+    def write(self, character):
+        &#34;&#34;&#34;
+        Wrtie a custom character to the display
+        :param character: The custom character ID
+        &#34;&#34;&#34;
+        self._output.rs = 1
+        self._output.rw = 0
+
+        self._LCD_Write(character)
+        self._delayMiliseconds(41)
+
+        return 1
+
+    def _InitializeLCD(self):
+        &#34;&#34;&#34;
+        Initialize the i2c interface and LCD to a known state
+        &#34;&#34;&#34;
+        # See HD44780U datasheet &#34;Initializing by Instruction&#34; Figure 24 (4-Bit Interface)
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._LCD_Write(0b00110000, True)
+        self._delayMiliseconds(42)
+        self._LCD_Write(0b00110000, True)
+        self._delayMiliseconds(150)
+        self._LCD_Write(0b00110000, True)
+        self._delayMiliseconds(37)
+        self._LCD_Write(0b00100000, True)  # Function Set - 4 bits mode
+        self._delayMiliseconds(37)
+        self._LCD_Write(0b00101000)  # Function Set - 4 bits(Still), 2 lines, 5x8 font
+        self._delayMiliseconds(37)
+
+        self.display()
+        self.clear()
+        self.leftToRight()
+
+    def _I2C_Write(self, output):
+        self.board.i2c_write(self._address, [output])
+
+    def _LCD_Write(self, output, initialization=False):
+        self._output.data = output
+
+        self._output.E = True
+        self._I2C_Write(self._output.GetHighData())
+        self._delayMicroseconds(1)  # High part of enable should be &gt;450 nS
+
+        self._output.E = False
+        self._I2C_Write(self._output.GetHighData())
+
+        # During initialization, we only send half a byte
+        if not initialization:
+            # I think we need a delay between half byte writes,
+            # but no sure how long it needs to be.
+            self._delayMicroseconds(37)
+
+            self._output.E = True
+            self._I2C_Write(self._output.GetLowData())
+            self._delayMicroseconds(1)  # High part of enable should be &gt;450 nS
+
+            self._output.E = False
+            self._I2C_Write(self._output.GetLowData())
+        # self._delayMicroseconds(37) # Some commands have different timing requirement,
+        # so every command should handle its own delay after execution
+
+    def _delayMicroseconds(self, microsec):
+        time.sleep(microsec * 1e-6)
+
+    def _delayMiliseconds(self, milisec):
+        time.sleep(milisec * 1e-3)
+
+    def print(self, text):
+        &#34;&#34;&#34;
+        Print a string to the display
+
+        :param text: A string of text
+
+        &#34;&#34;&#34;
+        for c in bytearray(text, &#39;ASCII&#39;):
+            self.write(c)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="i2c_lcd_pcf8574.LcdI2c"><code class="flex name class">
+<span>class <span class="ident">LcdI2c</span></span>
+<span>(</span><span>board, address=39, columns=16, rows=2)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This class contains all the LCD control methods that constitute the API.</p>
+<p>Initializer for an LcdI2c class</p>
+<p>:param board: a telemetrix instance</p>
+<p>:param address: I2C address of the LCD</p>
+<p>:param columns: Number of display columns</p>
+<p>:param rows: Number of display rows</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LcdI2c(object):
+    &#34;&#34;&#34;
+    This class contains all the LCD control methods that constitute the API.
+    &#34;&#34;&#34;
+    def __init__(self, board, address=0x27, columns=16, rows=2):
+        &#34;&#34;&#34;
+        Initializer for an LcdI2c class
+
+        :param board: a telemetrix instance
+
+        :param address: I2C address of the LCD
+
+        :param columns: Number of display columns
+
+        :param rows: Number of display rows
+        &#34;&#34;&#34;
+        self.board = board
+        self._address = address
+        self._columnMax = columns - 1
+        self._rowMax = rows - 1
+        self._displayState = 0x00
+        self._entryState = 0x00
+        self._output = _OutputState()
+
+        board.set_pin_mode_i2c()
+        board._I2C_Write(self._address, [0])
+
+    def begin(self):
+        &#34;&#34;&#34;
+        Initialize the LCD display
+        &#34;&#34;&#34;
+        self.delayMiliseconds(50)  # Wait more than 40ms after powerOn.
+        self._I2C_Write(0b00000000)  # Clear i2c adapter
+        self.delayMiliseconds(50)  # Wait more than 40ms after powerOn.
+
+        self._InitializeLCD()
+
+    def backlight(self):
+        &#34;&#34;&#34;
+        Turn on the backlight
+        &#34;&#34;&#34;
+        self._output.Led = 1
+        # Led pin is independent of LCD data and control lines.
+        self.__I2C_Write(0b00000000 | self._output.Led &lt;&lt; 3)
+
+    def noBacklight(self):
+        &#34;&#34;&#34;
+        Turn off the backlight
+        &#34;&#34;&#34;
+        self._output.Led = 0
+        # Led pin is independent of LCD data and control lines.
+        self.__I2C_Write(0b00000000 | self._output.Led &lt;&lt; 3)
+
+    def clear(self):
+        &#34;&#34;&#34;
+        Clear the display
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._LCD_Write(0b00000001)
+        self.delayMiliseconds(160)
+
+    def home(self):
+        &#34;&#34;&#34;
+        Set the cursor to the home position
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._LCD_Write(0b00000010)
+        self.delayMiliseconds(160)
+
+    # Part of Entry mode set
+    def leftToRight(self):
+        &#34;&#34;&#34;
+        Set display data entry from left to right
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._entryState |= 1 &lt;&lt; 1
+
+        self._LCD_Write(0b00000100 | self._entryState)
+        self.delayMiliseconds(37)
+
+    # Part of Entry mode set
+    def rightToLeft(self):
+        &#34;&#34;&#34;
+        Set display data entry from right to left
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._entryState &amp;= ~(1 &lt;&lt; 1)
+
+        self._LCD_Write(0b00000100 | self._entryState)
+        self.delayMiliseconds(37)
+
+    # Part of Entry mode set
+    def autoscroll(self):
+        &#34;&#34;&#34;
+        Turn on display autoscroll
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._entryState |= 1
+
+        self._LCD_Write(0b00000100 | self._entryState)
+        self.delayMiliseconds(37)
+
+    # Part of Entry mode set
+    def noAutoscroll(self):
+        &#34;&#34;&#34;
+        Turn off display autoscroll
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._entryState &amp;= ~1
+
+        self._LCD_Write(0b00000100 | self._entryState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def display(self):
+        &#34;&#34;&#34;
+        Enable the display
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState |= 1 &lt;&lt; 2
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def noDisplay(self):
+        &#34;&#34;&#34;
+        Disable the display
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState &amp;= ~(1 &lt;&lt; 2)
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def cursor(self):
+        &#34;&#34;&#34;
+        Enable the cursor
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState |= 1 &lt;&lt; 1
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def noCursor(self):
+        &#34;&#34;&#34;
+        Disable the cursor
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState &amp;= ~(1 &lt;&lt; 1)
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def blink(self):
+        &#34;&#34;&#34;
+        Enable blink
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState |= 1
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Display control
+    def noBlink(self):
+        &#34;&#34;&#34;
+        Disable blink
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._displayState &amp;= ~1
+
+        self._LCD_Write(0b00001000 | self._displayState)
+        self.delayMiliseconds(37)
+
+    # Part of Cursor or display shift
+    def scrollDisplayLeft(self):
+        &#34;&#34;&#34;
+        Scroll the display to the left
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._LCD_Write(0b00011000)
+        self.delayMiliseconds(37)
+
+    # Part of Cursor or display shift
+    def scrollDisplayRight(self):
+        &#34;&#34;&#34;
+        Scroll the display to the right
+        &#34;&#34;&#34;
+
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._LCD_Write(0b00011100)
+        self.delayMiliseconds(37)
+
+    # Set CGRAM address
+    def createChar(self, location, charmap=[]):
+        &#34;&#34;&#34;
+        Create a custom character
+
+        :param location: integer identifier of the custom character
+
+        :param charmap: Each character is made up of a 5x8 bitmap
+        &#34;&#34;&#34;
+        self._output.rs = 0
+        self._output.rw = 0
+
+        location %= 8
+
+        self._LCD_Write(0b01000000 | (location &lt;&lt; 3))
+        self.delayMiliseconds(37)
+
+        for i in charmap:
+            self.write(i)
+
+        self.setCursor(0, 0)  # Set the address pointer back to the DDRAM
+
+    # Set DDRAM address
+    def setCursor(self, col, row):
+        &#34;&#34;&#34;
+        Set the cursor to the column and row
+        :param col: display column
+        :param row: display row
+        &#34;&#34;&#34;
+        row_offsets = []
+        row_offsets.extend([0x00, 0x40, 0x14, 0x54])
+        self._output.rs = 0
+        self._output.rw = 0
+
+        if col &gt; self._columnMax:
+            col = self._columnMax  # sanity limits
+        if row &gt; self._rowMax:
+            row = self._rowMax  # sanity limits
+
+        newAddress = row_offsets[row] + col
+
+        self._LCD_Write(0b10000000 | newAddress)
+        self.delayMiliseconds(37)
+
+    def write(self, character):
+        &#34;&#34;&#34;
+        Wrtie a custom character to the display
+        :param character: The custom character ID
+        &#34;&#34;&#34;
+        self._output.rs = 1
+        self._output.rw = 0
+
+        self._LCD_Write(character)
+        self._delayMiliseconds(41)
+
+        return 1
+
+    def _InitializeLCD(self):
+        &#34;&#34;&#34;
+        Initialize the i2c interface and LCD to a known state
+        &#34;&#34;&#34;
+        # See HD44780U datasheet &#34;Initializing by Instruction&#34; Figure 24 (4-Bit Interface)
+        self._output.rs = 0
+        self._output.rw = 0
+
+        self._LCD_Write(0b00110000, True)
+        self._delayMiliseconds(42)
+        self._LCD_Write(0b00110000, True)
+        self._delayMiliseconds(150)
+        self._LCD_Write(0b00110000, True)
+        self._delayMiliseconds(37)
+        self._LCD_Write(0b00100000, True)  # Function Set - 4 bits mode
+        self._delayMiliseconds(37)
+        self._LCD_Write(0b00101000)  # Function Set - 4 bits(Still), 2 lines, 5x8 font
+        self._delayMiliseconds(37)
+
+        self.display()
+        self.clear()
+        self.leftToRight()
+
+    def _I2C_Write(self, output):
+        self.board.i2c_write(self._address, [output])
+
+    def _LCD_Write(self, output, initialization=False):
+        self._output.data = output
+
+        self._output.E = True
+        self._I2C_Write(self._output.GetHighData())
+        self._delayMicroseconds(1)  # High part of enable should be &gt;450 nS
+
+        self._output.E = False
+        self._I2C_Write(self._output.GetHighData())
+
+        # During initialization, we only send half a byte
+        if not initialization:
+            # I think we need a delay between half byte writes,
+            # but no sure how long it needs to be.
+            self._delayMicroseconds(37)
+
+            self._output.E = True
+            self._I2C_Write(self._output.GetLowData())
+            self._delayMicroseconds(1)  # High part of enable should be &gt;450 nS
+
+            self._output.E = False
+            self._I2C_Write(self._output.GetLowData())
+        # self._delayMicroseconds(37) # Some commands have different timing requirement,
+        # so every command should handle its own delay after execution
+
+    def _delayMicroseconds(self, microsec):
+        time.sleep(microsec * 1e-6)
+
+    def _delayMiliseconds(self, milisec):
+        time.sleep(milisec * 1e-3)
+
+    def print(self, text):
+        &#34;&#34;&#34;
+        Print a string to the display
+
+        :param text: A string of text
+
+        &#34;&#34;&#34;
+        for c in bytearray(text, &#39;ASCII&#39;):
+            self.write(c)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="i2c_lcd_pcf8574.LcdI2c.autoscroll"><code class="name flex">
+<span>def <span class="ident">autoscroll</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Turn on display autoscroll</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def autoscroll(self):
+    &#34;&#34;&#34;
+    Turn on display autoscroll
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._entryState |= 1
+
+    self._LCD_Write(0b00000100 | self._entryState)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.backlight"><code class="name flex">
+<span>def <span class="ident">backlight</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Turn on the backlight</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def backlight(self):
+    &#34;&#34;&#34;
+    Turn on the backlight
+    &#34;&#34;&#34;
+    self._output.Led = 1
+    # Led pin is independent of LCD data and control lines.
+    self.__I2C_Write(0b00000000 | self._output.Led &lt;&lt; 3)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.begin"><code class="name flex">
+<span>def <span class="ident">begin</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initialize the LCD display</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def begin(self):
+    &#34;&#34;&#34;
+    Initialize the LCD display
+    &#34;&#34;&#34;
+    self.delayMiliseconds(50)  # Wait more than 40ms after powerOn.
+    self._I2C_Write(0b00000000)  # Clear i2c adapter
+    self.delayMiliseconds(50)  # Wait more than 40ms after powerOn.
+
+    self._InitializeLCD()</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.blink"><code class="name flex">
+<span>def <span class="ident">blink</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enable blink</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def blink(self):
+    &#34;&#34;&#34;
+    Enable blink
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._displayState |= 1
+
+    self._LCD_Write(0b00001000 | self._displayState)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.clear"><code class="name flex">
+<span>def <span class="ident">clear</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Clear the display</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear(self):
+    &#34;&#34;&#34;
+    Clear the display
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._LCD_Write(0b00000001)
+    self.delayMiliseconds(160)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.createChar"><code class="name flex">
+<span>def <span class="ident">createChar</span></span>(<span>self, location, charmap=[])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a custom character</p>
+<p>:param location: integer identifier of the custom character</p>
+<p>:param charmap: Each character is made up of a 5x8 bitmap</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def createChar(self, location, charmap=[]):
+    &#34;&#34;&#34;
+    Create a custom character
+
+    :param location: integer identifier of the custom character
+
+    :param charmap: Each character is made up of a 5x8 bitmap
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    location %= 8
+
+    self._LCD_Write(0b01000000 | (location &lt;&lt; 3))
+    self.delayMiliseconds(37)
+
+    for i in charmap:
+        self.write(i)
+
+    self.setCursor(0, 0)  # Set the address pointer back to the DDRAM</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.cursor"><code class="name flex">
+<span>def <span class="ident">cursor</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enable the cursor</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cursor(self):
+    &#34;&#34;&#34;
+    Enable the cursor
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._displayState |= 1 &lt;&lt; 1
+
+    self._LCD_Write(0b00001000 | self._displayState)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.display"><code class="name flex">
+<span>def <span class="ident">display</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enable the display</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def display(self):
+    &#34;&#34;&#34;
+    Enable the display
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._displayState |= 1 &lt;&lt; 2
+
+    self._LCD_Write(0b00001000 | self._displayState)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.home"><code class="name flex">
+<span>def <span class="ident">home</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the cursor to the home position</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def home(self):
+    &#34;&#34;&#34;
+    Set the cursor to the home position
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._LCD_Write(0b00000010)
+    self.delayMiliseconds(160)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.leftToRight"><code class="name flex">
+<span>def <span class="ident">leftToRight</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set display data entry from left to right</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def leftToRight(self):
+    &#34;&#34;&#34;
+    Set display data entry from left to right
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._entryState |= 1 &lt;&lt; 1
+
+    self._LCD_Write(0b00000100 | self._entryState)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.noAutoscroll"><code class="name flex">
+<span>def <span class="ident">noAutoscroll</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Turn off display autoscroll</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def noAutoscroll(self):
+    &#34;&#34;&#34;
+    Turn off display autoscroll
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._entryState &amp;= ~1
+
+    self._LCD_Write(0b00000100 | self._entryState)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.noBacklight"><code class="name flex">
+<span>def <span class="ident">noBacklight</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Turn off the backlight</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def noBacklight(self):
+    &#34;&#34;&#34;
+    Turn off the backlight
+    &#34;&#34;&#34;
+    self._output.Led = 0
+    # Led pin is independent of LCD data and control lines.
+    self.__I2C_Write(0b00000000 | self._output.Led &lt;&lt; 3)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.noBlink"><code class="name flex">
+<span>def <span class="ident">noBlink</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Disable blink</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def noBlink(self):
+    &#34;&#34;&#34;
+    Disable blink
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._displayState &amp;= ~1
+
+    self._LCD_Write(0b00001000 | self._displayState)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.noCursor"><code class="name flex">
+<span>def <span class="ident">noCursor</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Disable the cursor</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def noCursor(self):
+    &#34;&#34;&#34;
+    Disable the cursor
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._displayState &amp;= ~(1 &lt;&lt; 1)
+
+    self._LCD_Write(0b00001000 | self._displayState)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.noDisplay"><code class="name flex">
+<span>def <span class="ident">noDisplay</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Disable the display</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def noDisplay(self):
+    &#34;&#34;&#34;
+    Disable the display
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._displayState &amp;= ~(1 &lt;&lt; 2)
+
+    self._LCD_Write(0b00001000 | self._displayState)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.print"><code class="name flex">
+<span>def <span class="ident">print</span></span>(<span>self, text)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Print a string to the display</p>
+<p>:param text: A string of text</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print(self, text):
+    &#34;&#34;&#34;
+    Print a string to the display
+
+    :param text: A string of text
+
+    &#34;&#34;&#34;
+    for c in bytearray(text, &#39;ASCII&#39;):
+        self.write(c)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.rightToLeft"><code class="name flex">
+<span>def <span class="ident">rightToLeft</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set display data entry from right to left</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rightToLeft(self):
+    &#34;&#34;&#34;
+    Set display data entry from right to left
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._entryState &amp;= ~(1 &lt;&lt; 1)
+
+    self._LCD_Write(0b00000100 | self._entryState)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.scrollDisplayLeft"><code class="name flex">
+<span>def <span class="ident">scrollDisplayLeft</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Scroll the display to the left</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scrollDisplayLeft(self):
+    &#34;&#34;&#34;
+    Scroll the display to the left
+    &#34;&#34;&#34;
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._LCD_Write(0b00011000)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.scrollDisplayRight"><code class="name flex">
+<span>def <span class="ident">scrollDisplayRight</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Scroll the display to the right</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scrollDisplayRight(self):
+    &#34;&#34;&#34;
+    Scroll the display to the right
+    &#34;&#34;&#34;
+
+    self._output.rs = 0
+    self._output.rw = 0
+
+    self._LCD_Write(0b00011100)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.setCursor"><code class="name flex">
+<span>def <span class="ident">setCursor</span></span>(<span>self, col, row)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the cursor to the column and row
+:param col: display column
+:param row: display row</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setCursor(self, col, row):
+    &#34;&#34;&#34;
+    Set the cursor to the column and row
+    :param col: display column
+    :param row: display row
+    &#34;&#34;&#34;
+    row_offsets = []
+    row_offsets.extend([0x00, 0x40, 0x14, 0x54])
+    self._output.rs = 0
+    self._output.rw = 0
+
+    if col &gt; self._columnMax:
+        col = self._columnMax  # sanity limits
+    if row &gt; self._rowMax:
+        row = self._rowMax  # sanity limits
+
+    newAddress = row_offsets[row] + col
+
+    self._LCD_Write(0b10000000 | newAddress)
+    self.delayMiliseconds(37)</code></pre>
+</details>
+</dd>
+<dt id="i2c_lcd_pcf8574.LcdI2c.write"><code class="name flex">
+<span>def <span class="ident">write</span></span>(<span>self, character)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Wrtie a custom character to the display
+:param character: The custom character ID</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def write(self, character):
+    &#34;&#34;&#34;
+    Wrtie a custom character to the display
+    :param character: The custom character ID
+    &#34;&#34;&#34;
+    self._output.rs = 1
+    self._output.rw = 0
+
+    self._LCD_Write(character)
+    self._delayMiliseconds(41)
+
+    return 1</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="i2c_lcd_pcf8574.LcdI2c" href="#i2c_lcd_pcf8574.LcdI2c">LcdI2c</a></code></h4>
+<ul class="two-column">
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.autoscroll" href="#i2c_lcd_pcf8574.LcdI2c.autoscroll">autoscroll</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.backlight" href="#i2c_lcd_pcf8574.LcdI2c.backlight">backlight</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.begin" href="#i2c_lcd_pcf8574.LcdI2c.begin">begin</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.blink" href="#i2c_lcd_pcf8574.LcdI2c.blink">blink</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.clear" href="#i2c_lcd_pcf8574.LcdI2c.clear">clear</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.createChar" href="#i2c_lcd_pcf8574.LcdI2c.createChar">createChar</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.cursor" href="#i2c_lcd_pcf8574.LcdI2c.cursor">cursor</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.display" href="#i2c_lcd_pcf8574.LcdI2c.display">display</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.home" href="#i2c_lcd_pcf8574.LcdI2c.home">home</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.leftToRight" href="#i2c_lcd_pcf8574.LcdI2c.leftToRight">leftToRight</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.noAutoscroll" href="#i2c_lcd_pcf8574.LcdI2c.noAutoscroll">noAutoscroll</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.noBacklight" href="#i2c_lcd_pcf8574.LcdI2c.noBacklight">noBacklight</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.noBlink" href="#i2c_lcd_pcf8574.LcdI2c.noBlink">noBlink</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.noCursor" href="#i2c_lcd_pcf8574.LcdI2c.noCursor">noCursor</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.noDisplay" href="#i2c_lcd_pcf8574.LcdI2c.noDisplay">noDisplay</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.print" href="#i2c_lcd_pcf8574.LcdI2c.print">print</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.rightToLeft" href="#i2c_lcd_pcf8574.LcdI2c.rightToLeft">rightToLeft</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.scrollDisplayLeft" href="#i2c_lcd_pcf8574.LcdI2c.scrollDisplayLeft">scrollDisplayLeft</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.scrollDisplayRight" href="#i2c_lcd_pcf8574.LcdI2c.scrollDisplayRight">scrollDisplayRight</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.setCursor" href="#i2c_lcd_pcf8574.LcdI2c.setCursor">setCursor</a></code></li>
+<li><code><a title="i2c_lcd_pcf8574.LcdI2c.write" href="#i2c_lcd_pcf8574.LcdI2c.write">write</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
