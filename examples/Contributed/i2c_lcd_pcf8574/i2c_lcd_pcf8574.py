@@ -66,15 +66,15 @@ class LcdI2c(object):
         self._output = _OutputState()
 
         board.set_pin_mode_i2c()
-        board._I2C_Write(self._address, [0])
+        board.i2c_write(self._address, [0])
 
     def begin(self):
         """
         Initialize the LCD display
         """
-        self.delayMiliseconds(50)  # Wait more than 40ms after powerOn.
+        self._delayMilliseconds(50)  # Wait more than 40ms after powerOn.
         self._I2C_Write(0b00000000)  # Clear i2c adapter
-        self.delayMiliseconds(50)  # Wait more than 40ms after powerOn.
+        self._delayMilliseconds(50)  # Wait more than 40ms after powerOn.
 
         self._InitializeLCD()
 
@@ -84,7 +84,7 @@ class LcdI2c(object):
         """
         self._output.Led = 1
         # Led pin is independent of LCD data and control lines.
-        self.__I2C_Write(0b00000000 | self._output.Led << 3)
+        self._I2C_Write(0b00000000 | self._output.Led << 3)
 
     def noBacklight(self):
         """
@@ -92,7 +92,7 @@ class LcdI2c(object):
         """
         self._output.Led = 0
         # Led pin is independent of LCD data and control lines.
-        self.__I2C_Write(0b00000000 | self._output.Led << 3)
+        self._I2C_Write(0b00000000 | self._output.Led << 3)
 
     def clear(self):
         """
@@ -102,7 +102,7 @@ class LcdI2c(object):
         self._output.rw = 0
 
         self._LCD_Write(0b00000001)
-        self.delayMiliseconds(160)
+        self._delayMilliseconds(160)
 
     def home(self):
         """
@@ -112,7 +112,7 @@ class LcdI2c(object):
         self._output.rw = 0
 
         self._LCD_Write(0b00000010)
-        self.delayMiliseconds(160)
+        self._delayMilliseconds(160)
 
     # Part of Entry mode set
     def leftToRight(self):
@@ -125,7 +125,7 @@ class LcdI2c(object):
         self._entryState |= 1 << 1
 
         self._LCD_Write(0b00000100 | self._entryState)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Entry mode set
     def rightToLeft(self):
@@ -138,7 +138,7 @@ class LcdI2c(object):
         self._entryState &= ~(1 << 1)
 
         self._LCD_Write(0b00000100 | self._entryState)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Entry mode set
     def autoscroll(self):
@@ -151,7 +151,7 @@ class LcdI2c(object):
         self._entryState |= 1
 
         self._LCD_Write(0b00000100 | self._entryState)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Entry mode set
     def noAutoscroll(self):
@@ -164,7 +164,7 @@ class LcdI2c(object):
         self._entryState &= ~1
 
         self._LCD_Write(0b00000100 | self._entryState)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Display control
     def display(self):
@@ -177,7 +177,7 @@ class LcdI2c(object):
         self._displayState |= 1 << 2
 
         self._LCD_Write(0b00001000 | self._displayState)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Display control
     def noDisplay(self):
@@ -190,7 +190,7 @@ class LcdI2c(object):
         self._displayState &= ~(1 << 2)
 
         self._LCD_Write(0b00001000 | self._displayState)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Display control
     def cursor(self):
@@ -203,7 +203,7 @@ class LcdI2c(object):
         self._displayState |= 1 << 1
 
         self._LCD_Write(0b00001000 | self._displayState)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Display control
     def noCursor(self):
@@ -216,7 +216,7 @@ class LcdI2c(object):
         self._displayState &= ~(1 << 1)
 
         self._LCD_Write(0b00001000 | self._displayState)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Display control
     def blink(self):
@@ -229,7 +229,7 @@ class LcdI2c(object):
         self._displayState |= 1
 
         self._LCD_Write(0b00001000 | self._displayState)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Display control
     def noBlink(self):
@@ -242,7 +242,7 @@ class LcdI2c(object):
         self._displayState &= ~1
 
         self._LCD_Write(0b00001000 | self._displayState)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Cursor or display shift
     def scrollDisplayLeft(self):
@@ -253,7 +253,7 @@ class LcdI2c(object):
         self._output.rw = 0
 
         self._LCD_Write(0b00011000)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Part of Cursor or display shift
     def scrollDisplayRight(self):
@@ -265,7 +265,7 @@ class LcdI2c(object):
         self._output.rw = 0
 
         self._LCD_Write(0b00011100)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     # Set CGRAM address
     def createChar(self, location, charmap=[]):
@@ -282,7 +282,7 @@ class LcdI2c(object):
         location %= 8
 
         self._LCD_Write(0b01000000 | (location << 3))
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
         for i in charmap:
             self.write(i)
@@ -309,7 +309,7 @@ class LcdI2c(object):
         newAddress = row_offsets[row] + col
 
         self._LCD_Write(0b10000000 | newAddress)
-        self.delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
     def write(self, character):
         """
@@ -320,7 +320,7 @@ class LcdI2c(object):
         self._output.rw = 0
 
         self._LCD_Write(character)
-        self._delayMiliseconds(41)
+        self._delayMilliseconds(41)
 
         return 1
 
@@ -333,15 +333,15 @@ class LcdI2c(object):
         self._output.rw = 0
 
         self._LCD_Write(0b00110000, True)
-        self._delayMiliseconds(42)
+        self._delayMilliseconds(42)
         self._LCD_Write(0b00110000, True)
-        self._delayMiliseconds(150)
+        self._delayMilliseconds(150)
         self._LCD_Write(0b00110000, True)
-        self._delayMiliseconds(37)
+        self._delayMilliseconds(37)
         self._LCD_Write(0b00100000, True)  # Function Set - 4 bits mode
-        self._delayMiliseconds(37)
+        self._delayMilliseconds(37)
         self._LCD_Write(0b00101000)  # Function Set - 4 bits(Still), 2 lines, 5x8 font
-        self._delayMiliseconds(37)
+        self._delayMilliseconds(37)
 
         self.display()
         self.clear()
@@ -378,8 +378,8 @@ class LcdI2c(object):
     def _delayMicroseconds(self, microsec):
         time.sleep(microsec * 1e-6)
 
-    def _delayMiliseconds(self, milisec):
-        time.sleep(milisec * 1e-3)
+    def _delayMilliseconds(self, Millisec):
+        time.sleep(Millisec * 1e-3)
 
     def print(self, text):
         """
