@@ -20,8 +20,10 @@ This method allows you to check that there is serial communication between the c
 
 **Examples:**
 
-1. telemtrix: [loopback.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/loop_back.py)
-2. telemtrix-aio: [loopback.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/loop_back.py)
+1. telemetrix: [loopback.py](https://github.
+   com/MrYsLab/telemetrix/blob/master/examples/loop_back.py)
+2. telemetrix-aio: [loopback.py](https://github.
+   com/MrYsLab/telemetrix-aio/blob/master/examples/loop_back.py)
 
 
 ## send_debug_info reports

@@ -1,4 +1,4 @@
-# Telemtrix4Arduino
+# Telemetrix4Arduino
 
 ## Installation Instructions
 
@@ -7,7 +7,7 @@
 
 ![](./images/manage_libraries.png)
 
-<p>2. Enter "Telemtrix4Arduino in the search box.</p>
+<p>2. Enter "Telemetrix4Arduino in the search box.</p>
 
 ![](./images/telemetrix4arduino2.png)
 

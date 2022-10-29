@@ -32,7 +32,8 @@ telemetrix-aio method definitions are prefixed with the Python _async_ keyword.
 **Examples:**
 
 1. telemetrix: [analog_input.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/analog_input.py)
-2. telemtrix-aio: [analog_input.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/analog_input.py)
+2. telemetrix-aio: [analog_input.py](https://github.
+   com/MrYsLab/telemetrix-aio/blob/master/examples/analog_input.py)
 
 **Notes:** 
 

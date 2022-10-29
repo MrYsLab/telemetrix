@@ -77,7 +77,8 @@ Instructions for changing the Telemetrix4Arduino value may be found
 in the [**Installing Telemetrix4Arduino**](./telemetrix4arduino.md) section of this document.
 
 ### arduino_wait
-This parameter specifies the amount of time that telemtrix assumes it takes for an Arduino 
+This parameter specifies the amount of time that Telemetrix assumes it takes for an 
+Arduino 
 to reboot the Telemetrix4Arduino sketch from a power-up or reset.
 
 The default is 4 seconds. If the Arduino is not fully booted when com_port auto-discovery begins,
@@ -149,7 +150,8 @@ Instructions for changing the Telemetrix4Arduino value may be found
 in the [**Installing Telemetrix4Arduino**](./telemetrix4arduino.md) section of this document.
 
 ### arduino_wait
-This parameter specifies the amount of time that telemtrix assumes it takes for an Arduino 
+This parameter specifies the amount of time that Telemetrix assumes it takes for an 
+Arduino 
 to reboot the Telemetrix4Arduino sketch from a power-up or reset.
 
 The default is 4 seconds. If the Arduino is not fully booted when com_port auto-discovery begins,
@@ -160,7 +162,7 @@ This parameter is the sleep value expressed in seconds that is used at several s
 points in telemetrix. For example, the serial receiver continuously checks the serial port receive
 buffer for an available
 character to process. If there is no character in the
-buffer, telemtrix_aio sleeps for the sleep_tune period before checking again.
+buffer, telemetrix_aio sleeps for the sleep_tune period before checking again.
 
 The default value is 0.000001 seconds.
 
