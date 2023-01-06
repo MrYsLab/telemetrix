@@ -63,6 +63,9 @@ telemetrix-aio secondary port:  [i2c_adxl345_accelerometer2.py](https://github.c
 
 See NOTE above.
 
+**NOTE :** The address, register, count_of_data_bytes, and data report values are all of 
+integer type in the range of 0-255.
+
 
 
 ### i2c_read_restart_transmission
@@ -118,6 +121,9 @@ See NOTE above.
 **Examples:**
 
 See NOTE above.
+
+**NOTE :** The address and args parameters are integer types within the range of 
+0-255.
 <br>
 <br>
 
