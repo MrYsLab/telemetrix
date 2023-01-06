@@ -770,6 +770,8 @@ file, and uncomment the following line:</p>
 </code></pre>
 <p><strong>Examples:</strong></p>
 <p>See NOTE above.</p>
+<p><strong>NOTE :</strong> The address, register, count_of_data_bytes, and data report values are all of 
+integer type in the range of 0-255.</p>
 <h3 id="i2c_read_restart_transmission">i2c_read_restart_transmission</h3>
 <pre><code class="language-python"> def i2c_read_restart_transmission(self, address, register, number_of_bytes, 
                                    callback=None, i2c_port=0, write_register=True)
@@ -812,7 +814,9 @@ file, and uncomment the following line:</p>
     :param args: A variable number of bytes to be sent to the device passed in as a list
 </code></pre>
 <p><strong>Examples:</strong></p>
-<p>See NOTE above.
+<p>See NOTE above.</p>
+<p><strong>NOTE :</strong> The address and args parameters are integer types within the range of 
+0-255.
 <br>
 <br></p>
 <p>Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.</p>
