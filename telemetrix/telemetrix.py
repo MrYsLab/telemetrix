@@ -1754,6 +1754,20 @@ class Telemetrix(threading.Thread):
         except Exception:
             raise RuntimeError('Shutdown failed - could not send stop streaming message')
 
+    def sonar_disable(self):
+        """
+        Disable sonar scanning for all sonar sensors
+        """
+        command = [PrivateConstants.SONAR_DISABLE]
+        self._send_command(command)
+
+    def sonar_enable(self):
+        """
+        Enable sonar scanning for all sonar sensors
+        """
+        command = [PrivateConstants.SONAR_ENABLE]
+        self._send_command(command)
+
     def spi_cs_control(self, chip_select_pin, select):
         """
         Control an SPI chip select line
