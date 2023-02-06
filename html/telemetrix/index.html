@@ -1797,6 +1797,20 @@ class Telemetrix(threading.Thread):
         except Exception:
             raise RuntimeError(&#39;Shutdown failed - could not send stop streaming message&#39;)
 
+    def sonar_disable(self):
+        &#34;&#34;&#34;
+        Disable sonar scanning for all sonar sensors
+        &#34;&#34;&#34;
+        command = [PrivateConstants.SONAR_DISABLE]
+        self._send_command(command)
+
+    def sonar_enable(self):
+        &#34;&#34;&#34;
+        Enable sonar scanning for all sonar sensors
+        &#34;&#34;&#34;
+        command = [PrivateConstants.SONAR_ENABLE]
+        self._send_command(command)
+
     def spi_cs_control(self, chip_select_pin, select):
         &#34;&#34;&#34;
         Control an SPI chip select line
@@ -4337,6 +4351,20 @@ receiving a KeyboardInterrupt exception</p>
         except Exception:
             raise RuntimeError(&#39;Shutdown failed - could not send stop streaming message&#39;)
 
+    def sonar_disable(self):
+        &#34;&#34;&#34;
+        Disable sonar scanning for all sonar sensors
+        &#34;&#34;&#34;
+        command = [PrivateConstants.SONAR_DISABLE]
+        self._send_command(command)
+
+    def sonar_enable(self):
+        &#34;&#34;&#34;
+        Enable sonar scanning for all sonar sensors
+        &#34;&#34;&#34;
+        command = [PrivateConstants.SONAR_ENABLE]
+        self._send_command(command)
+
     def spi_cs_control(self, chip_select_pin, select):
         &#34;&#34;&#34;
         Control an SPI chip select line
@@ -6439,6 +6467,40 @@ If any exceptions are thrown, they are ignored.</p></div>
         raise RuntimeError(&#39;Shutdown failed - could not send stop streaming message&#39;)</code></pre>
 </details>
 </dd>
+<dt id="telemetrix.telemetrix.Telemetrix.sonar_disable"><code class="name flex">
+<span>def <span class="ident">sonar_disable</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Disable sonar scanning for all sonar sensors</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sonar_disable(self):
+    &#34;&#34;&#34;
+    Disable sonar scanning for all sonar sensors
+    &#34;&#34;&#34;
+    command = [PrivateConstants.SONAR_DISABLE]
+    self._send_command(command)</code></pre>
+</details>
+</dd>
+<dt id="telemetrix.telemetrix.Telemetrix.sonar_enable"><code class="name flex">
+<span>def <span class="ident">sonar_enable</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enable sonar scanning for all sonar sensors</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sonar_enable(self):
+    &#34;&#34;&#34;
+    Enable sonar scanning for all sonar sensors
+    &#34;&#34;&#34;
+    command = [PrivateConstants.SONAR_ENABLE]
+    self._send_command(command)</code></pre>
+</details>
+</dd>
 <dt id="telemetrix.telemetrix.Telemetrix.spi_cs_control"><code class="name flex">
 <span>def <span class="ident">spi_cs_control</span></span>(<span>self, chip_select_pin, select)</span>
 </code></dt>
@@ -7618,6 +7680,8 @@ acceleration parameters.</p>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_spi" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_spi">set_pin_mode_spi</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.set_pin_mode_stepper" href="#telemetrix.telemetrix.Telemetrix.set_pin_mode_stepper">set_pin_mode_stepper</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.shutdown" href="#telemetrix.telemetrix.Telemetrix.shutdown">shutdown</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.sonar_disable" href="#telemetrix.telemetrix.Telemetrix.sonar_disable">sonar_disable</a></code></li>
+<li><code><a title="telemetrix.telemetrix.Telemetrix.sonar_enable" href="#telemetrix.telemetrix.Telemetrix.sonar_enable">sonar_enable</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.spi_cs_control" href="#telemetrix.telemetrix.Telemetrix.spi_cs_control">spi_cs_control</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.spi_read_blocking" href="#telemetrix.telemetrix.Telemetrix.spi_read_blocking">spi_read_blocking</a></code></li>
 <li><code><a title="telemetrix.telemetrix.Telemetrix.spi_set_format" href="#telemetrix.telemetrix.Telemetrix.spi_set_format">spi_set_format</a></code></li>
