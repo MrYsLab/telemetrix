@@ -14,7 +14,7 @@ nav:
     - The Python APIs:
         - The __init__ Method: init.md
         - Setting Pin Modes: pin_modes.md
-        - Enabling/Disabling Analog And Digital Reporting: enable_disable.md
+        - Enabling/Disabling Analog, Digital, and SONAR Reporting: enable_disable.md
         - Writing Values To Pins And Selected Devices:  device_writes.md
         - I2C Reads And Writes: i2c.md
         - OneWire Commands: onewire.md

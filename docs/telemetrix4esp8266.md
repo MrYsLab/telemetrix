@@ -4,12 +4,17 @@ installing the sketch and connecting your Telemetrix Python application to an
 ESP-8266 device.
 
 ## Installation And Usage Instructions
-<p>1. Ensure that you have installed board support for the ESP-8266 into the
-Arduino IDE. Instructions
-are available at this [link.](https://github.com/esp8266/Arduino#installing-with-boards-manager)
 
-Select your ESP-8266 device type and serial port using the _Tools_ menu within the Arduino IDE.
-</p>
+1. Ensure that you have installed board support for the ESP-8266 into the
+Arduino IDE. Instructions
+are available [here](https://github.com/esp8266/Arduino#installing-with-boards-manager).
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Make sure that you have version 3.1.1 or greater 
+installed.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select your ESP-8266 device type and serial port using the _Tools_ menu within the 
+Arduino IDE.
+
 
 <p>2. Open the Arduino IDE and select Tools/Manage Libraries.</p>
 
@@ -75,4 +80,4 @@ the serial monitor before instantiating your Python application:</p>
 
 <br>
 <br>
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.
+Copyright (C) 2020-23 Alan Yorinks. All Rights Reserved.
