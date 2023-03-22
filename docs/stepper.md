@@ -45,7 +45,6 @@ def stepper_get_distance_to_go(self, motor_id, distance_to_go_callback)
 **Examples:** 
 
 1. telemetrix: [stepper_set_and_get.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_set_and_get.py)
-2. telemetrix-aio : [stepper_set_and_get.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_set_and_get.py)
 
 ### stepper_get_target_position
 
@@ -68,7 +67,6 @@ def stepper_get_target_position(self, motor_id, target_callback)
 **Examples:** 
 
 1. telemetrix: [stepper_set_and_get.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_set_and_get.py)
-2. telemetrix-aio : [stepper_set_and_get.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_set_and_get.py)
 
 ### stepper_is_running
 
@@ -138,7 +136,6 @@ def stepper_move_to(self, motor_id, position)
 
 
 1. telemetrix: [stepper_run_speed_to_position.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_run_speed_to_position.py)
-2. telemetrix-aio : [stepper_run_speed_to_position.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_run_speed_to_position.py)
 
 ### stepper_run
 
@@ -209,7 +206,7 @@ def stepper_run_speed_to_position(self, motor_id, completion_callback=None)
 
 **Examples:** 
 
-1. telemetrix: [tepper_run_speed_to_position.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/tepper_run_speed_to_position.py)
+1. telemetrix: [stepper_run_speed_to_position.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/tepper_run_speed_to_position.py)
 2. telemetrix-aio : [tepper_run_speed_to_position.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/tepper_run_speed_to_position.py)
 
 ### stepper_set_acceleration
