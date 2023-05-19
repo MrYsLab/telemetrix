@@ -74,7 +74,10 @@ def analog_in(my_board, pin):
     print('Enter Control-C to quit.')
     try:
         while True:
-            time.sleep(1)
+            try:
+                time.sleep(1)
+            except KeyboardInterrupt:
+                sys.exit(0)
     except KeyboardInterrupt:
         board.shutdown()
         sys.exit(0)

@@ -43,7 +43,7 @@ class Telemetrix(threading.Thread):
 
     # noinspection PyPep8,PyPep8,PyPep8
     def __init__(self, com_port=None, arduino_instance_id=1,
-                 arduino_wait=4, sleep_tune=0.000001,
+                 arduino_wait=1, sleep_tune=0.000001,
                  shutdown_on_exception=True,
                  ip_address=None, ip_port=31335):
 
@@ -1751,6 +1751,9 @@ class Telemetrix(threading.Thread):
                 except (RuntimeError, SerialException, OSError):
                     # ignore error on shutdown
                     pass
+            # command = [PrivateConstants.BOARD_HARD_RESET]
+            # self._send_command(command)
+            # time.sleep(1)
         except Exception:
             raise RuntimeError('Shutdown failed - could not send stop streaming message')
 
@@ -2117,7 +2120,10 @@ class Telemetrix(threading.Thread):
         # self.digital_pins[pin].event_time = time_stamp
         if self.analog_callbacks[pin]:
             message = [PrivateConstants.ANALOG_REPORT, pin, value, time_stamp]
-            self.analog_callbacks[pin](message)
+            try:
+                self.analog_callbacks[pin](message)
+            except KeyError:
+                pass
 
     def _dht_report(self, data):
         """
@@ -2157,7 +2163,10 @@ class Telemetrix(threading.Thread):
                 # Callback 0=DHT REPORT, DHT_ERROR, PIN, Time
                 message = [PrivateConstants.DHT_REPORT, data[0], data[1], data[2],
                            time.time()]
-                self.dht_callbacks[data[1]](message)
+                try:
+                    self.dht_callbacks[data[1]](message)
+                except KeyError:
+                    pass
         else:
             # got valid data DHT_DATA
             f_humidity = float(data[5] + data[6] / 100)
@@ -2169,7 +2178,10 @@ class Telemetrix(threading.Thread):
             message = [PrivateConstants.DHT_REPORT, data[0], data[1], data[2],
                        f_humidity, f_temperature, time.time()]
 
-            self.dht_callbacks[data[1]](message)
+            try:
+                self.dht_callbacks[data[1]](message)
+            except KeyError:
+                pass
 
     def _digital_message(self, data):
         """

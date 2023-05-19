@@ -29,7 +29,7 @@ and toggle the pin 5 times.
 """
 
 # some globals
-DIGITAL_PIN = 6  # the board LED
+DIGITAL_PIN = 9  # the board LED
 
 # Create a Telemetrix instance.
 board = telemetrix.Telemetrix()

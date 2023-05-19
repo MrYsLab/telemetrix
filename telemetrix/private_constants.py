@@ -80,6 +80,7 @@ class PrivateConstants:
     GET_FEATURES = 54
     SONAR_DISABLE = 55
     SONAR_ENABLE = 56
+    BOARD_HARD_RESET = 57
 
     # reports
     # debug data from Arduino

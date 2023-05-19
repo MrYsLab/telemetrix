@@ -62,6 +62,7 @@ def sonar(my_board, trigger_pin, echo_pin, callback):
             time.sleep(.01)
         except KeyboardInterrupt:
             my_board.shutdown()
+            time.sleep(1)
             sys.exit(0)
 
 

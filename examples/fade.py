@@ -36,6 +36,8 @@ board = telemetrix.Telemetrix()
 
 # Set the DIGITAL_PIN as an output pin
 board.set_pin_mode_analog_output(DIGITAL_PIN)
+# board.set_pin_mode_analog_output(DIGITAL_PIN)
+
 
 # When hitting control-c to end the program
 # in this loop, we are likely to get a KeyboardInterrupt
@@ -51,6 +53,7 @@ try:
         board.analog_write(DIGITAL_PIN, i)
         time.sleep(.005)
 
+    board.set_pin_mode_digital_output(DIGITAL_PIN)
 
 except KeyboardInterrupt:
     board.shutdown()
