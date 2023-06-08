@@ -1790,11 +1790,13 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.SPI_CS_CONTROL, chip_select_pin, select]
         self._send_command(command)
 
-    def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
+    def spi_read_blocking(self, chip_select, register_selection, number_of_bytes_to_read,
                           call_back=None):
         """
         Read the specified number of bytes from the specified SPI port and
         call the callback function with the reported data.
+
+        :param chip_select: chip select pin
 
         :param register_selection: Register to be selected for read.
 
@@ -1805,7 +1807,8 @@ class Telemetrix(threading.Thread):
 
 
         callback returns a data list:
-        [SPI_READ_REPORT, count of data bytes read, data bytes, time-stamp]
+        [SPI_READ_REPORT, chip select pin, SPI Register, count of data bytes read,
+        data bytes, time-stamp]
 
         SPI_READ_REPORT = 13
 
@@ -1823,7 +1826,8 @@ class Telemetrix(threading.Thread):
 
         self.spi_callback = call_back
 
-        command = [PrivateConstants.SPI_READ_BLOCKING, number_of_bytes_to_read,
+        command = [PrivateConstants.SPI_READ_BLOCKING, chip_select,
+                   number_of_bytes_to_read,
                    register_selection]
 
         self._send_command(command)
@@ -1834,7 +1838,7 @@ class Telemetrix(threading.Thread):
 
         See Arduino SPI reference materials for details.
 
-        :param clock_divisor:
+        :param clock_divisor: 2, 4, 8, 16, 32, 64, 128, or 256
 
         :param bit_order:
 
@@ -1859,13 +1863,22 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(f'spi_set_format: SPI interface is not enabled.')
 
+        # if clock_divisor not in [2, 4, 8, 16, 32, 64, 128, 255]:
+        #     raise RuntimeError(f'spi_set_format: illegal clock divisor selected.')
+        if bit_order not in [0, 1]:
+            raise RuntimeError(f'spi_set_format: illegal bit_order selected.')
+        if data_mode not in [0, 4, 8, 12]:
+            raise RuntimeError(f'spi_set_format: illegal data_order selected.')
+
         command = [PrivateConstants.SPI_SET_FORMAT, clock_divisor, bit_order,
                    data_mode]
         self._send_command(command)
 
-    def spi_write_blocking(self, bytes_to_write):
+    def spi_write_blocking(self, chip_select, bytes_to_write):
         """
         Write a list of bytes to the SPI device.
+
+        :param chip_select: chip select pin
 
         :param bytes_to_write: A list of bytes to write. This must
                                 be in the form of a list.
@@ -1882,7 +1895,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError('spi_write_blocking: bytes_to_write must be a list.')
 
-        command = [PrivateConstants.SPI_WRITE_BLOCKING, len(bytes_to_write)]
+        command = [PrivateConstants.SPI_WRITE_BLOCKING, chip_select, len(bytes_to_write)]
 
         for data in bytes_to_write:
             command.append(data)
@@ -2252,6 +2265,8 @@ class Telemetrix(threading.Thread):
 
         :param data: data[0] = device address
         """
+
+        print('i2c write error for')
         if self.shutdown_on_exception:
             self.shutdown()
         raise RuntimeError(
@@ -2494,12 +2509,12 @@ class Telemetrix(threading.Thread):
                         data = self.the_deque.popleft()
                         response_data.append(data)
 
-                    # print(response_data)
+                    # print(f'response_data {response_data}')
 
                     # get the report type and look up its dispatch method
                     # here we pop the report type off of response_data
                     report_type = response_data.pop(0)
-                    # print(report_type)
+                    # print(f'report_type {report_type}')
 
                     # retrieve the report handler from the dispatch table
                     dispatch_entry = self.report_dispatch.get(report_type)
