@@ -145,30 +145,21 @@ class BME280Spi:
         self.board.spi_read_blocking(self.chip_select_pin,
                                      self.BME_280_ID_REGISTER,
                                      1, call_back=self.device_callback)
-        # time.sleep(.3)
-
         # read calibration values for temperature
         self.board.spi_read_blocking(self.chip_select_pin,
                                      self.BME280_REGISTER_DIG_T1,
                                      2, call_back=self.device_callback)
-        # time.sleep(.3)
-
         self.board.spi_read_blocking(self.chip_select_pin,
                                      self.BME280_REGISTER_DIG_T2,
                                      2, call_back=self.device_callback)
-        # time.sleep(.3)
 
         self.board.spi_read_blocking(self.chip_select_pin,
                                      self.BME280_REGISTER_DIG_T3,
                                      2, call_back=self.device_callback)
 
-        # time.sleep(.3)
-
         # set measurement mode to normal
         self.board.spi_write_blocking(self.chip_select_pin, [self.BME280_CTRL_MEAS_REG,
                                                              163])
-        # time.sleep(.3)
-
         print('BME280 successfully initialized!')
 
     def get_temperature(self):
