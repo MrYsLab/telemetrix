@@ -1830,11 +1830,13 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.SPI_CS_CONTROL, chip_select_pin, select]
         self._send_command(command)
 
-    def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
+    def spi_read_blocking(self, chip_select, register_selection, number_of_bytes_to_read,
                           call_back=None):
         &#34;&#34;&#34;
         Read the specified number of bytes from the specified SPI port and
         call the callback function with the reported data.
+
+        :param chip_select: chip select pin
 
         :param register_selection: Register to be selected for read.
 
@@ -1845,7 +1847,8 @@ class Telemetrix(threading.Thread):
 
 
         callback returns a data list:
-        [SPI_READ_REPORT, count of data bytes read, data bytes, time-stamp]
+        [SPI_READ_REPORT, chip select pin, SPI Register, count of data bytes read,
+        data bytes, time-stamp]
 
         SPI_READ_REPORT = 13
 
@@ -1863,7 +1866,8 @@ class Telemetrix(threading.Thread):
 
         self.spi_callback = call_back
 
-        command = [PrivateConstants.SPI_READ_BLOCKING, number_of_bytes_to_read,
+        command = [PrivateConstants.SPI_READ_BLOCKING, chip_select,
+                   number_of_bytes_to_read,
                    register_selection]
 
         self._send_command(command)
@@ -1874,7 +1878,7 @@ class Telemetrix(threading.Thread):
 
         See Arduino SPI reference materials for details.
 
-        :param clock_divisor:
+        :param clock_divisor: 0-255 divide cpu clock by this value to set spi transmission
 
         :param bit_order:
 
@@ -1903,9 +1907,11 @@ class Telemetrix(threading.Thread):
                    data_mode]
         self._send_command(command)
 
-    def spi_write_blocking(self, bytes_to_write):
+    def spi_write_blocking(self, chip_select, bytes_to_write):
         &#34;&#34;&#34;
         Write a list of bytes to the SPI device.
+
+        :param chip_select: chip select pin
 
         :param bytes_to_write: A list of bytes to write. This must
                                 be in the form of a list.
@@ -1922,7 +1928,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(&#39;spi_write_blocking: bytes_to_write must be a list.&#39;)
 
-        command = [PrivateConstants.SPI_WRITE_BLOCKING, len(bytes_to_write)]
+        command = [PrivateConstants.SPI_WRITE_BLOCKING, chip_select, len(bytes_to_write)]
 
         for data in bytes_to_write:
             command.append(data)
@@ -4384,11 +4390,13 @@ receiving a KeyboardInterrupt exception</p>
         command = [PrivateConstants.SPI_CS_CONTROL, chip_select_pin, select]
         self._send_command(command)
 
-    def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
+    def spi_read_blocking(self, chip_select, register_selection, number_of_bytes_to_read,
                           call_back=None):
         &#34;&#34;&#34;
         Read the specified number of bytes from the specified SPI port and
         call the callback function with the reported data.
+
+        :param chip_select: chip select pin
 
         :param register_selection: Register to be selected for read.
 
@@ -4399,7 +4407,8 @@ receiving a KeyboardInterrupt exception</p>
 
 
         callback returns a data list:
-        [SPI_READ_REPORT, count of data bytes read, data bytes, time-stamp]
+        [SPI_READ_REPORT, chip select pin, SPI Register, count of data bytes read,
+        data bytes, time-stamp]
 
         SPI_READ_REPORT = 13
 
@@ -4417,7 +4426,8 @@ receiving a KeyboardInterrupt exception</p>
 
         self.spi_callback = call_back
 
-        command = [PrivateConstants.SPI_READ_BLOCKING, number_of_bytes_to_read,
+        command = [PrivateConstants.SPI_READ_BLOCKING, chip_select,
+                   number_of_bytes_to_read,
                    register_selection]
 
         self._send_command(command)
@@ -4428,7 +4438,7 @@ receiving a KeyboardInterrupt exception</p>
 
         See Arduino SPI reference materials for details.
 
-        :param clock_divisor:
+        :param clock_divisor: 0-255 divide cpu clock by this value to set spi transmission
 
         :param bit_order:
 
@@ -4457,9 +4467,11 @@ receiving a KeyboardInterrupt exception</p>
                    data_mode]
         self._send_command(command)
 
-    def spi_write_blocking(self, bytes_to_write):
+    def spi_write_blocking(self, chip_select, bytes_to_write):
         &#34;&#34;&#34;
         Write a list of bytes to the SPI device.
+
+        :param chip_select: chip select pin
 
         :param bytes_to_write: A list of bytes to write. This must
                                 be in the form of a list.
@@ -4476,7 +4488,7 @@ receiving a KeyboardInterrupt exception</p>
                 self.shutdown()
             raise RuntimeError(&#39;spi_write_blocking: bytes_to_write must be a list.&#39;)
 
-        command = [PrivateConstants.SPI_WRITE_BLOCKING, len(bytes_to_write)]
+        command = [PrivateConstants.SPI_WRITE_BLOCKING, chip_select, len(bytes_to_write)]
 
         for data in bytes_to_write:
             command.append(data)
@@ -6533,27 +6545,31 @@ If any exceptions are thrown, they are ignored.</p></div>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.spi_read_blocking"><code class="name flex">
-<span>def <span class="ident">spi_read_blocking</span></span>(<span>self, register_selection, number_of_bytes_to_read, call_back=None)</span>
+<span>def <span class="ident">spi_read_blocking</span></span>(<span>self, chip_select, register_selection, number_of_bytes_to_read, call_back=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Read the specified number of bytes from the specified SPI port and
 call the callback function with the reported data.</p>
+<p>:param chip_select: chip select pin</p>
 <p>:param register_selection: Register to be selected for read.</p>
 <p>:param number_of_bytes_to_read: Number of bytes to read</p>
 <p>:param call_back: Required callback function to report spi data as a
 result of read command</p>
 <p>callback returns a data list:
-[SPI_READ_REPORT, count of data bytes read, data bytes, time-stamp]</p>
+[SPI_READ_REPORT, chip select pin, SPI Register, count of data bytes read,
+data bytes, time-stamp]</p>
 <p>SPI_READ_REPORT = 13</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
+<pre><code class="python">def spi_read_blocking(self, chip_select, register_selection, number_of_bytes_to_read,
                       call_back=None):
     &#34;&#34;&#34;
     Read the specified number of bytes from the specified SPI port and
     call the callback function with the reported data.
+
+    :param chip_select: chip select pin
 
     :param register_selection: Register to be selected for read.
 
@@ -6564,7 +6580,8 @@ result of read command</p>
 
 
     callback returns a data list:
-    [SPI_READ_REPORT, count of data bytes read, data bytes, time-stamp]
+    [SPI_READ_REPORT, chip select pin, SPI Register, count of data bytes read,
+    data bytes, time-stamp]
 
     SPI_READ_REPORT = 13
 
@@ -6582,7 +6599,8 @@ result of read command</p>
 
     self.spi_callback = call_back
 
-    command = [PrivateConstants.SPI_READ_BLOCKING, number_of_bytes_to_read,
+    command = [PrivateConstants.SPI_READ_BLOCKING, chip_select,
+               number_of_bytes_to_read,
                register_selection]
 
     self._send_command(command)</code></pre>
@@ -6594,7 +6612,7 @@ result of read command</p>
 <dd>
 <div class="desc"><p>Configure how the SPI serializes and de-serializes data on the wire.</p>
 <p>See Arduino SPI reference materials for details.</p>
-<p>:param clock_divisor:</p>
+<p>:param clock_divisor: 0-255 divide cpu clock by this value to set spi transmission</p>
 <p>:param bit_order:</p>
 <pre><code>                LSBFIRST = 0
 
@@ -6619,7 +6637,7 @@ result of read command</p>
 
     See Arduino SPI reference materials for details.
 
-    :param clock_divisor:
+    :param clock_divisor: 0-255 divide cpu clock by this value to set spi transmission
 
     :param bit_order:
 
@@ -6650,19 +6668,22 @@ result of read command</p>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.spi_write_blocking"><code class="name flex">
-<span>def <span class="ident">spi_write_blocking</span></span>(<span>self, bytes_to_write)</span>
+<span>def <span class="ident">spi_write_blocking</span></span>(<span>self, chip_select, bytes_to_write)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Write a list of bytes to the SPI device.</p>
+<p>:param chip_select: chip select pin</p>
 <p>:param bytes_to_write: A list of bytes to write. This must
 be in the form of a list.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def spi_write_blocking(self, bytes_to_write):
+<pre><code class="python">def spi_write_blocking(self, chip_select, bytes_to_write):
     &#34;&#34;&#34;
     Write a list of bytes to the SPI device.
+
+    :param chip_select: chip select pin
 
     :param bytes_to_write: A list of bytes to write. This must
                             be in the form of a list.
@@ -6679,7 +6700,7 @@ be in the form of a list.</p></div>
             self.shutdown()
         raise RuntimeError(&#39;spi_write_blocking: bytes_to_write must be a list.&#39;)
 
-    command = [PrivateConstants.SPI_WRITE_BLOCKING, len(bytes_to_write)]
+    command = [PrivateConstants.SPI_WRITE_BLOCKING, chip_select, len(bytes_to_write)]
 
     for data in bytes_to_write:
         command.append(data)
