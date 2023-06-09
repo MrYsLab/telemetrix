@@ -67,10 +67,12 @@ class BME280Spi:
 
         # initialize the SPI interface
         self.board.set_pin_mode_spi([self.chip_select_pin])
-        time.sleep(.1)
+        time.sleep(.3)
 
         # initialize the device
         self.init_device()
+
+        time.sleep(1)
 
         # continuously read the temperature
         self.get_temperature()
