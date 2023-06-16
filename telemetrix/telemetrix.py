@@ -1751,9 +1751,7 @@ class Telemetrix(threading.Thread):
                 except (RuntimeError, SerialException, OSError):
                     # ignore error on shutdown
                     pass
-            # command = [PrivateConstants.BOARD_HARD_RESET]
-            # self._send_command(command)
-            # time.sleep(1)
+
         except Exception:
             raise RuntimeError('Shutdown failed - could not send stop streaming message')
 
@@ -1838,7 +1836,7 @@ class Telemetrix(threading.Thread):
 
         See Arduino SPI reference materials for details.
 
-        :param clock_divisor: 2, 4, 8, 16, 32, 64, 128, or 256
+        :param clock_divisor: 1 - 255
 
         :param bit_order:
 
@@ -1863,8 +1861,8 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(f'spi_set_format: SPI interface is not enabled.')
 
-        # if clock_divisor not in [2, 4, 8, 16, 32, 64, 128, 255]:
-        #     raise RuntimeError(f'spi_set_format: illegal clock divisor selected.')
+        if not 0 < clock_divisor <= 255:
+            raise RuntimeError(f'spi_set_format: illegal clock divisor selected.')
         if bit_order not in [0, 1]:
             raise RuntimeError(f'spi_set_format: illegal bit_order selected.')
         if data_mode not in [0, 4, 8, 12]:
@@ -2265,8 +2263,6 @@ class Telemetrix(threading.Thread):
 
         :param data: data[0] = device address
         """
-
-        print('i2c write error for')
         if self.shutdown_on_exception:
             self.shutdown()
         raise RuntimeError(
@@ -2514,7 +2510,7 @@ class Telemetrix(threading.Thread):
                     # get the report type and look up its dispatch method
                     # here we pop the report type off of response_data
                     report_type = response_data.pop(0)
-                    # print(f'report_type {report_type}')
+                    # print(f' reported type {report_type}')
 
                     # retrieve the report handler from the dispatch table
                     dispatch_entry = self.report_dispatch.get(report_type)
