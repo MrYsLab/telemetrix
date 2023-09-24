@@ -63,7 +63,7 @@ def step_relative(the_board):
     # create an accelstepper instance for a TB6600 motor driver
     # if you are using a micro stepper controller board:
     # pin1 = pulse pin, pin2 = direction
-    motor = the_board.set_pin_mode_stepper(interface=2, pin1=PULSE_PIN,
+    motor = the_board.set_pin_mode_stepper(interface=1, pin1=PULSE_PIN,
                                                  pin2=DIRECTION_PIN)
 
     # if you are using a 28BYJ-48 Stepper Motor with ULN2003
