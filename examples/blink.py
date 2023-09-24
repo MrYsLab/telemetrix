@@ -32,7 +32,7 @@ and toggle the pin 5 times.
 DIGITAL_PIN = 6  # the board LED
 
 # Create a Telemetrix instance.
-board = telemetrix.Telemetrix(ip_port=31336)
+board = telemetrix.Telemetrix()
 
 # Set the DIGITAL_PIN as an output pin
 board.set_pin_mode_digital_output(DIGITAL_PIN)
