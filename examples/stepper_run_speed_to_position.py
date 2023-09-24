@@ -24,6 +24,9 @@ from telemetrix import telemetrix
 """
 Run a motor using runSpeedToPosition position
 """
+# GPIO Pins
+PULSE_PIN = 8
+DIRECTION_PIN = 9
 
 # Create a Telemetrix instance.
 board = telemetrix.Telemetrix()
@@ -39,7 +42,7 @@ def the_callback(data):
 
 # if you are using a 28BYJ-48 Stepper Motor with ULN2003
 # comment out the line above and uncomment out the line below.
-motor = board.set_pin_mode_stepper(interface=8, pin1=8, pin2=10, pin3=9, pin4=11)
+motor = board.set_pin_mode_stepper(interface=1, pin1=PULSE_PIN, pin2=DIRECTION_PIN)
 
 
 # set the max speed and target position

@@ -315,8 +315,9 @@ class Telemetrix(threading.Thread):
             raise RuntimeError(f'Telemetrix4Arduino firmware version')
 
         else:
-            if self.firmware_version[0] < 5:
-                raise RuntimeError('Please upgrade the server firmware to version 5.0.0 or greater')
+            # if self.firmware_version[0] < 5:
+            #   raise RuntimeError('Please upgrade the server firmware to version '
+            #                        '5.0.0 or greater')
             print(f'Telemetrix4Arduino firmware version: {self.firmware_version[0]}.'
                   f'{self.firmware_version[1]}.{self.firmware_version[2]}')
         command = [PrivateConstants.ENABLE_ALL_REPORTS]
@@ -1280,7 +1281,7 @@ class Telemetrix(threading.Thread):
 
         :param motor_id: 0 - 3
 
-        :param speed: 0 - 1000 The desired constant speed in steps per
+        :param speed: -1000 - 1000 The desired constant speed in steps per
                       second. Positive is clockwise. Speeds of more than 1000 steps per
                       second are unreliable. Speed accuracy depends on the Arduino
                       crystal. Jitter depends on how frequently you call the
@@ -1288,23 +1289,34 @@ class Telemetrix(threading.Thread):
                       The speed will be limited by the current value of
                       stepper_set_max_speed().
         """
+
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError('stepper_set_speed: Invalid motor_id.')
 
-        if not 0 < speed <= 1000:
+        if not -1000 <= speed <= 1000:
             if self.shutdown_on_exception:
                 self.shutdown()
-            raise RuntimeError('stepper_set_speed: Speed range is 0 - '
-                               '1000.')
+            raise RuntimeError('stepper_set_speed: speed range is -1000 to 1000')
 
-        self.stepper_info_list[motor_id]['speed'] = speed
+        if speed < 0:
+            polarity = 1
+        else:
+            polarity = 0
 
-        speed_msb = speed >> 8
-        speed_lsb = speed & 0xff
+        speed = abs(speed)
+        if not self.stepper_info_list[motor_id]['instance']:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError('stepper_move: Invalid motor_id.')
 
-        command = [PrivateConstants.STEPPER_SET_SPEED, motor_id, speed_msb, speed_lsb]
+        position_bytes = list(speed.to_bytes(2, 'big', signed=True))
+
+        command = [PrivateConstants.STEPPER_SET_SPEED, motor_id]
+        for value in position_bytes:
+            command.append(value)
+        command.append(polarity)
         self._send_command(command)
 
     def stepper_get_speed(self, motor_id):
