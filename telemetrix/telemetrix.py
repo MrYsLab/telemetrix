@@ -241,6 +241,7 @@ class Telemetrix(threading.Thread):
 
         # maximum number of steppers supported
         self.max_number_of_steppers = 8
+        
 
         # number of steppers created - not to exceed the maximum
         self.number_of_steppers = 0
