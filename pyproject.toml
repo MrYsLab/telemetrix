@@ -6,8 +6,8 @@ build-backend = "setuptools.build_meta"
 find = {}  # Scan the project directory with the default parameters
 
 [project]
-name = "telemetri"
-version = "1.33"
+name = "telemetrix"
+version = "1.34"
 authors = [
   { name="Alan Yorinks", email="MisterYsLab@gmail.com" },
 ]
