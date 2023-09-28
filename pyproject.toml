@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages]
+find = {}  # Scan the project directory with the default parameters
+
+[project]
+name = "telemetri"
+version = "1.33"
+authors = [
+  { name="Alan Yorinks", email="MisterYsLab@gmail.com" },
+]
+description = "Telemetrix Client"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "AGPL-3.0-or-later"}
+
+keywords=['telemetrix', 'Arduino', 'UNO', 'ESP8266', 'Python']
+classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Other Environment',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Education',
+        'Operating System :: OS Independent',
+        'Topic :: Software Development :: Libraries :: Python Modules'
+    ]
+
+dependencies = [
+    "pyserial", "bleak"
+]
+
+
+
+
+
