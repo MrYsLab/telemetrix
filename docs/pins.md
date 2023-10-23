@@ -61,8 +61,3 @@ Telemetrix uses the standard SPI pins as mapped in each specific variants file.
 ## I2C Pins
 Telemetrix uses the standard I2C pins as mapped in each specific variants file.
 
-<br>
-<br>
-
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

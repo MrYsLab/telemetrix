@@ -338,11 +338,3 @@ def set_pin_mode_spi(self, chip_select_list=None):
 1. telemetrix: [stepper_absolute.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/stepper_absolute.py)
 2. telemetrix-aio : [stepper_absolute.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/stepper_absolute.py)
 
-
-
-
-
-<br>
-<br>
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

@@ -22,8 +22,3 @@ pip install telemetrix
 You can find the code for telemetrix on this [GitHub](https://github.com/MrYsLab/telemetrix) repository.
 
 
-<br>
-<br>
-
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

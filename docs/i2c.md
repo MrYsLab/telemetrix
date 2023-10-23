@@ -124,7 +124,3 @@ See NOTE above.
 
 **NOTE :** The address and args parameters are integer types within the range of 
 0-255.
-<br>
-<br>
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

@@ -40,8 +40,3 @@ The report is formatted as follows:
 
 DEBUG ID: _**byte_id**_ Value: **_int_value_**
 
-
-<br>
-<br>
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

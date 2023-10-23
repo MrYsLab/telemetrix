@@ -77,7 +77,3 @@ the serial monitor before instantiating your Python application:</p>
                  ip_address=None, ip_port=31335):
 ```
 
-
-<br>
-<br>
-Copyright (C) 2020-23 Alan Yorinks. All Rights Reserved.

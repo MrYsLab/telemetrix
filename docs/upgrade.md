@@ -40,7 +40,3 @@ For Linux and macOS users, type:
 ```python
 sudo pip3 install telemetrix-aio --upgrade
 ```
-<br>
-<br>
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

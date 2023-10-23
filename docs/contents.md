@@ -11,10 +11,3 @@
 
 * A discussion of the [API methods](./init.md), including links to working examples.
 
-
-
-<br>
-<br>
-
-Copyright (C) 2020=21 Alan Yorinks. All Rights Reserved.
-

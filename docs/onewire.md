@@ -122,8 +122,3 @@ def onewire_skip(self):
     immediately access your device.
     """
 ```
-
-<br>
-<br>
-
-Copyright (C) 2021 Alan Yorinks. All Rights Reserved.

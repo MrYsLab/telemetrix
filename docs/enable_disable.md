@@ -123,5 +123,3 @@ This command reenables sonar reporting after disabling.
 1. telemetrix: [sonar_disable.py](https://github.com/MrYsLab/telemetrix/blob/master/examples/sonar_disable.py)
 2. telemetrix-aio: [sonar_disable.py](https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/sonar_disable.py)
 
-
-Copyright (C) 2020-23 Alan Yorinks. All Rights Reserved.

@@ -6,7 +6,7 @@ def stepper_get_current_position(self, motor_id, current_position_callback)
 
     Request the current motor position from the server.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param current_position_callback: required callback function to receive report
 
@@ -29,7 +29,7 @@ def stepper_get_distance_to_go(self, motor_id, distance_to_go_callback)
     Request the distance from the current position to the target 
     position from the server.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param distance_to_go_callback: required callback function 
                                     to receive report
@@ -52,7 +52,7 @@ def stepper_get_target_position(self, motor_id, target_callback)
 
     Request the most recently set target position from the server.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param target_callback: required callback function to receive report
 
@@ -97,7 +97,7 @@ def stepper_move(self, motor_id, relative_position)
 
     Set the target position relative to the current position.
 
-    :param motor_id: motor id: 0 - 3
+    :param motor_id: motor id: 0 - 7
 
     :param relative_position: The desired position relative to the 
                               current position.
@@ -126,7 +126,7 @@ def stepper_move_to(self, motor_id, position)
     If you are trying to use constant speed movements, you should 
     call setSpeed() after calling moveTo().
 
-    :param motor_id: motor id: 0 - 3
+    :param motor_id: motor id: 0 - 7
 
     :param position: target position. Maximum value is 32 bits.
 ```
@@ -145,7 +145,7 @@ def stepper_run(self, motor_id, completion_callback=None)
 
     Once called, the server will continuously attempt to step the motor.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param completion_callback: call back function to receive
                                 motion complete notification
@@ -172,7 +172,7 @@ def stepper_run_speed(self, motor_id)
 
     Once called, the server will continuously attempt to step the motor.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 ```
 
 **Examples:** 
@@ -191,7 +191,7 @@ def stepper_run_speed_to_position(self, motor_id, completion_callback=None)
 
     Does not implement accelerations.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param completion_callback: call back function to receive motion 
                                 complete notification
@@ -215,7 +215,7 @@ def stepper_set_acceleration(self, motor_id, acceleration)
 
     Sets the acceleration/deceleration rate.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param acceleration: The desired acceleration in steps per 
                          second per second. 
@@ -239,7 +239,7 @@ def stepper_set_current_position(self, motor_id, position)
 
     Has the side effect of setting the current motor speed to 0.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param position: Position in steps. This is a 32 bit value
 ```
@@ -262,7 +262,7 @@ def stepper_set_max_speed(self, motor_id, max_speed)
     Caution: Speeds that exceed the maximum speed supported by the 
     processor may result in non-linear accelerations and decelerations.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param max_speed: 1 - 1000
 ```
@@ -279,7 +279,7 @@ def stepper_set_speed(self, motor_id, speed)
 
     Sets the desired constant speed for use with stepper_run_speed().
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param speed: 0 - 1000 The desired constant speed in steps 
                   per second. 
@@ -318,7 +318,7 @@ def stepper_disable_outputs(self, motor_id)
     If the enable Pin is defined, sets it to OUTPUT mode and clears 
     the pin to disabled.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 ```
 
 ### stepper_enable_outputs
@@ -331,7 +331,7 @@ def stepper_enable_outputs(self, motor_id)
     If the enable Pin is defined, sets it to OUTPUT mode and sets 
     the pin to enabled.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 ```
 
 ### stepper_get_max_speed
@@ -344,7 +344,7 @@ def stepper_get_max_speed(self, motor_id)
 
     Value is stored in the client, so no callback is required.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :return: The currently configured maximum speed.
 ```
@@ -359,7 +359,7 @@ def stepper_get_speed(self, motor_id)
 
     Value is stored in the client, so no callback is required.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 ```
 
 ### stepper_set_3_pins_inverted
@@ -370,7 +370,7 @@ def stepper_set_3_pins_inverted(self, motor_id, direction=False,
 
     Sets the inversion for stepper driver pins.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param direction: True=inverted or False
 
@@ -388,7 +388,7 @@ def stepper_set_4_pins_inverted(self, motor_id, pin1_invert=False,
 
     Sets the inversion for 2, 3 and 4 wire stepper pins
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 
     :param pin1_invert: True=inverted or False
 
@@ -413,7 +413,9 @@ def stepper_set_enable_pin(self, motor_id, pin=255)
         
     enableOutputs() is called and switched off when disableOutputs() is called.
 
-    :param motor_id: 0 - 4 :param pin: 0-0xff
+    :param motor_id: 0 - 7 
+    
+    :param pin: 0-0xff
 ```
 
 ### stepper_set_min_pulse_width
@@ -427,7 +429,7 @@ def stepper_set_min_pulse_width(self, motor_id, minimum_width)
 
     Times less than 20 microseconds will usually result in 20 microseconds or so.
 
-    :param motor_id: 0 -3
+    :param motor_id: 0 -7
 
     :param minimum_width: A 16 bit unsigned value expressed in microseconds.
 ```
@@ -440,11 +442,6 @@ def stepper_stop(self, motor_id)
     Sets a new target position that causes the stepper to stop as quickly as 
     possible, using the current speed and acceleration parameters.
 
-    :param motor_id: 0 - 3
+    :param motor_id: 0 - 7
 ```
 
-<br>
-<br>
-
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

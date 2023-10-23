@@ -70,8 +70,3 @@ For a continuous servo, 0 is full-speed in one direction,
 180 is full speed in the other, and a value near 90 is no movement.
 
 
-
-<br>
-<br>
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

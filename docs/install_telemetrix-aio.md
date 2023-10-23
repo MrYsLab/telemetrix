@@ -20,9 +20,3 @@ pip install telemetrix-aio
 
 You can find the code for telemetrix-aio on this [GitHub](https://github.com/MrYsLab/telemetrix-aio) repository.
 
-
-<br>
-<br>
-
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

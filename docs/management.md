@@ -14,7 +14,3 @@ that any streaming data coming from the Arduino-core device is halted.
 
 All the examples call shutdown.
 
-<br>
-<br>
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

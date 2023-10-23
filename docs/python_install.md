@@ -60,9 +60,3 @@ sudo python3 get-pip.py
 Use the [procedure shown here](../python_3_verify) to verify that you have successfully
 installed the correct version of Python for your
 computer.
-<br>
-<br>
-
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.
-

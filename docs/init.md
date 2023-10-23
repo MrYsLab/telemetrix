@@ -223,7 +223,3 @@ The IP port used for the WiFi connection is specified with this parameter. The d
    WiFi examples are available
    [here](https://github.com/MrYsLab/telemetrix-aio/tree/master/examples/wifi).
    
-<br>
-<br>
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

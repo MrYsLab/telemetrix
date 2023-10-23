@@ -88,8 +88,3 @@ def spi_set_format(self, clock_divisor, bit_order, data_mode):
 
     """
 ```
-<br>
-<br>
-
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.

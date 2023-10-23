@@ -32,11 +32,3 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 If you need to install Python 3, please go to the next section.
-
-
-<br>
-<br>
-
-
-Copyright (C) 2020-21 Alan Yorinks. All Rights Reserved.
-
