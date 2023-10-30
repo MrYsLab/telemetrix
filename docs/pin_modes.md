@@ -6,6 +6,24 @@ In this section, the methods to set pin modes are presented. For each API method
 provided. The API parameters for both telemetrix and telemetrix-aio are identical for setting pin modes, except
 telemetrix-aio method definitions are prefixed with the Python _async_ keyword.
 
+**NOTE:** If you setting the mode for multiple pins, you may wish to add a short delay 
+after setting each pin.
+
+```angular2html
+import time
+from telemetrix import telemetrix
+
+
+class Main:
+    def __init__(self):
+        self.board = telemetrix.Telemetrix()
+        # init password buttons callback
+        for i in range(10, 23):
+            self.board.set_pin_mode_digital_input_pullup(i, callback=self.ringBack)
+            # add a short delay
+            time.sleep(.02)
+```
+
 ## Setting Pin Modes
 
 ### set_pin_mode_analog_input
