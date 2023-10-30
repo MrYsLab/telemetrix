@@ -1040,6 +1040,21 @@
 <p>In this section, the methods to set pin modes are presented. For each API method, a link to an example is
 provided. The API parameters for both telemetrix and telemetrix-aio are identical for setting pin modes, except
 telemetrix-aio method definitions are prefixed with the Python <em>async</em> keyword.</p>
+<p><strong>NOTE:</strong> If you setting the mode for multiple pins, you may wish to add a short delay 
+after setting each pin.</p>
+<pre><code class="language-angular2html">import time
+from telemetrix import telemetrix
+
+
+class Main:
+    def __init__(self):
+        self.board = telemetrix.Telemetrix()
+        # init password buttons callback
+        for i in range(10, 23):
+            self.board.set_pin_mode_digital_input_pullup(i, callback=self.ringBack)
+            # add a short delay
+            time.sleep(.02)
+</code></pre>
 <h2 id="setting-pin-modes">Setting Pin Modes</h2>
 <h3 id="set_pin_mode_analog_input">set_pin_mode_analog_input</h3>
 <pre><code class="language-python"> def set_pin_mode_analog_input(self, pin_number, callback=None, differential=0)
@@ -1394,7 +1409,7 @@ for your board to determine which pins support PWM.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2020-2023 Alan Yorinks &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  Last  Modified: October 23, 2023
+      Copyright &copy; 2020-2023 Alan Yorinks &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  Last  Modified: October 30, 2023
 
     </div>
   
