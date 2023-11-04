@@ -50,4 +50,4 @@ intact for those interested in the project's beginnings. You may view a discussi
 these phases on the
 [Bots In Pieces](https://mryslab.github.io/bots-in-pieces/arduino,stm32,firmata/2020/09/20/telemetrix-phase-1.html) blog.
 
-
+Programmed with [Pycharm](https://www.jetbrains.com/pycharm/)  ![](https://resources.jetbrains.com/storage/products/company/brand/logos/PyCharm_icon.svg)
