@@ -372,6 +372,10 @@ class Telemetrix(threading.Thread):
         for serial_port in serial_ports:
             self.serial_port = serial_port
 
+            # Since opening the port, there might be e.g., boot logs in the
+            # buffer. Clear them before proceeding.
+            self.serial_port.reset_input_buffer()
+
             self._get_arduino_id()
             if self.reported_arduino_id != self.arduino_instance_id:
                 continue
