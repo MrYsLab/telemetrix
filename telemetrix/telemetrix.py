@@ -965,7 +965,7 @@ class Telemetrix(threading.Thread):
         """
 
         if self.reported_features & PrivateConstants.SPI_FEATURE:
-            if type(chip_select_list) != list:
+            if type(chip_select_list) is not list:
                 if self.shutdown_on_exception:
                     self.shutdown()
                 raise RuntimeError('chip_select_list must be in the form of a list')
