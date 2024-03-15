@@ -372,6 +372,10 @@ class Telemetrix(threading.Thread):
         for serial_port in serial_ports:
             self.serial_port = serial_port
 
+            # Since opening the port, there might be e.g., boot logs in the
+            # buffer. Clear them before proceeding.
+            self.serial_port.reset_input_buffer()
+
             self._get_arduino_id()
             if self.reported_arduino_id != self.arduino_instance_id:
                 continue
@@ -961,7 +965,7 @@ class Telemetrix(threading.Thread):
         """
 
         if self.reported_features & PrivateConstants.SPI_FEATURE:
-            if type(chip_select_list) != list:
+            if type(chip_select_list) is not list:
                 if self.shutdown_on_exception:
                     self.shutdown()
                 raise RuntimeError('chip_select_list must be in the form of a list')
