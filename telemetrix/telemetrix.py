@@ -259,7 +259,7 @@ class Telemetrix(threading.Thread):
         self.stepper_info_list = []
         # a list of dictionaries to hold stepper information
         for motor in range(self.max_number_of_steppers):
-            self.stepper_info_list.append(self.stepper_info)
+            self.stepper_info_list.append(self.stepper_info.copy())
 
         self.the_reporter_thread.start()
         self.the_data_receive_thread.start()
