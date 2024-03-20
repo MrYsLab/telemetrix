@@ -103,7 +103,7 @@ class PrivateConstants:
     FEATURES = 20
     DEBUG_PRINT = 99
 
-    TELEMETRIX_VERSION = "1.37"
+    TELEMETRIX_VERSION = "1.38"
 
     # reporting control
     REPORTING_DISABLE_ALL = 0
