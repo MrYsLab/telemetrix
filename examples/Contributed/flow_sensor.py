@@ -6,7 +6,6 @@
 #   |_|    |_|\___/ \_/\_/   |___/\___|_| |_|___/\___/|_|   
 #       
 # https://www.dfrobot.com/product-1517.html
-                                                          
 
 
 """
@@ -52,6 +51,7 @@ waterFlow = 0.0
 previousValue = 0
 actualValue = 0
 
+
 def the_callback(data):
     """
     A callback function to report data changes.
@@ -60,7 +60,7 @@ def the_callback(data):
 
     :param data: [pin, current reported value, pin_mode, timestamp]
     """
-    global waterFlow, previousValue,actualValue
+    global waterFlow, previousValue, actualValue
 
     actualValue = data[CB_VALUE]
     # Check for transition from 0 to 1
@@ -73,6 +73,7 @@ def the_callback(data):
     # Update previousValue
     previousValue = actualValue
     return actualValue
+
 
 def digital_in_pullup(my_board, pin):
     """
