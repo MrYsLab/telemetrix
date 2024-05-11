@@ -302,7 +302,7 @@ class Telemetrix(threading.Thread):
         self.stepper_info_list = []
         # a list of dictionaries to hold stepper information
         for motor in range(self.max_number_of_steppers):
-            self.stepper_info_list.append(self.stepper_info)
+            self.stepper_info_list.append(self.stepper_info.copy())
 
         self.the_reporter_thread.start()
         self.the_data_receive_thread.start()
@@ -414,6 +414,10 @@ class Telemetrix(threading.Thread):
 
         for serial_port in serial_ports:
             self.serial_port = serial_port
+
+            # Since opening the port, there might be e.g., boot logs in the
+            # buffer. Clear them before proceeding.
+            self.serial_port.reset_input_buffer()
 
             self._get_arduino_id()
             if self.reported_arduino_id != self.arduino_instance_id:
@@ -597,8 +601,9 @@ class Telemetrix(threading.Thread):
 
         callback returns a data list:
 
-        [I2C_READ_REPORT, address, register, count of data bytes,
-         data bytes, time-stamp]
+        [I2C_READ_REPORT, i2c_port, number of bytes read, address, register,
+        bytes read..., time-stamp]
+
 
         &#34;&#34;&#34;
 
@@ -636,8 +641,8 @@ class Telemetrix(threading.Thread):
 
         callback returns a data list:
 
-        [I2C_READ_REPORT, address, register, count of data bytes,
-         data bytes, time-stamp]
+        [I2C_READ_REPORT, i2c_port, number of bytes read, address, register,
+        bytes read..., time-stamp]
 
         &#34;&#34;&#34;
 
@@ -906,6 +911,10 @@ class Telemetrix(threading.Thread):
                 raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
 
             if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
+                if pin in self.dht_callbacks.keys():
+                    if self.shutdown_on_exception:
+                        self.shutdown()
+                    raise RuntimeError(f&#39;set_pin_mode_dht Pin {pin} already assigned&#39;)
                 self.dht_callbacks[pin] = callback
                 self.dht_count += 1
 
@@ -1004,7 +1013,7 @@ class Telemetrix(threading.Thread):
         &#34;&#34;&#34;
 
         if self.reported_features &amp; PrivateConstants.SPI_FEATURE:
-            if type(chip_select_list) != list:
+            if type(chip_select_list) is not list:
                 if self.shutdown_on_exception:
                     self.shutdown()
                 raise RuntimeError(&#39;chip_select_list must be in the form of a list&#39;)
@@ -2868,7 +2877,7 @@ receiving a KeyboardInterrupt exception</p>
         self.stepper_info_list = []
         # a list of dictionaries to hold stepper information
         for motor in range(self.max_number_of_steppers):
-            self.stepper_info_list.append(self.stepper_info)
+            self.stepper_info_list.append(self.stepper_info.copy())
 
         self.the_reporter_thread.start()
         self.the_data_receive_thread.start()
@@ -2980,6 +2989,10 @@ receiving a KeyboardInterrupt exception</p>
 
         for serial_port in serial_ports:
             self.serial_port = serial_port
+
+            # Since opening the port, there might be e.g., boot logs in the
+            # buffer. Clear them before proceeding.
+            self.serial_port.reset_input_buffer()
 
             self._get_arduino_id()
             if self.reported_arduino_id != self.arduino_instance_id:
@@ -3163,8 +3176,9 @@ receiving a KeyboardInterrupt exception</p>
 
         callback returns a data list:
 
-        [I2C_READ_REPORT, address, register, count of data bytes,
-         data bytes, time-stamp]
+        [I2C_READ_REPORT, i2c_port, number of bytes read, address, register,
+        bytes read..., time-stamp]
+
 
         &#34;&#34;&#34;
 
@@ -3202,8 +3216,8 @@ receiving a KeyboardInterrupt exception</p>
 
         callback returns a data list:
 
-        [I2C_READ_REPORT, address, register, count of data bytes,
-         data bytes, time-stamp]
+        [I2C_READ_REPORT, i2c_port, number of bytes read, address, register,
+        bytes read..., time-stamp]
 
         &#34;&#34;&#34;
 
@@ -3472,6 +3486,10 @@ receiving a KeyboardInterrupt exception</p>
                 raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
 
             if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
+                if pin in self.dht_callbacks.keys():
+                    if self.shutdown_on_exception:
+                        self.shutdown()
+                    raise RuntimeError(f&#39;set_pin_mode_dht Pin {pin} already assigned&#39;)
                 self.dht_callbacks[pin] = callback
                 self.dht_count += 1
 
@@ -3570,7 +3588,7 @@ receiving a KeyboardInterrupt exception</p>
         &#34;&#34;&#34;
 
         if self.reported_features &amp; PrivateConstants.SPI_FEATURE:
-            if type(chip_select_list) != list:
+            if type(chip_select_list) is not list:
                 if self.shutdown_on_exception:
                     self.shutdown()
                 raise RuntimeError(&#39;chip_select_list must be in the form of a list&#39;)
@@ -5352,8 +5370,8 @@ i2c data as a result of read command</p>
 before read
 Else, the write is suppressed</p>
 <p>callback returns a data list:</p>
-<p>[I2C_READ_REPORT, address, register, count of data bytes,
-data bytes, time-stamp]</p></div>
+<p>[I2C_READ_REPORT, i2c_port, number of bytes read, address, register,
+bytes read&hellip;, time-stamp]</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -5385,8 +5403,9 @@ data bytes, time-stamp]</p></div>
 
     callback returns a data list:
 
-    [I2C_READ_REPORT, address, register, count of data bytes,
-     data bytes, time-stamp]
+    [I2C_READ_REPORT, i2c_port, number of bytes read, address, register,
+    bytes read..., time-stamp]
+
 
     &#34;&#34;&#34;
 
@@ -5413,8 +5432,8 @@ data as a result of read command</p>
 <p>:param write_register: If True, the register is written before read
 Else, the write is suppressed</p>
 <p>callback returns a data list:</p>
-<p>[I2C_READ_REPORT, address, register, count of data bytes,
-data bytes, time-stamp]</p></div>
+<p>[I2C_READ_REPORT, i2c_port, number of bytes read, address, register,
+bytes read&hellip;, time-stamp]</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -5449,8 +5468,8 @@ data bytes, time-stamp]</p></div>
 
     callback returns a data list:
 
-    [I2C_READ_REPORT, address, register, count of data bytes,
-     data bytes, time-stamp]
+    [I2C_READ_REPORT, i2c_port, number of bytes read, address, register,
+    bytes read..., time-stamp]
 
     &#34;&#34;&#34;
 
@@ -6018,6 +6037,10 @@ Time]</p>
             raise RuntimeError(&#39;set_pin_mode_dht: A Callback must be specified&#39;)
 
         if self.dht_count &lt; PrivateConstants.MAX_DHTS - 1:
+            if pin in self.dht_callbacks.keys():
+                if self.shutdown_on_exception:
+                    self.shutdown()
+                raise RuntimeError(f&#39;set_pin_mode_dht Pin {pin} already assigned&#39;)
             self.dht_callbacks[pin] = callback
             self.dht_count += 1
 
@@ -6317,7 +6340,7 @@ NOTE: You must specify the chips select pins here!</p>
     &#34;&#34;&#34;
 
     if self.reported_features &amp; PrivateConstants.SPI_FEATURE:
-        if type(chip_select_list) != list:
+        if type(chip_select_list) is not list:
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(&#39;chip_select_list must be in the form of a list&#39;)
