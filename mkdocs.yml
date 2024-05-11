@@ -3,8 +3,8 @@
 site_name: Telemetrix and Telemetrix-AIO User's Guide
 repo_url: https://github.com/MrYsLab/telemetrix
 copyright: > # should remain a link to the original theme
-  Copyright &copy; 2020-2023 Alan Yorinks &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  Last 
-  Modified: October 30, 2023
+  Copyright &copy; 2020-2024 Alan Yorinks &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  Last 
+  Modified: May 11, 2024
 
 nav:
     - Introduction: index.md
