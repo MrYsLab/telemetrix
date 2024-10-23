@@ -11,26 +11,30 @@ For telemetrix-aio: [spi_mpu9250.py](https://github.com/MrYsLab/telemetrix-aio/b
 
 ### spi_read_blocking
 ```python
-def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
-                      call_back=None):
-    """
-    Read the specified number of bytes from the specified SPI port and
-    call the callback function with the reported data.
+    def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
+                          call_back=None, enable_read_bit=True):
+        """
+        Read the specified number of bytes from the specified SPI port and
+        call the callback function with the reported data.
 
-    :param register_selection: Register to be selected for read.
+        :param register_selection: Register to be selected for read.
 
-    :param number_of_bytes_to_read: Number of bytes to read
+        :param number_of_bytes_to_read: Number of bytes to read
 
-    :param call_back: Required callback function to report spi data as a
-               result of read command
+        :param call_back: Required callback function to report spi data as a
+                   result of read command
+
+        :param enable_read_bit: Many SPI devices require that the register
+                                selection be OR'ed with 0x80. If set to True
+                                the bit will be set.
 
 
-    callback returns a data list:
-    [SPI_READ_REPORT, count of data bytes read, data bytes, time-stamp]
+        callback returns a data list:
+        [SPI_READ_REPORT, count of data bytes read, data bytes, time-stamp]
 
-    SPI_READ_REPORT = 13
+        SPI_READ_REPORT = 13
 
-    """
+        """
 ```
 
 ## Write Commands
