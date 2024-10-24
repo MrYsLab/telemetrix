@@ -1809,7 +1809,7 @@ class Telemetrix(threading.Thread):
         self._send_command(command)
 
     def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
-                          call_back=None):
+                          call_back=None, enable_read_bit=True):
         """
         Read the specified number of bytes from the specified SPI port and
         call the callback function with the reported data.
@@ -1820,6 +1820,10 @@ class Telemetrix(threading.Thread):
 
         :param call_back: Required callback function to report spi data as a
                    result of read command
+
+        :param enable_read_bit: Many SPI devices require that the register
+                                selection be OR'ed with 0x80. If set to True
+                                the bit will be set.
 
 
         callback returns a data list:
@@ -1842,7 +1846,7 @@ class Telemetrix(threading.Thread):
         self.spi_callback = call_back
 
         command = [PrivateConstants.SPI_READ_BLOCKING, number_of_bytes_to_read,
-                   register_selection]
+                   register_selection, enable_read_bit]
 
         self._send_command(command)
 

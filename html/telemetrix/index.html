@@ -1852,7 +1852,7 @@ class Telemetrix(threading.Thread):
         self._send_command(command)
 
     def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
-                          call_back=None):
+                          call_back=None, enable_read_bit=True):
         &#34;&#34;&#34;
         Read the specified number of bytes from the specified SPI port and
         call the callback function with the reported data.
@@ -1863,6 +1863,10 @@ class Telemetrix(threading.Thread):
 
         :param call_back: Required callback function to report spi data as a
                    result of read command
+
+        :param enable_read_bit: Many SPI devices require that the register
+                                selection be OR&#39;ed with 0x80. If set to True
+                                the bit will be set.
 
 
         callback returns a data list:
@@ -1885,7 +1889,7 @@ class Telemetrix(threading.Thread):
         self.spi_callback = call_back
 
         command = [PrivateConstants.SPI_READ_BLOCKING, number_of_bytes_to_read,
-                   register_selection]
+                   register_selection, enable_read_bit]
 
         self._send_command(command)
 
@@ -4427,7 +4431,7 @@ receiving a KeyboardInterrupt exception</p>
         self._send_command(command)
 
     def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
-                          call_back=None):
+                          call_back=None, enable_read_bit=True):
         &#34;&#34;&#34;
         Read the specified number of bytes from the specified SPI port and
         call the callback function with the reported data.
@@ -4438,6 +4442,10 @@ receiving a KeyboardInterrupt exception</p>
 
         :param call_back: Required callback function to report spi data as a
                    result of read command
+
+        :param enable_read_bit: Many SPI devices require that the register
+                                selection be OR&#39;ed with 0x80. If set to True
+                                the bit will be set.
 
 
         callback returns a data list:
@@ -4460,7 +4468,7 @@ receiving a KeyboardInterrupt exception</p>
         self.spi_callback = call_back
 
         command = [PrivateConstants.SPI_READ_BLOCKING, number_of_bytes_to_read,
-                   register_selection]
+                   register_selection, enable_read_bit]
 
         self._send_command(command)
 
@@ -6580,7 +6588,7 @@ If any exceptions are thrown, they are ignored.</p></div>
 </details>
 </dd>
 <dt id="telemetrix.telemetrix.Telemetrix.spi_read_blocking"><code class="name flex">
-<span>def <span class="ident">spi_read_blocking</span></span>(<span>self, register_selection, number_of_bytes_to_read, call_back=None)</span>
+<span>def <span class="ident">spi_read_blocking</span></span>(<span>self, register_selection, number_of_bytes_to_read, call_back=None, enable_read_bit=True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Read the specified number of bytes from the specified SPI port and
@@ -6589,6 +6597,9 @@ call the callback function with the reported data.</p>
 <p>:param number_of_bytes_to_read: Number of bytes to read</p>
 <p>:param call_back: Required callback function to report spi data as a
 result of read command</p>
+<p>:param enable_read_bit: Many SPI devices require that the register
+selection be OR'ed with 0x80. If set to True
+the bit will be set.</p>
 <p>callback returns a data list:
 [SPI_READ_REPORT, count of data bytes read, data bytes, time-stamp]</p>
 <p>SPI_READ_REPORT = 13</p></div>
@@ -6597,7 +6608,7 @@ result of read command</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def spi_read_blocking(self, register_selection, number_of_bytes_to_read,
-                      call_back=None):
+                      call_back=None, enable_read_bit=True):
     &#34;&#34;&#34;
     Read the specified number of bytes from the specified SPI port and
     call the callback function with the reported data.
@@ -6608,6 +6619,10 @@ result of read command</p>
 
     :param call_back: Required callback function to report spi data as a
                result of read command
+
+    :param enable_read_bit: Many SPI devices require that the register
+                            selection be OR&#39;ed with 0x80. If set to True
+                            the bit will be set.
 
 
     callback returns a data list:
@@ -6630,7 +6645,7 @@ result of read command</p>
     self.spi_callback = call_back
 
     command = [PrivateConstants.SPI_READ_BLOCKING, number_of_bytes_to_read,
-               register_selection]
+               register_selection, enable_read_bit]
 
     self._send_command(command)</code></pre>
 </details>
