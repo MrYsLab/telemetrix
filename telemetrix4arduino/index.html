@@ -889,9 +889,8 @@ and then clicking the upload button on the IDE.</p>
 <h2 id="setting-the-telemetrix4arduino-instance-id">Setting The Telemetrix4Arduino Instance ID</h2>
 <p>Telemetrix4Arduino, in conjunction with the Telemetrix Project clients, associates a 
 specific Arduino board with your application.</p>
-<p>You do not need to do anything if you only have a single Arduino connected at a time. 
-However, if you wish to run multiple Arduinos, you must assign each one a
-unique ID number.</p>
+<p>If you only have a single Arduino connected at a time, you do not need to do anything. 
+However, if you wish to run multiple Arduinos, you must assign each one a unique ID number.</p>
 <p><img alt="" src="../images/add_zip3.png" /></p>
 <p>If you wish to change the server's instance_id, 
 you must edit the sketch code and upload the changes to the Arduino.</p>
@@ -903,9 +902,14 @@ when instantiating the client class:</p>
                  shutdown_on_exception=True)
 </code></pre>
 <p>If you use multiple Arduino boards for your application, 
-you must specify the com_port and arduino_id for each telemetrix instance. For example:</p>
+you must specify the com_port and arduino_id for each telemetrix instance. For example,
+for telemetrix:</p>
 <pre><code class="language-aiignore">board = telemetrix.Telemetrix(com_port='/dev/ttyACM0', arduino_instance_id=1)
 board2 = telemetrix.Telemetrix(com_port='/dev/ttyACM1', arduino_instance_id=2)
+</code></pre>
+<p>For telemetrix-aio:</p>
+<pre><code class="language-aiignore">board = telemetrix_aio.TelemetrixAIO(com_port='/dev/ttyACM0', arduino_instance_id=1)
+board2 = telemetrix_aio.TelemetrixAIO(com_port='/dev/ttyACM1', arduino_instance_id=2)
 </code></pre>
 <p><strong>NOTE</strong>: 
 If you use an Arduino Uno, you may see a warning in the Arduino IDE 
