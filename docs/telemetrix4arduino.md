@@ -27,7 +27,10 @@ specific Arduino board with your application.
 If you only have a single Arduino connected at a time, you do not need to do anything. However,
 if you wish to run multiple Arduinos, you must assign a unique ID number to each
 Arduino. The ID number is then supplied as an input parameter when your application
- is instantiated.
+ is instantiated. In addition, you must specify the arduino_id and com_port for each 
+telemetrix instance.
+
+
 
 ![](./images/add_zip3.png)
 
