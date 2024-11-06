@@ -24,26 +24,32 @@ and then clicking the upload button on the IDE.</p>
 Telemetrix4Arduino, in conjunction with the Telemetrix Project clients, associates a 
 specific Arduino board with your application.
 
-If you only have a single Arduino connected at a time, you do not need to do anything. However,
-if you wish to run multiple Arduinos, you must assign a unique ID number to each
-Arduino. The ID number is then supplied as an input parameter when your application
- is instantiated. In addition, you must specify the arduino_id and com_port for each 
-telemetrix instance.
-
+You do not need to do anything if you only have a single Arduino connected at a time. 
+However, if you wish to run multiple Arduinos, you must assign each one a
+unique ID number.
 
 
 ![](./images/add_zip3.png)
 
-If you wish to change the instance_id for the server, you must edit the sketch code 
-and upload the changes to the Arduino.
+If you wish to change the server's instance_id, 
+you must edit the sketch code and upload the changes to the Arduino.
 
-To match the instance_id on the client side, you will need to specify the arduino_instance id parameter
+To match the instance_id on the client side, you will need to specify the 
+arduino_instance id parameter
 when instantiating the client class:
 
 ```
 def __init__(self, com_port=None, arduino_instance_id=1,
                  arduino_wait=4, sleep_tune=0.000001,
                  shutdown_on_exception=True)
+```
+
+If you use multiple Arduino boards for your application, 
+you must specify the com_port and arduino_id for each telemetrix instance. For example:
+
+```aiignore
+board = telemetrix.Telemetrix(com_port='/dev/ttyACM0', arduino_instance_id=1)
+board2 = telemetrix.Telemetrix(com_port='/dev/ttyACM1', arduino_instance_id=2)
 ```
 
 **NOTE**: 
