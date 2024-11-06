@@ -377,6 +377,8 @@ class Telemetrix(threading.Thread):
             self.serial_port.reset_input_buffer()
 
             self._get_arduino_id()
+            while self.reported_arduino_id is None:
+                time.sleep(.2)
             if self.reported_arduino_id != self.arduino_instance_id:
                 continue
             else:
