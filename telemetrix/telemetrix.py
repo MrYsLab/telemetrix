@@ -2215,13 +2215,16 @@ class Telemetrix(threading.Thread):
         :param data: digital message
 
         """
-        pin = data[0]
-        value = data[1]
+        try:
+            pin = data[0]
+            value = data[1]
 
-        time_stamp = time.time()
-        if self.digital_callbacks[pin]:
-            message = [PrivateConstants.DIGITAL_REPORT, pin, value, time_stamp]
-            self.digital_callbacks[pin](message)
+            time_stamp = time.time()
+            if self.digital_callbacks[pin]:
+                message = [PrivateConstants.DIGITAL_REPORT, pin, value, time_stamp]
+                self.digital_callbacks[pin](message)
+        except:
+            print('malformed message in _digital_message')
 
     def _firmware_message(self, data):
         """
