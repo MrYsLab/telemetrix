@@ -388,7 +388,6 @@ class Telemetrix(threading.Thread):
                 time.sleep(.2)
                 retries -= 1
             if self.reported_arduino_id != self.arduino_instance_id:
-                self.serial_port.close()
                 continue
             else:
                 print('Valid Arduino ID Found.')
