@@ -43,6 +43,7 @@ class Telemetrix(threading.Thread):
 
     # noinspection PyPep8,PyPep8,PyPep8
     def __init__(self, com_port=None, arduino_instance_id=1,
+                 excluded_com_ports=[],
                  arduino_wait=4, sleep_tune=0.000001,
                  shutdown_on_exception=True,
                  ip_address=None, ip_port=31335):
@@ -55,6 +56,10 @@ class Telemetrix(threading.Thread):
 
         :param arduino_instance_id: Match with the value installed on the
                                     arduino-telemetrix sketch.
+
+        :param excluded_com_ports: Excluded ports on auto com port detection.
+                        This is needed to run multiple instances at the same
+                        time on auto mode.
 
         :param arduino_wait: Amount of time to wait for an Arduino to
                              fully reset itself.
@@ -105,6 +110,7 @@ class Telemetrix(threading.Thread):
         # save input parameters as instance variables
         self.com_port = com_port
         self.arduino_instance_id = arduino_instance_id
+        self.excluded_com_ports = excluded_com_ports
         self.arduino_wait = arduino_wait
         self.sleep_tune = sleep_tune
         self.shutdown_on_exception = shutdown_on_exception
@@ -217,7 +223,7 @@ class Telemetrix(threading.Thread):
         self.firmware_version = []
 
         # reported arduino instance id
-        self.reported_arduino_id = []
+        self.reported_arduino_id = None
 
         # reported features
         self.reported_features = 0
@@ -347,7 +353,7 @@ class Telemetrix(threading.Thread):
         print('Opening all potential serial ports...')
         the_ports_list = list_ports.comports()
         for port in the_ports_list:
-            if port.pid is None:
+            if port.pid is None or port.device in self.excluded_com_ports:
                 continue
             try:
                 self.serial_port = serial.Serial(port.device, 115200,
@@ -377,9 +383,12 @@ class Telemetrix(threading.Thread):
             self.serial_port.reset_input_buffer()
 
             self._get_arduino_id()
-            while self.reported_arduino_id is None:
+            retries = 50
+            while self.reported_arduino_id is None and retries > 0:
                 time.sleep(.2)
+                retries -= 1
             if self.reported_arduino_id != self.arduino_instance_id:
+                self.serial_port.close()
                 continue
             else:
                 print('Valid Arduino ID Found.')
