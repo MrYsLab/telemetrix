@@ -30,6 +30,22 @@ from serial.tools import list_ports
 # noinspection PyUnresolvedReferences
 from telemetrix.private_constants import PrivateConstants
 
+class TelemetrixPortRegister:
+    """
+    This is a Singleton Class to share active ports
+    used by Telemetrix instances.
+
+    """
+    _instance = None
+
+    def __new__(self):
+        if self._instance is None:
+            self._instance = super(TelemetrixPortRegister, self).__new__(self)
+            self.active = []
+        return self._instance
+
+    def add(self, port):
+        self.active.append(port)
 
 # noinspection PyPep8,PyMethodMayBeStatic,GrazieInspection,PyBroadException,PyCallingNonCallable
 class Telemetrix(threading.Thread):
@@ -47,6 +63,7 @@ class Telemetrix(threading.Thread):
                  shutdown_on_exception=True,
                  ip_address=None, ip_port=31335):
 
+        self.serial_port_register = TelemetrixPortRegister()
         """
 
         :param com_port: e.g. COM3 or /dev/ttyACM0.
@@ -217,7 +234,7 @@ class Telemetrix(threading.Thread):
         self.firmware_version = []
 
         # reported arduino instance id
-        self.reported_arduino_id = []
+        self.reported_arduino_id = None
 
         # reported features
         self.reported_features = 0
@@ -346,8 +363,10 @@ class Telemetrix(threading.Thread):
 
         print('Opening all potential serial ports...')
         the_ports_list = list_ports.comports()
+
+        registered_ports = list(map(lambda p: p.port, self.serial_port_register.active))
         for port in the_ports_list:
-            if port.pid is None:
+            if port.pid is None or port.device in registered_ports:
                 continue
             try:
                 self.serial_port = serial.Serial(port.device, 115200,
@@ -377,11 +396,14 @@ class Telemetrix(threading.Thread):
             self.serial_port.reset_input_buffer()
 
             self._get_arduino_id()
-            while self.reported_arduino_id is None:
+            retries = 50
+            while self.reported_arduino_id is None and retries > 0:
                 time.sleep(.2)
+                retries -= 1
             if self.reported_arduino_id != self.arduino_instance_id:
                 continue
             else:
+                self.serial_port_register.add(serial_port)
                 print('Valid Arduino ID Found.')
                 self.serial_port.reset_input_buffer()
                 self.serial_port.reset_output_buffer()
@@ -2206,13 +2228,16 @@ class Telemetrix(threading.Thread):
         :param data: digital message
 
         """
-        pin = data[0]
-        value = data[1]
+        try:
+            pin = data[0]
+            value = data[1]
 
-        time_stamp = time.time()
-        if self.digital_callbacks[pin]:
-            message = [PrivateConstants.DIGITAL_REPORT, pin, value, time_stamp]
-            self.digital_callbacks[pin](message)
+            time_stamp = time.time()
+            if self.digital_callbacks[pin]:
+                message = [PrivateConstants.DIGITAL_REPORT, pin, value, time_stamp]
+                self.digital_callbacks[pin](message)
+        except:
+            print('malformed message in _digital_message')
 
     def _firmware_message(self, data):
         """
