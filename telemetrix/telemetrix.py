@@ -30,6 +30,22 @@ from serial.tools import list_ports
 # noinspection PyUnresolvedReferences
 from telemetrix.private_constants import PrivateConstants
 
+class TelemetrixPortRegister:
+    """
+    This is a Singleton Class to share active ports
+    used by Telemetrix instances.
+
+    """
+    _instance = None
+
+    def __new__(self):
+        if self._instance is None:
+            self._instance = super(TelemetrixPortRegister, self).__new__(self)
+            self.active = []
+        return self._instance
+
+    def add(self, port):
+        self.active.append(port)
 
 # noinspection PyPep8,PyMethodMayBeStatic,GrazieInspection,PyBroadException,PyCallingNonCallable
 class Telemetrix(threading.Thread):
@@ -43,11 +59,11 @@ class Telemetrix(threading.Thread):
 
     # noinspection PyPep8,PyPep8,PyPep8
     def __init__(self, com_port=None, arduino_instance_id=1,
-                 excluded_com_ports=[],
                  arduino_wait=4, sleep_tune=0.000001,
                  shutdown_on_exception=True,
                  ip_address=None, ip_port=31335):
 
+        self.serial_port_register = TelemetrixPortRegister()
         """
 
         :param com_port: e.g. COM3 or /dev/ttyACM0.
@@ -56,10 +72,6 @@ class Telemetrix(threading.Thread):
 
         :param arduino_instance_id: Match with the value installed on the
                                     arduino-telemetrix sketch.
-
-        :param excluded_com_ports: Excluded ports on auto com port detection.
-                        This is needed to run multiple instances at the same
-                        time on auto mode.
 
         :param arduino_wait: Amount of time to wait for an Arduino to
                              fully reset itself.
@@ -110,7 +122,6 @@ class Telemetrix(threading.Thread):
         # save input parameters as instance variables
         self.com_port = com_port
         self.arduino_instance_id = arduino_instance_id
-        self.excluded_com_ports = excluded_com_ports
         self.arduino_wait = arduino_wait
         self.sleep_tune = sleep_tune
         self.shutdown_on_exception = shutdown_on_exception
@@ -352,8 +363,10 @@ class Telemetrix(threading.Thread):
 
         print('Opening all potential serial ports...')
         the_ports_list = list_ports.comports()
+
+        registered_ports = list(map(lambda p: p.port, self.serial_port_register.active))
         for port in the_ports_list:
-            if port.pid is None or port.device in self.excluded_com_ports:
+            if port.pid is None or port.device in registered_ports:
                 continue
             try:
                 self.serial_port = serial.Serial(port.device, 115200,
@@ -390,6 +403,7 @@ class Telemetrix(threading.Thread):
             if self.reported_arduino_id != self.arduino_instance_id:
                 continue
             else:
+                self.serial_port_register.add(serial_port)
                 print('Valid Arduino ID Found.')
                 self.serial_port.reset_input_buffer()
                 self.serial_port.reset_output_buffer()
