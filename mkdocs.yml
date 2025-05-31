@@ -40,3 +40,12 @@ theme:
     repo: fontawesome/brands/github
   features:
     - navigation.footer
+
+extra:
+  social:
+    - icon: fontawesome/solid/envelope
+      link: mailto:MisterYsLab@gmail.com
+    - icon: fontawesome/brands/github
+      link: https://github.com/MrYsLab
+    - icon: fontawesome/brands/bluesky
+      link: https://bsky.app/profile/mryslab.bsky.social
