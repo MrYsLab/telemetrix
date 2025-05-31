@@ -41,6 +41,11 @@ theme:
   features:
     - navigation.footer
 
+plugins:
+  - search
+  - open-in-new-tab
+
+
 extra:
   social:
     - icon: fontawesome/solid/envelope
