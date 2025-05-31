@@ -10,4 +10,5 @@
 * [Specifying GPIO pins.](./pins.md)
 
 * A discussion of the [API methods](./init.md), including links to working examples.
+* [A tutorial on how to extend the capabilities of _Telemetrix_.](https://mryslab.github.io/bits-n-bots/2025/05/20/telemetrix-under-the-hood--part-1/)
 

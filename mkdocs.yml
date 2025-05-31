@@ -3,8 +3,8 @@
 site_name: Telemetrix and Telemetrix-AIO User's Guide
 repo_url: https://github.com/MrYsLab/telemetrix
 copyright: > # should remain a link to the original theme
-  Copyright &copy; 2020-2024 Alan Yorinks &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  Last 
-  Modified: November 6, 2024
+  Copyright &copy; 2020-2025 Alan Yorinks &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  Last 
+  Modified: May 31, 2025
 
 nav:
     - Introduction: index.md
@@ -29,6 +29,7 @@ nav:
         - Stepper Commands: stepper.md
         - Shutting Down: management.md
         - Debugging: debug.md
+    - Adding New Features: extend.md
     - About: about.md
     - License: license.md
 # theme: windmill
