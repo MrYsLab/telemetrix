@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../device_writes/">
+        <link rel="prev" href="../debug/">
       
       
-        <link rel="next" href="../onewire/">
+        <link rel="next" href="../about/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>I2C Reads And Writes - Telemetrix and Telemetrix-AIO User's Guide</title>
+        <title>Adding New Features - Telemetrix and Telemetrix-AIO User's Guide</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#communicating-with-i2c-devices" class="md-skip">
+        <a href="#adding-new-features" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              I2C Reads And Writes
+              Adding New Features
             
           </span>
         </div>
@@ -461,19 +461,17 @@
       
   
   
-    
   
   
-  
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -487,7 +485,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             The Python APIs
@@ -582,30 +580,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    I2C Reads And Writes
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../i2c/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -614,83 +592,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#read-commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      Read Commands
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Read Commands">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#i2c_read" class="md-nav__link">
-    <span class="md-ellipsis">
-      i2c_read
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#i2c_read_restart_transmission" class="md-nav__link">
-    <span class="md-ellipsis">
-      i2c_read_restart_transmission
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#write-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      Write Command
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Write Command">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#i2c_write" class="md-nav__link">
-    <span class="md-ellipsis">
-      i2c_write
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -812,10 +713,19 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../extend/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -824,6 +734,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -888,71 +799,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#read-commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      Read Commands
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Read Commands">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#i2c_read" class="md-nav__link">
-    <span class="md-ellipsis">
-      i2c_read
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#i2c_read_restart_transmission" class="md-nav__link">
-    <span class="md-ellipsis">
-      i2c_read_restart_transmission
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#write-command" class="md-nav__link">
-    <span class="md-ellipsis">
-      Write Command
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Write Command">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#i2c_write" class="md-nav__link">
-    <span class="md-ellipsis">
-      i2c_write
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -969,102 +815,14 @@
   
 
 
-<h1 id="communicating-with-i2c-devices">Communicating With I2C Devices</h1>
-<p>Both telemetrix and telemetrix-aio have the capability to support two i2c buses.
-The default is always enabled. To enable the secondary bus, edit the Telemetrix4Arduino.ino
-file, and uncomment the following line:</p>
-<pre><code>// uncomment out the next line to create a 2nd i2c port
-//#define SECOND_I2C_PORT
-
-#ifdef SECOND_I2C_PORT
-// Change the pins to match SDA and SCL for your board
-#define SECOND_I2C_PORT_SDA PB3
-#define SECOND_I2C_PORT_SCL PB10
-</code></pre>
-<p>Make sure that the pin designations for the secondary port match those for your board.</p>
-<p><strong>NOTE :</strong> Examples for i2c read and write may be found in these examples.</p>
-<p>telemetrix primary port:  <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/i2c_adxl345_accelerometer.py">i2c_adxl345_accelerometer.py</a></p>
-<p>telemetrix secondary port:  <a href="https://github.com/MrYsLab/telemetrix/blob/master/examples/i2c_adxl345_accelerometer2.py">i2c_adxl345_accelerometer2.py</a> </p>
-<p>telemetrix-aio primary port:  <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/i2c_adxl345_accelerometer.py">i2c_adxl345_accelerometer.py</a></p>
-<p>telemetrix-aio secondary port:  <a href="https://github.com/MrYsLab/telemetrix-aio/blob/master/examples/i2c_adxl345_accelerometer2.py">i2c_adxl345_accelerometer2.py</a> </p>
-<h2 id="read-commands">Read Commands</h2>
-<h3 id="i2c_read">i2c_read</h3>
-<pre><code class="language-python"> def i2c_read(self, address, register, number_of_bytes, callback=None, 
-              i2c_port=0, write_register=True)
-
-    Read the specified number of bytes from the specified register for
-    the i2c device.
-
-    :param address: i2c device address
-
-    :param register: i2c register (or None if no register selection is needed)
-
-    :param number_of_bytes: number of bytes to be read
-
-    :param callback: Required callback function to report i2c data as
-                     a result of read command
-
-    :param i2c_port: 0 = default, 1 = secondary
-
-    :param write_register: If True, the register is written before read 
-                           Else, the write is suppressed
-
-    callback returns a data list:
-
-    [I2C_READ_REPORT, i2c_port, number of bytes read, address, register,
-        bytes read..., time-stamp]
-
-
-</code></pre>
-<p><strong>Examples:</strong></p>
-<p>See NOTE above.</p>
-<p><strong>NOTE :</strong> The address, register, count_of_data_bytes, and data report values are all of 
-integer type in the range of 0-255.</p>
-<h3 id="i2c_read_restart_transmission">i2c_read_restart_transmission</h3>
-<pre><code class="language-python"> def i2c_read_restart_transmission(self, address, register, number_of_bytes, 
-                                   callback=None, i2c_port=0, write_register=True)
-
-    Read the specified number of bytes from the specified 
-    register for the i2c device. This restarts the transmission after the read. 
-    It is required for some i2c devices such as the MMA8452Q accelerometer.
-
-    :param address: i2c device address
-
-    :param register: i2c register (or None if no register selection is needed)
-
-    :param number_of_bytes: number of bytes to be read
-
-    :param callback: Required callback function to report i2c data 
-                     as a result of read command
-
-    :param i2c_port: 0 = default 1 = secondary
-
-    :param write_register: If True, the register is written before read
-                        Else, the write is suppressed
-
-    callback returns a data list:
-
-    [I2C_READ_REPORT, i2c_port, number of bytes read, address, register,
-        bytes read..., time-stamp]
-</code></pre>
-<p><strong>Examples:</strong></p>
-<p>See NOTE above.</p>
-<h2 id="write-command">Write Command</h2>
-<h3 id="i2c_write">i2c_write</h3>
-<pre><code class="language-python"> def i2c_write(self, address, args, i2c_port=0)
-
-    Write data to an i2c device.
-
-    :param address: i2c device address
-
-    :param i2c_port: 0= port 1, 1 = port 2
-
-    :param args: A variable number of bytes to be sent to the device passed in as a list
-</code></pre>
-<p><strong>Examples:</strong></p>
-<p>See NOTE above.</p>
-<p><strong>NOTE :</strong> The address and args parameters are integer types within the range of 
-0-255.</p>
+<h1 id="adding-new-features">Adding New Features</h1>
+<p>Telemetrix was designed to be user-extensible.</p>
+<p>I've created a
+<a href="https://mryslab.github.io/bits-n-bots/2025/05/20/telemetrix-under-the-hood--part-1/">five-part blog post explaining</a>
+that explain Telemetrix's underpinnings.</p>
+<p>Although the article discusses the Arduino UNO R4 Minima, the concepts are the same for all other boards.</p>
+<p>If you have any questions, you can contact me at 
+<a href="mailto:MisterYsLab@gmail.com">MisterYsLab@gmail.com</a>.</p>
 
 
 
@@ -1094,7 +852,7 @@ integer type in the range of 0-255.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../device_writes/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Writing Values To Pins And Selected Devices">
+          <a href="../debug/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Debugging">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -1104,20 +862,20 @@ integer type in the range of 0-255.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Writing Values To Pins And Selected Devices
+                Debugging
               </div>
             </div>
           </a>
         
         
           
-          <a href="../onewire/" class="md-footer__link md-footer__link--next" aria-label="Next: OneWire Commands">
+          <a href="../about/" class="md-footer__link md-footer__link--next" aria-label="Next: About">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                OneWire Commands
+                About
               </div>
             </div>
             <div class="md-footer__button md-icon">
