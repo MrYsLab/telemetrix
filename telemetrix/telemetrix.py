@@ -47,6 +47,9 @@ class TelemetrixPortRegister:
     def add(self, port):
         self.active.append(port)
 
+    def remove(self, port):
+        self.active.remove(port)
+
 # noinspection PyPep8,PyMethodMayBeStatic,GrazieInspection,PyBroadException,PyCallingNonCallable
 class Telemetrix(threading.Thread):
     """
@@ -1792,6 +1795,7 @@ class Telemetrix(threading.Thread):
                     self.serial_port.reset_output_buffer()
 
                     self.serial_port.close()
+                    self.serial_port_register.remove(self.serial_port)
 
                 except (RuntimeError, SerialException, OSError):
                     # ignore error on shutdown
