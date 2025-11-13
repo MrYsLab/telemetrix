@@ -2168,9 +2168,12 @@ class Telemetrix(threading.Thread):
         # set the current value in the pin structure
         time_stamp = time.time()
         # self.digital_pins[pin].event_time = time_stamp
-        if self.analog_callbacks[pin]:
-            message = [PrivateConstants.ANALOG_REPORT, pin, value, time_stamp]
-            self.analog_callbacks[pin](message)
+        try:
+            if self.analog_callbacks[pin]:
+                message = [PrivateConstants.ANALOG_REPORT, pin, value, time_stamp]
+                self.analog_callbacks[pin](message)
+        except KeyError:
+            pass
 
     def _dht_report(self, data):
         """
