@@ -305,11 +305,10 @@ class Telemetrix(threading.Thread):
                         self.shutdown()
 
             if self.serial_port:
-                print(
-                    f"Arduino compatible device found and connected to {self.serial_port.port}")
-
+                print(f"Arduino compatible device found and connected to {self.serial_port.port}")
                 self.serial_port.reset_input_buffer()
                 self.serial_port.reset_output_buffer()
+                self.serial_port_register.add(self.serial_port)
 
             # no com_port found - raise a runtime exception
             else:
@@ -406,7 +405,6 @@ class Telemetrix(threading.Thread):
             if self.reported_arduino_id != self.arduino_instance_id:
                 continue
             else:
-                self.serial_port_register.add(serial_port)
                 print('Valid Arduino ID Found.')
                 self.serial_port.reset_input_buffer()
                 self.serial_port.reset_output_buffer()
