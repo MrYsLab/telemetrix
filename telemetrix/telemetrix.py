@@ -1,5 +1,5 @@
 """
- Copyright (c) 2021 Alan Yorinks All rights reserved.
+ Copyright (c) 2021-2025 Alan Yorinks All rights reserved.
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -30,6 +30,7 @@ from serial.tools import list_ports
 # noinspection PyUnresolvedReferences
 from telemetrix.private_constants import PrivateConstants
 
+
 class TelemetrixPortRegister:
     """
     This is a Singleton Class to share active ports
@@ -50,7 +51,8 @@ class TelemetrixPortRegister:
     def remove(self, port):
         self.active.remove(port)
 
-# noinspection PyPep8,PyMethodMayBeStatic,GrazieInspection,PyBroadException,PyCallingNonCallable
+
+# noinspection PyPep8,PyMethodMayBeStatic,GrazieInspection,PyBroadException,PyCallingNonCallable,PyTypeChecker
 class Telemetrix(threading.Thread):
     """
     This class exposes and implements the telemetrix API.
@@ -1134,6 +1136,7 @@ class Telemetrix(threading.Thread):
         else:
             polarity = 0
         position = abs(position)
+        # noinspection PyTypeChecker
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
                 self.shutdown()
@@ -1801,7 +1804,9 @@ class Telemetrix(threading.Thread):
                     # ignore error on shutdown
                     pass
         except Exception:
-            raise RuntimeError('Shutdown failed - could not send stop streaming message')
+            # raise RuntimeError('Shutdown failed - could not send stop streaming
+            # message')
+            pass
 
     def sonar_disable(self):
         """
@@ -2244,7 +2249,8 @@ class Telemetrix(threading.Thread):
                 message = [PrivateConstants.DIGITAL_REPORT, pin, value, time_stamp]
                 self.digital_callbacks[pin](message)
         except:
-            print('malformed message in _digital_message')
+            # print('malformed message in _digital_message')
+            pass
 
     def _firmware_message(self, data):
         """
