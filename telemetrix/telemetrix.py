@@ -287,7 +287,7 @@ class Telemetrix(threading.Thread):
         self.the_data_receive_thread.start()
 
         print(f"Telemetrix:  Version {PrivateConstants.TELEMETRIX_VERSION}\n\n"
-              f"Copyright (c) 2021 Alan Yorinks All Rights Reserved.\n")
+              f"Copyright (c) 2021-2025 Alan Yorinks All Rights Reserved.\n")
 
         # using the serial link
         if not self.ip_address:
@@ -2490,7 +2490,8 @@ class Telemetrix(threading.Thread):
         # get callback
         cb = self.stepper_info_list[report[0]]['is_running_callback']
 
-        cb_list = [PrivateConstants.STEPPER_RUNNING_REPORT, report[0], time.time()]
+        cb_list = [PrivateConstants.STEPPER_RUNNING_REPORT, report[0], report[1],
+                   time.time()]
 
         cb(cb_list)
 
