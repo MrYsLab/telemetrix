@@ -612,7 +612,7 @@ class Telemetrix(threading.Thread):
 
 
         """
-
+        self._validate_callback(callback)
         self._i2c_read_request(address, register, number_of_bytes,
                                callback=callback, i2c_port=i2c_port,
                                write_register=write_register)
@@ -651,7 +651,7 @@ class Telemetrix(threading.Thread):
         bytes read..., time-stamp]
 
         """
-
+        self._validate_callback(callback)
         self._i2c_read_request(address, register, number_of_bytes,
                                stop_transmission=False,
                                callback=callback, i2c_port=i2c_port,
@@ -692,11 +692,6 @@ class Telemetrix(threading.Thread):
                     self.shutdown()
                 raise RuntimeError(
                     'I2C Read: set_pin_mode i2c never called for i2c port 2.')
-
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('I2C Read: A callback function must be specified.')
 
         if not i2c_port:
             self.i2c_callback = callback
