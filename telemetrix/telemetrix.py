@@ -19,6 +19,7 @@ import socket
 import sys
 import threading
 import time
+import inspect
 from collections import deque
 
 import serial
@@ -362,6 +363,18 @@ class Telemetrix(threading.Thread):
         command = [PrivateConstants.RESET]
         self._send_command(command)
 
+    def _validate_callback(self, callback):
+        if not callable(callback):
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f'{sys._getframe(1).f_code.co_name}: given callback argument cannot be called')
+        try:
+            inspect.signature(callback).bind(None)
+        except Exception:
+            if self.shutdown_on_exception:
+                self.shutdown()
+            raise RuntimeError(f'{sys._getframe(1).f_code.co_name}: given callback function need to receive 1 argument')
+
     def _find_arduino(self):
         """
         This method will search all potential serial ports for an Arduino
@@ -599,7 +612,7 @@ class Telemetrix(threading.Thread):
 
 
         """
-
+        self._validate_callback(callback)
         self._i2c_read_request(address, register, number_of_bytes,
                                callback=callback, i2c_port=i2c_port,
                                write_register=write_register)
@@ -638,7 +651,7 @@ class Telemetrix(threading.Thread):
         bytes read..., time-stamp]
 
         """
-
+        self._validate_callback(callback)
         self._i2c_read_request(address, register, number_of_bytes,
                                stop_transmission=False,
                                callback=callback, i2c_port=i2c_port,
@@ -679,11 +692,6 @@ class Telemetrix(threading.Thread):
                     self.shutdown()
                 raise RuntimeError(
                     'I2C Read: set_pin_mode i2c never called for i2c port 2.')
-
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('I2C Read: A callback function must be specified.')
 
         if not i2c_port:
             self.i2c_callback = callback
@@ -755,6 +763,8 @@ class Telemetrix(threading.Thread):
 
         """
         command = [PrivateConstants.LOOP_COMMAND, ord(start_character)]
+        if callback: # In this case it can be empty
+            self._validate_callback(callback)
         self.loop_back_callback = callback
         self._send_command(command)
 
@@ -801,6 +811,8 @@ class Telemetrix(threading.Thread):
         The pin_type for analog input pins = 3
 
         """
+        if callback: # In this case it can be empty
+            self._validate_callback(callback)
         self._set_pin_mode(pin_number, PrivateConstants.AT_ANALOG, differential,
                            callback)
 
@@ -820,6 +832,8 @@ class Telemetrix(threading.Thread):
         The pin_type for all digital input pins = 2
 
         """
+        if callback: # In this case it can be empty
+            self._validate_callback(callback)
         self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT, callback=callback)
 
     def set_pin_mode_digital_input_pullup(self, pin_number, callback=None):
@@ -837,6 +851,8 @@ class Telemetrix(threading.Thread):
 
         The pin_type for all digital input pins = 2
         """
+        if callback: # In this case it can be empty
+            self._validate_callback(callback)
         self._set_pin_mode(pin_number, PrivateConstants.AT_INPUT_PULLUP,
                            callback=callback)
 
@@ -846,7 +862,6 @@ class Telemetrix(threading.Thread):
 
         :param pin_number: arduino pin number
         """
-
         self._set_pin_mode(pin_number, PrivateConstants.AT_OUTPUT)
 
     def set_pin_mode_i2c(self, i2c_port=0):
@@ -898,10 +913,7 @@ class Telemetrix(threading.Thread):
         DHT_REPORT_TYPE = 12
         """
         if self.reported_features & PrivateConstants.DHT_FEATURE:
-            if not callback:
-                if self.shutdown_on_exception:
-                    self.shutdown()
-                raise RuntimeError('set_pin_mode_dht: A Callback must be specified')
+            self._validate_callback(callback)
 
             if self.dht_count < PrivateConstants.MAX_DHTS - 1:
                 if pin in self.dht_callbacks.keys():
@@ -953,7 +965,7 @@ class Telemetrix(threading.Thread):
             raise RuntimeError(f'The SERVO feature is disabled in the server.')
 
     def set_pin_mode_sonar(self, trigger_pin, echo_pin,
-                           callback=None):
+                           callback):
         """
 
         :param trigger_pin:
@@ -966,11 +978,7 @@ class Telemetrix(threading.Thread):
 
         """
         if self.reported_features & PrivateConstants.SONAR_FEATURE:
-
-            if not callback:
-                if self.shutdown_on_exception:
-                    self.shutdown()
-                raise RuntimeError('set_pin_mode_sonar: A Callback must be specified')
+            self._validate_callback(callback)
 
             if self.sonar_count < PrivateConstants.MAX_SONARS - 1:
                 self.sonar_callbacks[trigger_pin] = callback
@@ -1186,7 +1194,7 @@ class Telemetrix(threading.Thread):
         command.append(polarity)
         self._send_command(command)
 
-    def stepper_run(self, motor_id, completion_callback=None):
+    def stepper_run(self, motor_id, completion_callback):
         """
         This method steps the selected motor based on the current speed.
 
@@ -1203,11 +1211,7 @@ class Telemetrix(threading.Thread):
 
         The report_type = 19
         """
-        if not completion_callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('stepper_run: A motion complete callback must be '
-                               'specified.')
+        self._validate_callback(completion_callback)
 
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
@@ -1398,10 +1402,7 @@ class Telemetrix(threading.Thread):
         A positive distance is clockwise from the current position.
 
         """
-        if not distance_to_go_callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('stepper_get_distance_to_go Read: A callback function must be specified.')
+        self._validate_callback(distance_to_go_callback)
 
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
@@ -1427,11 +1428,7 @@ class Telemetrix(threading.Thread):
         Positive is clockwise from the 0 position.
 
         """
-        if not target_callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(
-                'stepper_get_target_position Read: A callback function must be specified.')
+        self._validate_callback(target_callback)
 
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
@@ -1458,11 +1455,7 @@ class Telemetrix(threading.Thread):
 
         Positive is clockwise from the 0 position.
         """
-        if not current_position_callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(
-                'stepper_get_current_position Read: A callback function must be specified.')
+        self._validate_callback(current_position_callback)
 
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
@@ -1499,7 +1492,7 @@ class Telemetrix(threading.Thread):
             command.append(value)
         self._send_command(command)
 
-    def stepper_run_speed_to_position(self, motor_id, completion_callback=None):
+    def stepper_run_speed_to_position(self, motor_id, completion_callback):
         """
         Runs the motor at the currently selected speed until the target position is
         reached.
@@ -1517,12 +1510,7 @@ class Telemetrix(threading.Thread):
 
         The report_type = 19
         """
-        if not completion_callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('stepper_run_speed_to_position: A motion complete '
-                               'callback must be '
-                               'specified.')
+        self._validate_callback(completion_callback)
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
                 self.shutdown()
@@ -1710,11 +1698,7 @@ class Telemetrix(threading.Thread):
 
         [REPORT_TYPE=18, motor_id, True or False for running state, time_stamp]
         """
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError(
-                'stepper_is_running: A callback function must be specified.')
+        self._validate_callback(callback)
 
         if not self.stepper_info_list[motor_id]['instance']:
             if self.shutdown_on_exception:
@@ -1966,7 +1950,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(f'The OneWire feature is disabled in the server.')
 
-    def onewire_reset(self, callback=None):
+    def onewire_reset(self, callback):
         """
         Reset the onewire device
 
@@ -1980,10 +1964,7 @@ class Telemetrix(threading.Thread):
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(f'onewire_reset: OneWire interface is not enabled.')
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('onewire_reset: A Callback must be specified')
+        self._validate_callback(callback)
 
         self.onewire_callback = callback
 
@@ -2053,7 +2034,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError('onewire_write: Data must be no larger than 255')
 
-    def onewire_read(self, callback=None):
+    def onewire_read(self, callback):
         """
         Read a byte from the onewire device
         :param callback: required  function to report onewire data as a
@@ -2069,11 +2050,7 @@ class Telemetrix(threading.Thread):
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(f'onewire_read: OneWire interface is not enabled.')
-
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('onewire_read A Callback must be specified')
+        self._validate_callback(callback)
 
         self.onewire_callback = callback
 
@@ -2094,7 +2071,7 @@ class Telemetrix(threading.Thread):
             command = [PrivateConstants.ONE_WIRE_RESET_SEARCH]
             self._send_command(command)
 
-    def onewire_search(self, callback=None):
+    def onewire_search(self, callback):
         """
         Search for the next device. The device address will returned in the callback.
         If a device is found, the 8 byte address is contained in the callback.
@@ -2112,18 +2089,14 @@ class Telemetrix(threading.Thread):
             if self.shutdown_on_exception:
                 self.shutdown()
             raise RuntimeError(f'onewire_search: OneWire interface is not enabled.')
-
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('onewire_read A Callback must be specified')
+        self._validate_callback(callback)
 
         self.onewire_callback = callback
 
         command = [PrivateConstants.ONE_WIRE_SEARCH]
         self._send_command(command)
 
-    def onewire_crc8(self, address_list, callback=None):
+    def onewire_crc8(self, address_list, callback):
         """
         Compute a CRC check on an array of data.
         :param address_list:
@@ -2142,10 +2115,7 @@ class Telemetrix(threading.Thread):
                 self.shutdown()
             raise RuntimeError(f'onewire_crc8: OneWire interface is not enabled.')
 
-        if not callback:
-            if self.shutdown_on_exception:
-                self.shutdown()
-            raise RuntimeError('onewire_crc8 A Callback must be specified')
+        self._validate_callback(callback)
 
         if type(address_list) is not list:
             if self.shutdown_on_exception:
